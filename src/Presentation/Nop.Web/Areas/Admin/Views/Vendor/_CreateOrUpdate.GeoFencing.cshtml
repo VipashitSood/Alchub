@@ -1,0 +1,396 @@
+@model VendorModel
+@using Nop.Core.Alchub.Domain
+@using Nop.Core.Alchub.Domain.Vendors
+
+@*//custom googlemap js to drag polygon programatically*@
+<script asp-exclude-from-bundle="true" src="~/js/googlemap/google.maps.Polygon.getBounds.js"></script>
+<script asp-exclude-from-bundle="true" src="~/js/googlemap/google.maps.Polygon.moveTo.js"></script>
+@{
+    //default Las Vegas (USA) geofence coordinates
+    var initLatLong = $"36.42872,-114.79409___35.93907,-114.78585___35.93713,-115.50545___36.42398,-115.50819";
+    if (!string.IsNullOrEmpty(Model.GeoFencingCoordinates))
+    {
+        initLatLong = Model.GeoFencingCoordinates;
+    }
+}
+<div class="card-body">
+    <div class="pnl-geofence-manual">
+        @T("Alchub.Admin.Vendors.GeoFencing.Drag.Note").Text
+    </div>
+    <div class="pnl-geofence-radius">
+        @T("Alchub.Admin.Vendors.GeoFencing.Radius.Note").Text
+    </div>
+    <br>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GeoFenceShapeTypeId" />
+        </div>
+        <div class="col-md-9">
+            <div class="raw">
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="GeoFenceShapeTypeId" id="GeoFenceShapeType_Manual" value="@((int)GeoFenceShapeType.Manual)"
+                           @(Model.GeoFenceShapeTypeId == (int)GeoFenceShapeType.Manual ? Html.Raw("checked") : null) onclick="toggleGeofenceType(@((int)GeoFenceShapeType.Manual));">
+                    <label style="width: 85px;" class="form-check-label" for="GeoFenceShapeType_Manual">
+                        @T("Alchub.Admin.Vendors.Fields.GeoFenceType.Manual")
+                    </label>
+                    <input type="radio" class="form-check-input" name="GeoFenceShapeTypeId" id="GeoFenceShapeType_Radius" value="@((int)GeoFenceShapeType.Radius)"
+                           @(Model.GeoFenceShapeTypeId == (int)GeoFenceShapeType.Radius ? Html.Raw("checked") : null) onclick="toggleGeofenceType(@((int)GeoFenceShapeType.Radius));">
+                    <label class="form-check-label" for="GeoFenceShapeType_Radius">
+                        @T("Alchub.Admin.Vendors.Fields.GeoFenceType.Radius")
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row pnl-geofence-manual">
+        <div class="col-md-3">
+            <nop-label asp-for="GeoFencingCoordinates" />
+        </div>
+        <div class="col-md-9">
+            <nop-textarea asp-for="GeoFencingCoordinates" readonly="readonly"></nop-textarea>
+            <span asp-validation-for="GeoFencingCoordinates"></span>
+        </div>
+    </div>
+    <div class="form-group row pnl-geofence-manual">
+        <div class="col-md-3">
+            <div class="label-wrapper">
+                <label class="col-form-label" for="fence-location-search-input">@T("Alchub.Admin.Vendors.GeoLocation.SearchArea.Label").Text</label>
+                <div title="" data-toggle="tooltip" class="ico-help" data-original-title="@T("Alchub.Admin.Vendors.GeoLocation.SearchArea.Label.Hint").Text">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="input-group input-group-required">
+                <input class="form-control text-box single-line" id="fence-location-search-input" name="fence-location-search-input" placeholder="@T("Alchub.Admin.Vendors.GeoLocation.SearchArea.Placeholder.text")" type="text">
+            </div>
+        </div>
+    </div>
+
+    @*Fence type: radius*@
+    <div class="form-group row pnl-geofence-radius">
+        <div class="col-md-3">
+            <nop-label asp-for="RadiusDistance" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="RadiusDistance"></nop-editor>
+            <span asp-validation-for="RadiusDistance"></span>
+        </div>
+    </div>
+
+    @*Fencing Map here*@
+    <div class="form-group row">
+        <div id="fencing-map" style="height: 500px; width: 100%;"></div>
+    </div>
+</div>
+
+<script>
+    //+++++++++ fencing script ++++++++++
+
+    //map
+    let polygonmap;
+    let polygonmapLocationMarker;
+    let boundTemp
+    let areaCircle;
+    let polygoneTypeId = @(Model.GeoFenceShapeTypeId);
+    let visibleManualPoly = polygoneTypeId == @((int)GeoFenceShapeType.Manual);
+
+    //geo fence cooridates
+    let geoFenceStr = "@(initLatLong)";
+    let geoFenceArr = geoFenceStr.split("@(NopAlchubDefaults.GEOFENCE_COORDINATE_SEPARATOR)");
+    var shapeCoordinates = [];
+
+    //Draw polygon scripts
+    var draggablePolygon;
+    function InitFencingMap() {
+        //prepare marker
+        prepareInitialLocationMarkerLatLng();
+
+        var location = new google.maps.LatLng(41.53223, -95.95459);
+        var mapOptions = {
+            zoom: 15,
+            center: polygonmapLocationMarker,
+            mapTypeId: google.maps.MapTypeId.RoadMap
+        };
+
+        //map
+        polygonmap = new google.maps.Map(document.getElementById('fencing-map'),
+            mapOptions);
+
+        //add location marker
+        if (polygonmapLocationMarker) {
+            addLocationMarker(polygonmap, polygonmapLocationMarker)
+        }
+
+        //Note: We are ploting both the manual & circle polygon while init, and managing its visibility accoring selected geofence type.
+        //++ manual polygon ++
+        for (var i = 0; i < geoFenceArr.length; i++) {
+            var coordinateArr = geoFenceArr[i].split("@(NopAlchubDefaults.LATLNG_SEPARATOR)");
+            shapeCoordinates.push(new google.maps.LatLng(parseFloat(coordinateArr[0]), parseFloat(coordinateArr[1])));
+        }
+
+        //zoom center on polygon
+        var bound = new google.maps.LatLngBounds();
+        for (i = 0; i < shapeCoordinates.length; i++) {
+            bound.extend(new google.maps.LatLng(shapeCoordinates[i]));
+        }
+
+        // Construct the polygon
+        draggablePolygon = new google.maps.Polygon({
+            paths: shapeCoordinates,
+            draggable: true,
+            editable: true,
+            strokeColor: '',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#ADFF2F',
+            fillOpacity: 0.5,
+            visible: visibleManualPoly,
+        });
+
+        //zoom map area to polygon
+        polygonmap.fitBounds(bound);
+        boundTemp = bound;
+
+        draggablePolygon.setMap(polygonmap);
+        google.maps.event.addListener(draggablePolygon, "dragend", Getpolygoncoordinates);
+        google.maps.event.addListener(draggablePolygon.getPath(), "insert_at", Getpolygoncoordinates);
+        google.maps.event.addListener(draggablePolygon.getPath(), "remove_at", Getpolygoncoordinates);
+        google.maps.event.addListener(draggablePolygon.getPath(), "set_at", Getpolygoncoordinates);
+
+        //init map
+        googleFenceSearchAutocomplete();
+        //-- manual polygon --
+
+        //++ radius polygon ++
+        //add circle - if location marker is set
+        if (polygonmapLocationMarker) {
+            constructuCircleOnMap(polygonmap, polygonmapLocationMarker)
+        }
+        //-- radius polygon --
+    }
+    function Getpolygoncoordinates() {
+        var len = draggablePolygon.getPath().getLength();
+        var strArray = [];
+        //strArray = "";
+        for (var i = 0; i < len; i++) {
+            strArray.push(draggablePolygon.getPath().getAt(i).toUrlValue(5).toString());
+        }
+        //split values (by space) & assign to filed
+        $("#@Html.IdFor(model => model.GeoFencingCoordinates)").val(strArray.join("@(NopAlchubDefaults.GEOFENCE_COORDINATE_SEPARATOR)"));
+    }
+
+    //fence search autocomplete
+    function googleFenceSearchAutocomplete() {
+
+        // Create the search box and link it to the UI element.
+        const inputFence = document.getElementById("fence-location-search-input");
+        const searchBoxFence = new google.maps.places.SearchBox(inputFence);
+
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBoxFence.addListener("places_changed", () => {
+            const placesFence = searchBoxFence.getPlaces();
+
+            if (placesFence.length == 0) {
+                return;
+            }
+
+            // For each place, get the icon, name and location.
+            const boundsFence = new google.maps.LatLngBounds();
+
+            placesFence.forEach((place) => {
+                if (!place.geometry || !place.geometry.location) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    boundsFence.union(place.geometry.viewport);
+                } else {
+                    boundsFence.extend(place.geometry.location);
+                }
+            });
+
+            //zoom center on polygon
+            for (i = 0; i < shapeCoordinates.length; i++) {
+                boundsFence.extend(new google.maps.LatLng(shapeCoordinates[i]));
+            }
+
+            polygonmap.fitBounds(boundsFence);
+            boundTemp = boundsFence;
+
+            //set map zoom & center map option
+            var location = new google.maps.LatLng(placesFence[0].geometry.location.lat(), placesFence[0].geometry.location.lng());
+            var mapOptions = {
+                zoom: 6,
+                center: location,
+            };
+            polygonmap.setOptions(mapOptions);
+
+            //if manual geofence is selected, then only drag the manul polygone.
+            if (polygoneTypeId == @((int)GeoFenceShapeType.Manual)) {
+                //drag polygon
+                draggablePolygon.moveTo(new google.maps.LatLng(placesFence[0].geometry.location.lat(), placesFence[0].geometry.location.lng()));
+                //fix: after search, drag & changing plolygon point was not working
+                google.maps.event.addListener(draggablePolygon, "dragend", Getpolygoncoordinates);
+                google.maps.event.addListener(draggablePolygon.getPath(), "insert_at", Getpolygoncoordinates);
+                google.maps.event.addListener(draggablePolygon.getPath(), "remove_at", Getpolygoncoordinates);
+                google.maps.event.addListener(draggablePolygon.getPath(), "set_at", Getpolygoncoordinates);
+
+                //update fence coordinates
+                Getpolygoncoordinates();
+            }
+        });
+    }
+
+    function prepareInitialLocationMarkerLatLng() {
+        var initLatlng = { lat: 39.74958843687717, lng: -101.38981743886231 };
+        //set init latlong if already saved for vendor.
+        var initCoordinates = '@Model.GeoLocationCoordinates';
+        if (initCoordinates) {
+            var latlngSplit = "@(Model.GeoLocationCoordinates)".split("@(NopAlchubDefaults.LATLNG_SEPARATOR)");
+            //split values (by space)
+            if (latlngSplit != '') {
+                initLatlng.lat = parseFloat(latlngSplit[0]);
+                initLatlng.lng = parseFloat(latlngSplit[1]);
+            }
+
+            //assign value to  base variable
+            polygonmapLocationMarker = initLatlng;
+        }
+    }
+
+    function addLocationMarker(map, markerCoordinates) {
+        if (markerCoordinates) {
+            //if latlng already set then, Adds marker at init to the map & also zoom the location
+            new google.maps.Marker({
+                position: markerCoordinates,
+                map,
+            });
+        }
+    }
+
+    function constructuCircleOnMap(map, locationCoridinates) {
+
+        //distance in miles
+        var radiusDistanceMiles = $('#@Html.IdFor(x=>x.RadiusDistance)').val();
+        //convert disatnce in meter
+        var distanceMeter = getMeters(parseFloat(radiusDistanceMiles));
+        console.log('radius miles: ' + radiusDistanceMiles);
+        console.log('radius meter: ' + distanceMeter);
+
+        areaCircle = new google.maps.Circle({
+            strokeColor: '',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#ADFF2F',
+            fillOpacity: 0.5,
+            map,
+            center: locationCoridinates,
+            //radius: Math.sqrt(600) * 100, //temp
+            radius: distanceMeter, //temp
+            visible: !visibleManualPoly,
+        });
+
+        //zoom into circle
+        if (radiusDistanceMiles > 0) {
+            var bounds = new google.maps.LatLngBounds();
+            bounds.union(areaCircle.getBounds());
+
+            map.fitBounds(bounds);
+        }
+    }
+
+    //this function will simply hide/show the manual/circle polygon based on input
+    function toggleGeofenceType(id) {
+
+        //validate, there should be location set.
+        var initLocationCoordinates = '@Model.GeoLocationCoordinates';
+        if (id == @((int)GeoFenceShapeType.Radius) && !initLocationCoordinates) {
+            //warning
+            alert("@T("Alchub.Admin.Vendors.GeoFencing.Type.Change.Radius.Error")");
+            //click back manual radio
+            $('#GeoFenceShapeType_Manual').click();
+            return false;
+        }
+
+        //check same radio clicked
+        if (id == polygoneTypeId) {
+            //alert('clicked same radio');
+            return false;
+        }
+
+        //set polygon visibility opiton
+        if (id == @((int)GeoFenceShapeType.Manual)) {
+            areaCircle.visible = false;
+            draggablePolygon.visible = true;
+
+            //zoom map area to polygon
+            polygonmap.fitBounds(boundTemp);
+        } else {
+            areaCircle.visible = true;
+            draggablePolygon.visible = false;
+
+            //center, any case out of display area
+            var bounds = new google.maps.LatLngBounds();
+            bounds.union(areaCircle.getBounds());
+            polygonmap.fitBounds(bounds);
+        }
+
+        //set polygon options on the map
+        draggablePolygon.setMap(polygonmap);
+        areaCircle.setMap(polygonmap);
+        polygoneTypeId = id;
+
+        toggleRadiusAndManualPnlVisibility(id);
+
+        return false;
+    }
+
+    //toggle pnl visibility
+    function toggleRadiusAndManualPnlVisibility(fencTypeId) {
+        if (fencTypeId == @((int)GeoFenceShapeType.Manual)) {
+            //show readonly geofence.
+            $(".pnl-geofence-manual").show();
+            $(".pnl-geofence-radius").hide();
+        } else {
+            //hide readonly geofence, as it will be not part of radius polygon.
+            $(".pnl-geofence-manual").hide();
+            $(".pnl-geofence-radius").show();
+        }
+    }
+
+    //this fun will convert miles to meter
+    function getMeters(miles) {
+        return miles * 1609.344;
+    }
+
+    //radiuos diatance change fun
+    function radiousDistanceChangeTrigger() {
+        $('#@Html.IdFor(model => model.RadiusDistance)').on('input change', function () {
+            areaCircle.setMap(null);
+            constructuCircleOnMap(polygonmap, polygonmapLocationMarker);
+            //make sure visible
+            if (!areaCircle.visible) {
+                areaCircle.visible = true;
+            }
+            areaCircle.setMap(polygonmap);
+        });
+    }
+
+    //init map on ready
+    $(document).ready(function () {
+        InitFencingMap();
+        Getpolygoncoordinates();
+
+        //set manual/radius pnl and field visibilty
+        toggleRadiusAndManualPnlVisibility(@(Model.GeoFenceShapeTypeId));
+
+        //register radius value chnage.
+        radiousDistanceChangeTrigger();
+    });
+
+    //--------- fencing script ---------
+</script>

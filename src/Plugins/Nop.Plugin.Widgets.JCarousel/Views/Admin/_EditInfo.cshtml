@@ -1,0 +1,77 @@
+﻿@using Nop.Services
+@using Nop.Plugin.Widgets.JCarousel.Domain
+@model Nop.Plugin.Widgets.JCarousel.Models.Configuration.JCarouselModel
+
+
+<script>
+    $(document).ready(function() {
+        $("#@Html.IdFor(model => model.IsBestSeller)").change(toggle);
+        toggle();
+    });
+
+    function toggle() {
+        var isChecked = $("#@Html.IdFor(model => model.IsBestSeller)").is(':checked');
+        if (isChecked) {
+            $('#category-id').hideElement();
+        }
+        else {
+            $('#category-id').showElement();
+        }
+    }
+</script>
+<div class="jcarouselcard">
+    <div class="card-header with-border clearfix">
+        <div class="card-title">
+            <i class="fas fa-info"></i>
+            JCarousel info
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="Name" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="Name" asp-required="true" />
+                <span asp-validation-for="Name"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="DisplayOrder" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="DisplayOrder" />
+                <span asp-validation-for="DisplayOrder"></span>
+            </div>
+        </div>
+        @*<div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="MaxItems" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="MaxItems" />
+                <span asp-validation-for="MaxItems"></span>
+            </div>
+        </div>*@
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="IsBestSeller" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="IsBestSeller" />
+                <span asp-validation-for="IsBestSeller"></span>
+            </div>
+        </div>
+        <div class="form-group row" id="category-id">
+            <div class="col-md-3">
+                <nop-label asp-for="SelectedCategoryId" />
+            </div>
+            <div class="col-md-9">
+                <nop-select asp-for="SelectedCategoryId" asp-items="Model.AvailableCategories" asp-required="true" />
+                <span asp-validation-for="SelectedCategoryId"></span>
+                <input type="hidden" id="zoneId" value="@Model.Id" />
+            </div>
+        </div>
+    </div>
+</div>

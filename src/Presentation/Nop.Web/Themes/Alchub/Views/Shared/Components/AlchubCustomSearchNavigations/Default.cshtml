@@ -1,0 +1,238 @@
+﻿@model CategoryModel
+@using Nop.Services.Catalog;
+@inject ICategoryService categoryService
+@{
+
+    //var localModel = Model.PagingFilteringContext.SpecificationFilter;
+    //var notFilteredItemsGroups = localModel.NotFilteredItems.GroupBy(x => x.SpecificationAttributeName);
+    //var alreadyFilteredItemsGroups = localModel.AlreadyFilteredItems.GroupBy(x => x.SpecificationAttributeName);
+
+    //var dateSearchModel = Model.PagingFilteringContext.DateSearchFilter;
+
+    //var postalCodeSearchModel = Model.PagingFilteringContext.SearchTermFilter;
+    var categoryIds = Model.CatalogProductsModel.CatalogProductsCommand.SearchTermFilter.CategoryIdsFilterItem.CategoryIdsSearch;
+    var subCategoryIds = Model.CatalogProductsModel.CatalogProductsCommand.SearchTermFilter.SubCategoryIdFilterItem.SubCategoryIdSearch;
+    var vendorIds = Model.CatalogProductsModel.CatalogProductsCommand.SearchTermFilter.VendorIdsFilterItem.VendorIdSearch;
+}
+@if (Model.SubCategories.Count > 0)
+{
+
+    @*<div class="accordion" id="accordionExample1">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#SubCategoryFilter" aria-expanded="true" aria-controls="collapseOne">
+                            <strong> Categories </strong>
+                        </button>
+                    </h2>
+                </div>
+                <div id="courses_type" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample1">
+                    <div class="card-body p-0">
+                        <div class="left-options px-4 py-2">
+                            @foreach (var category in Model.SubCategories.OrderBy(x => x.Name))
+                            {
+                                <div class="custom-control custom-checkbox pl-0">
+                                    <input class="applyCategoryFilter custom-control-input" @(categoryIds.Contains(category.Id.ToString()) ? "checked" : "" ) name="categoryfilter" value="@category.Id" type="checkbox" />
+                                    @if (category.NumberOfProducts > 0)
+                                    {
+                                        <label asp-for="@category.Name" class="custom-control-label">@category.Name (@category.NumberOfProducts)</label>
+
+                                    }
+                                    else
+                                    {
+                                        <label asp-for="@category.Name" class="custom-control-label">@category.Name</label>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+    <div class="product-filter custome-category-filter">
+        <div class="filter-title">
+            <div class="toogle-wrap">
+                <strong data-target="#SubCategoryFilter">@T("Filtering.categories")</strong>
+            </div>
+        </div>
+        <div class="filter-content">
+            <ul class="group product-manufacturer-group">
+                @foreach (var category in Model.SubCategories.OrderBy(x => x.Name))
+                {
+                    <li class="item">
+                        <input class="applyCategoryFilter custom-control-input" @(categoryIds.Contains(category.Id.ToString()) ? "checked" : "" ) name="categoryfilter" value="@category.Id" type="checkbox" />
+                        @if (category.NumberOfProducts > 0)
+                        {
+                            <label asp-for="@category.Name" class="custom-control-label">@category.Name (@category.NumberOfProducts)</label>
+
+                        }
+                        else
+                        {
+                            <label asp-for="@category.Name" class="custom-control-label">@category.Name</label>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+}
+@if (!string.IsNullOrEmpty(categoryIds))
+{
+    //ToDo : Need to optimization of code
+    var categoryIdsList = categoryIds.Split(',').Select(int.Parse).ToList();
+    bool isCategory = false;
+    @foreach (var catId in categoryIdsList)
+    {
+        if ((await categoryService.GetAllCategoriesByParentCategoryIdAsync(catId)).Count > 0)
+        {
+            isCategory = true;
+            break;
+        }
+    }
+    if (isCategory)
+    {
+        <div class="product-filter product-spec-filter">
+            @*<div class="accordion" id="accordionExample2">
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#SubCategoryFilter" aria-expanded="true" aria-controls="collapseOne">
+                                    <strong>SubCategories</strong>
+                                </button>
+                            </h2>
+                        </div>
+                        @foreach (var catId in categoryIdsList)
+                        {
+
+                            var subCategorys = await categoryService.GetAllCategoriesByParentCategoryIdAsync(catId);
+                            if (subCategorys.Count > 0)
+                            {
+                                <div id="SubCategoryFilter" class="border-bottom collapse show" aria-labelledby="headingOne" data-parent="#accordionExample2">
+                                    <div class="left-options px-4 py-2">
+                                        @foreach (var subCategory in subCategorys.OrderBy(x => x.Name))
+                                        {
+                                            <div class="custom-control custom-checkbox pl-0 my-3">
+                                                <input class="applySubCategoryFilter custom-control-input" @(subCategoryIds.Contains(subCategory.Id.ToString()) ? "checked" : "" ) name="subCategoryfilter" value="@subCategory.Id" type="checkbox" />
+                                                <label asp-for="@subCategory.Name" class="custom-control-label">@subCategory.Name</label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>*@
+
+            <div class="filter-title">
+                <div class="toogle-wrap">
+                    <strong data-target="#SubCategoryFilter">@T("filtering.subcategories")</strong>
+                </div>
+            </div>
+            <div class="filter-content">
+                <ul class="group product-manufacturer-group">
+                    @foreach (var catId in categoryIdsList)
+                    {
+
+                        var subCategorys = await categoryService.GetAllCategoriesByParentCategoryIdAsync(catId);
+                        if (subCategorys.Count > 0)
+                        {
+                            <div id="SubCategoryFilter" class=" collapse show" aria-labelledby="headingOne" data-parent="#accordionExample2">
+                                <div class="group-item ">
+                                    @foreach (var subCategory in subCategorys.OrderBy(x => x.Name))
+                                    {
+                                        <div class="item">
+                                            <input class="applySubCategoryFilter custom-control-input" @(subCategoryIds.Contains(subCategory.Id.ToString()) ? "checked" : "" ) name="subCategoryfilter" value="@subCategory.Id" type="checkbox" />
+                                            <label asp-for="@subCategory.Name" class="custom-control-label">@subCategory.Name</label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </ul>
+            </div>
+
+        </div>
+    }
+}
+
+@if (Model.Vendors.Count > 0)
+{
+    <div class="product-filter custome-category-filter">
+        <div class="filter-title">
+            <div class="toogle-wrap">
+                <strong data-target="#VendorFilter">@T("Filtering.Vendors")</strong>
+            </div>
+        </div>
+        <div class="filter-content">
+            <ul class="group product-manufacturer-group">
+                @foreach (var vendor in Model.Vendors.OrderBy(x => x.Name))
+                {
+                    <li class="item">
+                        <input class="applyVendorFilter custom-control-input" @(vendorIds.Contains(vendor.Id.ToString()) ? "checked" : "" ) name="vendorfilter" value="@vendor.Id" type="checkbox" />
+                            <label asp-for="@vendor.Name" class="custom-control-label">@vendor.Name</label>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+}
+
+<script asp-location="Footer">
+    $(".applyCategoryFilter").change(function () {
+        var location = window.location.href;
+        var pageNumber = getParameterByName("pagenumber", location);
+        if (pageNumber != null && pageNumber != "") {
+            location = updateQueryStringParameter(location, "pagenumber", 1);
+        }
+        var categoryValue = $('input[name="categoryfilter"]:checked').map(function () {
+            return this.value;
+        }).get().join(",");
+        if (categoryValue !== "") {
+            location = updateQueryStringParameter(location, "catid", categoryValue);
+        }
+        else {
+            location = removeParam("catid", location);
+        }
+        setLocation(location);
+    });
+
+    $(".applySubCategoryFilter").change(function () {
+        var location = window.location.href;
+        var pageNumber = getParameterByName("pagenumber", location);
+        if (pageNumber != null && pageNumber != "") {
+            location = updateQueryStringParameter(location, "pagenumber", 1);
+        }
+        var categoryValue = $('input[name="subCategoryfilter"]:checked').map(function () {
+            return this.value;
+        }).get().join(",");
+        if (categoryValue !== "") {
+            location = updateQueryStringParameter(location, "subCatid", categoryValue);
+        }
+        else {
+            location = removeParam("subCatid", location);
+        }
+        setLocation(location);
+    });
+
+    $(".applyVendorFilter").change(function () {
+        var location = window.location.href;
+        var pageNumber = getParameterByName("pagenumber", location);
+        if (pageNumber != null && pageNumber != "") {
+            location = updateQueryStringParameter(location, "pagenumber", 1);
+        }
+        var vendorValue = $('input[name="vendorfilter"]:checked').map(function () {
+            return this.value;
+        }).get().join(",");
+        if (vendorValue !== "") {
+            location = updateQueryStringParameter(location, "vendorid", vendorValue);
+        }
+        else {
+            location = removeParam("vendorid", location);
+        }
+        setLocation(location);
+    });
+</script>

@@ -1,0 +1,49 @@
+@model CatalogSettingsModel
+
+<div class="card-body">
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-override-store-checkbox asp-for="ShowFastestSlotOnCatalogPage_OverrideForStore" asp-input="ShowFastestSlotOnCatalogPage" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+            <nop-label asp-for="ShowFastestSlotOnCatalogPage" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="ShowFastestSlotOnCatalogPage" />
+            <span asp-validation-for="ShowFastestSlotOnCatalogPage"></span>
+        </div>
+    </div>
+
+    @*Filter price range option*@
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-override-store-checkbox asp-for="FilterPriceRangeOption1_OverrideForStore" asp-input="FilterPriceRangeOption1" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+            <nop-label asp-for="FilterPriceRangeOption1" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FilterPriceRangeOption1" style="width: 240px !important;" />
+            <nop-editor asp-for="FilterPriceRangeOption2" style="width: 240px !important;" />
+            <nop-editor asp-for="FilterPriceRangeOption3" style="width: 240px !important;" />
+            <span asp-validation-for="FilterPriceRangeOption1"></span>
+            <span asp-validation-for="FilterPriceRangeOption2"></span>
+            <span asp-validation-for="FilterPriceRangeOption3"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-override-store-checkbox asp-for="NumberOfManufacturersOnHomepage_OverrideForStore" asp-input="NumberOfManufacturersOnHomepage" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+            <nop-label asp-for="NumberOfManufacturersOnHomepage" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="NumberOfManufacturersOnHomepage" />
+            <span asp-validation-for="NumberOfManufacturersOnHomepage"></span>
+        </div>
+    </div>
+</div>
+<script>
+    //adjust filter pricerange option control width
+    $(document).ready(function () {
+        $("#FilterPriceRangeOption1").closest(".k-numerictextbox").attr('style', 'width: 250px !important');
+        $("#FilterPriceRangeOption2").closest(".k-numerictextbox").attr('style', 'width: 250px !important');
+        $("#FilterPriceRangeOption3").closest(".k-numerictextbox").attr('style', 'width: 250px !important');
+    });
+</script>

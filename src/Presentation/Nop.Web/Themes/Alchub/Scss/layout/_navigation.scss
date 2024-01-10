@@ -1,0 +1,10 @@
+@import "../helpers/helpers";
+.header {
+    &__navigation {
+        background-color: $colorgrey;
+        min-height: 50px;
+        margin-bottom: 3px;
+    }
+}
+
+

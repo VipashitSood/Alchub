@@ -1,0 +1,145 @@
+﻿@model CatalogProductsModel
+@using Nop.Services.Catalog;
+@{
+
+    var vendorIds = Model?.CatalogProductsCommand?.SearchTermFilter?.VendorIdsFilterItem?.VendorIdSearch ?? "";
+}
+
+@if (Model.Vendors.Count > 0)
+{
+    <div class="product-filter custome-category-filter">
+        <div class="filter-title">
+            <div class="toogle-wrap">
+                <strong data-target="#VendorFilter">@T("Filtering.Vendors")</strong>
+            </div>
+        </div>
+        <div class="filter-content">
+            <ul class="group product-manufacturer-group" id="lists-filter-vendor">
+                <div class="filter-search" id="filtersearch-wrap-vendor">
+
+                    <div class="container">
+                        <input type="text" placeholder="Search..." id="filtersearch-vendor">
+                        <div class="search"></div>
+                    </div>
+
+                </div>
+                <ul class="ul-list" id="ul-list-2">
+                    @foreach (var vendor in Model.Vendors.OrderBy(x => x.Text))
+                    {
+                        <li class="item" id="list-filter-vendor-@vendor.Value">
+                            <input class="applyVendorFilter custom-control-input" @(vendorIds.Contains(vendor.Value) ? "checked" : "") name="vendorfilter" value="@vendor.Value" type="checkbox" />
+                            @{
+                                //get product count
+                                var productCount = Model.VendorsProductCounts.FirstOrDefault(x => x.Id.ToString().Equals(vendor.Value, StringComparison.InvariantCultureIgnoreCase));
+                                if (productCount != null && productCount.NumberOfProducts.HasValue && productCount.NumberOfProducts > 0)
+                                {
+                                    <label asp-for="@vendor.Text" class="custom-control-label">@vendor.Text (@productCount.NumberOfProducts)</label>
+                                }
+                                else
+                                {
+                                    <label asp-for="@vendor.Text" class="custom-control-label">@vendor.Text</label>
+                                }
+                            }
+                        </li>
+                        <text>
+                            <script>
+                                //list filter in search
+                                $(document).ready(function () {
+                                    //search filter: FE
+                                    searchVendorFilter('@vendor.Value');
+                                });
+                            </script>
+                        </text>
+                    }
+                </ul>
+            </ul>
+            <button class="show-list" id="show-list-vendor">@T("Alchub.filter.button.all.list")</button>
+            <script>
+                //list filter in search
+                $(document).ready(function () {
+                    //arange filter
+                    arangeVendorFilters();
+                });
+            </script>
+        </div>
+    </div>
+    <text>
+        <script asp-location="Footer">
+            $(".applyVendorFilter").change(function () {
+                var location = window.location.href;
+                var pageNumber = getParameterByName("pagenumber", location);
+                if (pageNumber != null && pageNumber != "") {
+                    location = updateQueryStringParameter(location, "pagenumber", 1);
+                }
+                var vendorValue = $('input[name="vendorfilter"]:checked').map(function () {
+                    return this.value;
+                }).get().join(",");
+                if (vendorValue !== "") {
+                    location = updateQueryStringParameter(location, "vendorid", vendorValue);
+                }
+                else {
+                    location = removeParam("vendorid", location);
+                }
+                setLocation(location);
+            });
+
+            function arangeVendorFilters() {
+                if ($("#ul-list-2 li").length > 6) {
+                    $("#filtersearch-wrap-vendor").css("display", "block");
+                    $("#show-list-vendor").css("display", "block");
+
+                    $("#show-list-vendor").click(function () {
+                        $("#ul-list-2").addClass("custome-height");
+                        $("#lists-filter-vendor .custome-height").css({ "overflow": "auto", "height": "168px", "padding": "10px 0px" });
+                    })
+                }
+                else {
+                    $("#filtersearch-wrap-vendor").css("display", "none");
+                    $("#show-list-vendor").css("display", "none");
+                }
+
+                $(document).on('click', '#show-list-vendor', function () {
+                    $(".product-subcategory-group .item").addClass("review-wrp");
+                    $("#show-list-vendor").hide();
+                    $("#lists-filter-vendor .ul-list .item").css("display", "block")
+                })
+            }
+
+            $(document).ready(function () {
+                //filters: show all btn
+                $('.group .ul-list').each(function (index) {
+                    const value = $(this); const length = $(this).children();
+                    for (let i = 0; i < length.length; i++) {
+                        if (i <= 5) {
+                            $(length[i]).addClass('show-filter-list');
+                        }
+
+                    }
+                });
+            });
+
+            function searchVendorFilter(vendorId) {
+                $('input#filtersearch-vendor').bind('keyup change', function () {
+                    if ($(this).val().trim().length !== 0) {
+
+                        $('#list-filter-vendor-' + vendorId + '').show().hide().each(function () {
+                            if ($(this).is(':icontains(' + $('input#filtersearch-vendor').val() + ')'))
+                                $(this).show();
+                            $("#show-list-vendor").hide();
+                        });
+                    }
+                    else {
+                        $('#list-filter-vendor-' + vendorId + '').show().hide().each(function () {
+                            $(this).show();
+                        });
+                    }
+                });
+
+                //expr
+                $.expr[':'].icontains = function (obj, index, meta, stack) {
+                    return (obj.textContent || obj.innerText || jQuery(obj).text() || '').toLowerCase().indexOf(meta[3].toLowerCase()) >= 0;
+                };
+            }
+        </script>
+    </text>
+}

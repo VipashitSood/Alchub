@@ -1,0 +1,15 @@
+﻿@model VendorModel
+
+@{
+    var customer = await workContext.GetCurrentCustomerAsync();
+
+    //Alchub
+    const string hideVendorGeoLocationAttributeName = "VendorPage.HideGeoLocationBlock";
+    var hideVendorGeoLocationBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideVendorGeoLocationAttributeName, defaultValue: true);
+
+    const string hideVendorGeoFencingAttributeName = "VendorPage.HideGeoFencingBlock";
+    var hideVendorGeoFencingBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideVendorGeoFencingAttributeName, defaultValue: true);
+}
+
+<nop-card asp-name="vendor-geolocation" asp-icon="fa fa-map-marker" asp-title="@T("Alchub.Admin.Vendors.VendorGeoLocation")" asp-hide-block-attribute-name="@hideVendorGeoLocationAttributeName" asp-hide="@hideVendorGeoLocationBlock" asp-advanced="true">@await Html.PartialAsync("_CreateOrUpdate.GeoLocation", Model)</nop-card>
+<nop-card asp-name="vendor-geofencing" asp-icon="fa fa-map" asp-title="@T("Alchub.Admin.Vendors.VendorGeoFencing")" asp-hide-block-attribute-name="@hideVendorGeoFencingAttributeName" asp-hide="@hideVendorGeoFencingBlock" asp-advanced="true">@await Html.PartialAsync("_CreateOrUpdate.GeoFencing", Model)</nop-card>

@@ -1,0 +1,34 @@
+﻿@model IList<ProductOverviewModel>
+@using Nop.Core.Domain.Catalog
+@inject CatalogSettings catalogSettings
+
+@foreach (var product in Model)
+{
+    <div class="item-box" data-loader="asyncFastestSlotLoader">
+        @await Html.PartialAsync("_ProductBox", product)
+    </div>
+}
+
+<!--Common fastest slot lazy loader for catalog listing and carsouel listing-->
+@if (catalogSettings.ShowFastestSlotOnCatalogPage)
+{
+    @*<!-- import jquery lazy master lib-->*@
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, "~/lib/jquery-lazy-master/jquery.lazy.min.js");
+    <script>
+        $(".item-box").Lazy({
+            // callback
+            asyncFastestSlotLoader: function (element, response) {
+                setTimeout(function () {
+                    var productId = $(element).find('.deliver-time').attr("data-productid");
+                    if (parseInt(productId) > 0) {
+                        //fastest slot ajax
+                        FastestSlot.get_product_fastest_slot('@(Url.RouteUrl("GetProductFastestSlot"))', '' + productId + '');
+                    } else {
+                        console.log('fastest slot error: productId undefined');
+                    }
+                    response(true);
+                }, 1000);
+            }
+        });
+    </script>
+}

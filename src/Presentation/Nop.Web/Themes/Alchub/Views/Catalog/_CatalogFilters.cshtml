@@ -1,0 +1,38 @@
+﻿@model CatalogProductsModel
+<style>
+    .html-search-page .side-2 .product-filters {
+        display: block;
+    }
+</style>
+
+<div class="block product-filters">
+
+    <div class="close-side-menu">
+        <span class="close-side-menu-text">
+            Filters
+        </span>
+        <span class="close-side-menu-btn">
+        </span>
+    </div>
+
+    @if (Model.PriceRangeFilter.Enabled)
+    {
+        @await Html.PartialAsync("_FilterPriceBox", Model.PriceRangeFilter)
+    }
+
+    @if (Model.CategoryFilterModel.Enabled)
+    {
+        @await Html.PartialAsync("_FilterCategoryBox", Model)
+    }
+    @if (Model.ManufacturerFilter.Enabled)
+    {
+        @await Html.PartialAsync("_FilterManufacturerBox", Model)
+    }
+
+    @await Html.PartialAsync("_VendorFilters", Model)
+
+    @if (Model.SpecificationFilter.Enabled)
+    {
+        @await Html.PartialAsync("_FilterSpecsBox", Model)
+    }
+</div>

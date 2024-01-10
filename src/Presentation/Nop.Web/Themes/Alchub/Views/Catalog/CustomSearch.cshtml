@@ -1,0 +1,69 @@
+﻿@model Nop.Web.Models.Catalog.SearchModel
+@{
+    Layout = "_ColumnsTwoSearch";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Search").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-search-page");
+}
+
+@section CatalogFilters {
+    @await Html.PartialAsync("_CatalogFilters", Model.CatalogProductsModel)
+}
+
+<div class="page search-page">
+
+    <div class="overlayOffCanvas "></div>
+    @*<div class="page-title">
+            <h1>@T("Search")</h1>
+        </div>*@
+    <div class="page-body">
+        <div class="custome-search">
+            <div class="row">
+              @*  <div class="col-xl-6 col-lg-12 px-0">
+                    <div class="search-box-wrapper">
+                        <input value="@Model.q" type="text" class="search-box-text" id="searchterms" autocomplete="off" name="q" placeholder="@T("Search.SearchBox.Tooltip")" aria-label="@T("Search.SearchBox.Text.Label")" />
+                    </div>
+                </div>*@
+                <div class=" col-xl-12 col-lg-12 px-0 text-end">
+                    @await Html.PartialAsync("_CatalogSelectors", Model.CatalogProductsModel)
+                </div>
+            </div>
+           
+            
+        </div>
+
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductSearchPageBeforeResults, additionalData = Model })
+        <div class="search-results">
+            @{
+                var catalogProductsViewData = new ViewDataDictionary(ViewData);
+                catalogProductsViewData["fetchUrl"] = Html.Raw(Url.Action("SearchProducts", "Catalog"));
+            }
+            @await Html.PartialAsync("_CatalogProducts", Model.CatalogProductsModel, catalogProductsViewData)
+        </div>
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductSearchPageAfterResults, additionalData = Model })
+    </div>
+</div>
+
+<script asp-location="Footer">
+    $("#searchterms").change(function () {
+        var location = window.location.href;
+        var pageNumber = getParameterByName("pagenumber", location);
+        if (pageNumber !== null && pageNumber !== "") {
+            location = updateQueryStringParameter(location, "pagenumber", 1);
+        }
+        var searchTerm = $('#searchterms').val();
+        var q = getParameterByName("q", location);
+        if (searchTerm !== "" || searchTerm !== null) {
+            if (q !== null || q !== "") {
+                location = removeParam("q", location);
+            }
+            location = updateQueryStringParameter(location, "q", searchTerm);
+        }
+        else {
+            location = removeParam("q", location);
+        }
+        setLocation(location);
+    });
+</script>

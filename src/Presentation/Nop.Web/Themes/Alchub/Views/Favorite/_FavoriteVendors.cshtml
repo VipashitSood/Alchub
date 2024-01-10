@@ -1,0 +1,331 @@
+﻿@model FavoriteModel
+@using Nop.Web.Models.Favorite
+@inject IThemeContext themeContext
+
+@{
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+}
+
+
+<div class="favorite-stores" id="favorite-vendors">
+    <div class="Toggle-Fav">
+        <div class="is-favorite-toggle" id="favorite-toggle">
+            @{
+                var addAsFavorite = Url.RouteUrl("FavoriteToggle", new { toggle = true });
+                var removeFromfavorite = Url.RouteUrl("FavoriteToggle", new { toggle = false });
+            }
+            <label class="search-favorites-store-lbl">
+                @T("Search.Favorite.Store")
+                <button type="button" class="btn btn-default font-weight-bold" data-bs-toggle="modal" data-bs-target="#favorite-instruction-popup"><img src="/Themes/@(themeName)/Content/images/information_icon.png" /></button>
+            </label>
+            <!-- instruction popup -->
+            <div class="modal fade" id="favorite-instruction-popup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="favorite-instruction-popup-label" aria-hidden="true">
+                <div class="modal-dialog delivery-section">
+                    <div class="modal-content">
+                        <div class="popup-box">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="favorite-instruction-popup-label">@T("Alchub.FavoriteVendor.Toggle.Instruction.popup.Heading").Text</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div id="favorite-instruction-popup-popup" class="favorite-instruction-popup-popup">
+                                    <div>
+                                        @* <div class="modal-uppertext">
+                                            @T("Alchub.FavoriteVendor.Toggle.Instruction.popup.Instruction").Text
+                                            </div>*@
+                                        <div class="modal-text">
+                                            <p>@T("Alchub.FavoriteVendor.Toggle.Instruction")</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" data-bs-dismiss="modal" class="btn button-1">@T("Alchub.VendorWise.TipFee.Close").Text</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <label class="switch">
+            <input id="favorite-vendor-toggle" type="checkbox" @(Model.IsFavoriteToggle ? "checked" : null)>
+            <span class="slider round"></span>
+        </label>
+    </div>
+    <div id="stores">
+        <div class="items-sections">
+            @if (Model.Stores.Count > 0)
+            {
+
+                <div class="store-content">
+                    <div class="row">
+
+                        @foreach (var item in Model.Stores)
+                        {
+                            <div class="col-md-6 col-xl-4 col-3-laptop col-xxl-3 mb-md-3 mb-xl-4">
+                                <ul class="store-list">
+
+                                    <li class="vendor-picture d-none d-md-block">
+                                        <span class="Img-box">
+                                            <img alt="@item.Picture.AlternateText" src="@item.Picture.ImageUrl" title="@item.Picture.Title" />
+                                        </span>
+                                    </li>
+                                    
+                                    <li class="vendor-name">
+
+                                        <span class="vendor-name"><strong>@item.VendorName</strong></span>
+                                        @{
+                                            var addTofavorite = Url.RouteUrl("AddFavoriteVendor", new { vendorId = item.Id });
+                                            var deleteFromfavorite = Url.RouteUrl("DeleteFavoriteVendor", new { vendorId = item.Id });
+                                        }
+
+                                        @if (item.IsFavorite)
+                                        {
+                                            <span class="vendor-is-favorite">
+                                                <button id="@item.Id" ct="1" type="button" class="@(item.IsFavorite ? "active" : "")"
+                                                        onclick="DeleteFavoriteVendor('@deleteFromfavorite'); return false;">
+                                                </button>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="vendor-is-favorite">
+                                                <button id="@item.Id" ct="1" type="button" class="add-to-favorite-button @(item.IsFavorite ? "active" : "")"
+                                                        onclick="AddFavoriteVendor('@addTofavorite'); return false;">
+                                                </button>
+                                            </span>
+                                        }
+                                    </li>
+                                    <div class="left-data">
+                                        @if (!string.IsNullOrEmpty(item.Address))
+                                        {
+                                         <li class="vendor-address">
+                                            @{
+                                                var mapLocation = "https://maps.google.com/?q=" + item.Address;
+                                                if (!string.IsNullOrEmpty(item.AddressLat) && !string.IsNullOrEmpty(item.AddressLng))
+                                                {
+                                                    mapLocation = $"https://maps.google.com/?q={item.AddressLat},{item.AddressLng}";
+                                                }
+                                            }
+                                            <a class="vendor-address-location  product-title-clamp" href="@mapLocation" target="_blank">
+                                                @Html.Raw(@item.Address)
+                                            </a>
+                                        </li>
+                                    }
+                                    @if(!string.IsNullOrEmpty(item.ContactNumber))
+                                    {
+                                        <li class="vendor-mobile">
+                                            <a href="tel:@item.ContactNumber" class="vendor-mobile">@item.DisplayContactNumber</a>
+                                        </li>
+                                    }
+                            </div>
+                            <span class="mobile-data d-block d-xl-none">
+                            <div class="right-data">
+                                <div class="vendor-distanceTime">
+                                    @if (item.ShowDistance)
+                                    {
+
+                                        <li class="vendor-distance">
+                                            <img src="/Themes/@(themeName)/Content/images/latest-img/locationwishlist.png" height="22" width="18" />
+                                            <span class="vendor-distance"><strong>@item.Distance</strong></span>
+                                        </li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(item.TimingText))
+                                    {
+                                        <li class="vendor-time">
+                                            <label class="td-title">@item.TimingLabel</label>
+                                            <span class="vendor-time"><strong>@item.TimingText</strong></span>
+                                        </li>
+                                    }
+                                </div>
+                                <div class="vendor-delivery">
+
+                                    @if (item.IsDeliver)
+                                    {
+                                        <li class="vendor-deliver">
+                                            <img src="/Themes/@(themeName)/Content/images/tick.png" height="18" width="18" /> <label class="td-title">@T("Vendor.Favorite.IsDeliver")</label>
+                                            <span class="vendor-is-delivery">
+                                                <i class='far fa-check'></i>
+                                            </span>
+                                        </li>
+                                    }
+                                    @if (item.IsPickup)
+                                    {
+                                        <li class="vendor-is-pickup">
+                                            <img src="/Themes/@(themeName)/Content/images/tick.png" height="18" width="18" /> <label class="td-title">@T("Vendor.Favorite.IsPickup")</label>
+                                            <span class="vendor-is-pickup">
+                                                <i class='far fa-check'></i>
+                                            </span>
+                                        </li>
+                                    }
+                                </div>
+                            </div>
+                                      
+                                    </span>
+
+                                    <span class="k-web d-none d-xl-block">
+                                        <div class="vendor-distanceTime">
+                                            @if (item.ShowDistance)
+                                            {
+
+                                                <li class="vendor-distance">
+                                                    <img src="/Themes/@(themeName)/Content/images/locationwishlist.png" height="22" width="18" />
+                                                    <span class="vendor-distance"><strong>@item.Distance</strong></span>
+                                                </li>
+                                            }
+                                            @if (!string.IsNullOrEmpty(item.TimingText))
+                                            {
+                                                <li class="vendor-time">
+                                                    <label class="td-title">@item.TimingLabel</label>
+                                                    <span class="vendor-time"><strong>@item.TimingText</strong></span>
+                                                </li>
+                                            }
+                                        </div>
+                                        <div class="vendor-delivery">
+
+                                            @if (item.IsDeliver)
+                                            {
+                                                <li class="vendor-deliver">
+                                                    <img src="/Themes/@(themeName)/Content/images/tick.png" height="18" width="18" /> <label class="td-title">@T("Vendor.Favorite.IsDeliver")</label>
+                                                    <span class="vendor-is-delivery">
+                                                        <i class='far fa-check'></i>
+                                                    </span>
+                                                </li>
+                                            }
+                                            @if (item.IsPickup)
+                                            {
+                                                <li class="vendor-is-pickup">
+                                                    <img src="/Themes/@(themeName)/Content/images/tick.png" height="18" width="" /> <label class="td-title">@T("Vendor.Favorite.IsPickup")</label>
+                                                    <span class="vendor-is-pickup">
+                                                        <i class='far fa-check'></i>
+                                                    </span>
+                                                </li>
+                                            }
+                                        </div>
+                                    </span>
+
+                                  
+                                    <li class="vendor-picture-mobile d-block d-md-none">
+                                        <span class="Img-box">
+                                            <img alt="@item.Picture.AlternateText" src="@item.Picture.ImageUrl" title="@item.Picture.Title" />
+                                        </span>
+                                    </li>
+
+                                    </ul>
+                                </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="no-data">
+                    @T("Stores.IsEmpty")
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script asp-location="Footer">
+
+    $(document).ready(function () {
+        $("#favorite-vendor-toggle").click(function () {
+
+            var checked = $('input:checkbox[id=favorite-vendor-toggle]').is(':checked');
+            AjaxCart.setLoadWaiting(true);
+            var postData = { toggle: checked }
+
+            addAntiForgeryToken(postData);
+
+            //check can siwtch the toggle on or not
+            $.ajax({
+                cache: false,
+                url: '@Url.RouteUrl("CanSwitchFavoriteToggleOn")',
+                type: "POST",
+                data: postData,
+                success: function (response) {
+                    if (response.success) {
+                        var callFavoriteToggle = true;
+                        if (response.showClearCartPopup) {
+                            let text = response.message;
+                            if (confirm(text) == true) {
+                                text = "You pressed OK!";
+                                callFavoriteToggle = true;
+                            } else {
+                                text = "You canceled!";
+                                callFavoriteToggle = false;
+                            }
+                            console.log(text);
+                        }
+
+                        //Favorite toggle ajax call
+                        if (callFavoriteToggle) {
+
+                            var togglePostData = { toggle: checked, clearShoppingCart : response.showClearCartPopup };
+                            addAntiForgeryToken(togglePostData);
+                            //toggle ajax
+                            $.ajax({
+                                cache: false,
+                                url: '@Url.RouteUrl("FavoriteToggle")',
+                                type: "POST",
+                                data: togglePostData,
+                                success: function (response) {
+                                    if (response.message) {
+                                        alert(response.message);
+                                        //turn toggle switch off
+                                        $('#favorite-vendor-toggle').prop('checked', false);
+                                        AjaxCart.setLoadWaiting(false);
+                                        return false;
+                                    }
+                                    else {
+                                        if (response.status && response.favoriteVendorsHtml) {
+                                            $('#favorite-vendors').html(response.favoriteVendorsHtml);
+                                        } else {
+                                            //display errors if returned
+                                            alert('Sorry, an error occured!! please try again.');
+                                        }
+                                        if (response.reloadPage) {
+                                            //reload
+                                            location.reload();
+                                        }
+                                    }
+                                },
+                                complete: function () { AjaxCart.setLoadWaiting(false) },
+                            });
+                        }
+                        else {
+                            //turn toggle switch off
+                            $('#favorite-vendor-toggle').prop('checked', false);
+                            AjaxCart.setLoadWaiting(false);
+                        }
+                    }
+                    else {
+                        if (response.message) {
+                            //display errors if returned
+                            $('#favorite-vendor-toggle').prop('checked', false);
+                            alert(response.message);
+                        }
+                    }
+                },
+                complete: function () { AjaxCart.setLoadWaiting(false) },
+            });
+
+
+        });
+
+        // Elleipse for vendor Address
+        const module = document.querySelectorAll('.product-title-clamp');
+        // Make sure our query found anything
+        if (module) {
+            // Loop through each module and apply the clamping.
+            module.forEach((module, index) => {
+                $clamp(module, { clamp: 2 });
+            });
+        }
+
+    });
+   
+  
+   
+</script>

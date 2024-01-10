@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Misc",
+  "FriendlyName": "Scheduled Order Cancelation",
+  "SystemName": "Misc.ScheduledOrderCancel",
+  "Version": "1.0",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "Tmotions",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.ScheduledOrderCancel.dll",
+  "Description": "This plugin will automatically cancels those orders which are remained in pending state for more then 10min(or minutes provided in configure page) using scheduler"
+}

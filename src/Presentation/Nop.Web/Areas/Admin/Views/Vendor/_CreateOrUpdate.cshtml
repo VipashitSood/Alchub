@@ -1,0 +1,81 @@
+﻿@model VendorModel
+@using Nop.Core.Alchub.Domain
+@inject AlchubSettings alchubSettings
+
+@{
+    const string hideInfoBlockAttributeName = "VendorPage.HideInfoBlock";
+    var customer = await workContext.GetCurrentCustomerAsync();
+    var hideInfoBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideInfoBlockAttributeName);
+
+    const string hideTimingBlockAttributeName = "VendorPage.HideTimingBlock";
+    var hideTimingBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideTimingBlockAttributeName);
+
+    const string hideDisplayBlockAttributeName = "VendorPage.HideDisplayBlock";
+    var hideDisplayBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideDisplayBlockAttributeName, defaultValue: true);
+
+    const string hideSeoBlockAttributeName = "VendorPage.HideSEOBlock";
+    var hideSeoBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideSeoBlockAttributeName, defaultValue: true);
+
+    const string hideVendorNotesBlockAttributeName = "VendorPage.HideNotesBlock";
+    var hideVendorNotesBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideVendorNotesBlockAttributeName, defaultValue: true);
+
+    //google api key
+    var googleAPiKey = alchubSettings.GoogleApiKey;
+}
+
+<div asp-validation-summary="All"></div>
+<input asp-for="Id" type="hidden" />
+
+@*Google map script*@
+@*This is here so we can inject script into both geolocation and geofence page.*@
+<script src="https://maps.googleapis.com/maps/api/js?key=@(googleAPiKey)&libraries=places&v=weekly&callback=initVoidMap"
+        defer></script>
+<script asp-location="Head">
+    function initVoidMap() {
+        //nothing here.
+        return;
+    }
+</script>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="row">
+                <div class="col-md-12 clearfix">
+                    <div class="float-left">
+                        @await Component.InvokeAsync("SettingMode", new { modeName = "vendor-advanced-mode" })
+                    </div>
+                </div>
+            </div>
+
+            <nop-cards id="vendor-cards">
+                <nop-card asp-name="vendor-info" asp-icon="fas fa-info" asp-title="@T("Admin.Vendors.Info")" asp-hide-block-attribute-name="@hideInfoBlockAttributeName" asp-hide="@hideInfoBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Info", Model)</nop-card>
+                @if (Model.Id > 0)
+                {
+                    <nop-card asp-name="vendor-timing" asp-icon="fas fa-clock" asp-title="@T("Admin.Vendors.Timing")" asp-hide-block-attribute-name="@hideTimingBlockAttributeName" asp-hide="@hideTimingBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.VendorTiming", Model)</nop-card>
+                }
+                <nop-card asp-name="vendor-display" asp-icon="fas fa-tv" asp-title="@T("Admin.Vendors.Display")" asp-hide-block-attribute-name="@hideDisplayBlockAttributeName" asp-hide="@hideDisplayBlock" asp-advanced="true">@await Html.PartialAsync("_CreateOrUpdate.Display", Model)</nop-card>
+                <nop-card asp-name="vendor-seo" asp-icon="fas fa-search-plus" asp-title="@T("Admin.Common.SEO")" asp-hide-block-attribute-name="@hideSeoBlockAttributeName" asp-hide="@hideSeoBlock" asp-advanced="true">@await Html.PartialAsync("_CreateOrUpdate.Seo", Model)</nop-card>
+
+                    @if (Model.Id > 0)
+                    {
+                        <nop-card asp-name="vendor-products" asp-icon="fas fa-th-list" asp-title="@T("Admin.Vendors.VendorNotes")" asp-hide-block-attribute-name="@hideVendorNotesBlockAttributeName" asp-hide="@hideVendorNotesBlock" asp-advanced="true">@await Html.PartialAsync("_CreateOrUpdate.Notes", Model)</nop-card>
+                        //Alchub
+                        @await Html.PartialAsync("_CreateOrUpdate.GeoCoordinates", Model)
+                        <text>
+                            <script asp-location="Footer">
+                                //by default click advance button.
+                                $(document).ready(function () {
+                                    if (!$("#advanced-settings-mode").is(":checked")) {
+                                        $("#advanced-settings-mode").click();
+                                    }
+                                })
+                            </script>
+                        </text>
+                    }
+
+                    @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.VendorDetailsBlock, additionalData = Model })
+                </nop-cards>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,35 @@
+@import "../helpers/_helpers";
+
+.html-contact-page {
+    .contact-page {
+        .page-title {
+            margin: 25px;
+
+            h1 {
+                font-size: $fontSizeXL;
+            }
+        }
+
+        .page-body {
+            max-width: 740px;
+            margin: 0 auto;
+
+            form {
+                padding: 50px;
+                background-color: $colorgrey;
+
+                .fieldset {
+                    background-color: $colorBaseWhite;
+                    padding: 40px;
+
+                    .inputs {
+                        textarea {
+                            width: 560px;
+                            max-width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

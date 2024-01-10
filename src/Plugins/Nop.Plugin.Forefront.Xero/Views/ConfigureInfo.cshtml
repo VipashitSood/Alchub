@@ -1,0 +1,240 @@
+﻿@model Nop.Plugin.Forefront.Xero.Models.ForeFrontXeroModel
+@inject IEventPublisher eventPublisher
+
+@using Nop.Services.Events
+@{ Layout = ""; }
+
+<form asp-controller="ForefrontXero" asp-action="Configure" method="post">
+   <section class="content">
+    <div class="container-fluid">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <b>Note: Please put your certificate file in plugin's Resource folder.</b>
+
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="Enable_OverrideForStore" asp-input="Enable" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="Enable" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="Enable" />
+                        <span asp-validation-for="Enable"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="IsDropTable_OverrideForStore" asp-input="IsDropTable" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="IsDropTable" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="IsDropTable" />
+                        <span asp-validation-for="IsDropTable"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="IsInventorySyncEnabled_OverrideForStore" asp-input="IsInventorySyncEnabled" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="IsInventorySyncEnabled" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="IsInventorySyncEnabled" />
+                        <span asp-validation-for="IsInventorySyncEnabled"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="ClientId_OverrideForStore" asp-input="ClientId" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="ClientId" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="ClientId" />
+                        <span asp-validation-for="ClientId"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="ClientSecret_OverrideForStore" asp-input="ClientSecret" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="ClientSecret" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="ClientSecret" />
+                        <span asp-validation-for="ClientSecret"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="CallbackURL_OverrideForStore" asp-input="CallbackURL" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="CallbackURL" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="CallbackURL" />
+                        <span asp-validation-for="CallbackURL"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="ConnectToXero" />
+                    </div>
+                    <div class="col-md-9">
+                        <a target="_blank" style="cursor:pointer;" href="@Model.ConnectToXero">Connect to Xero</a>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="SalesAccountCode_OverrideForStore" asp-input="SalesAccountCode" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="SalesAccountCode" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="SalesAccountCode" />
+                        <span asp-validation-for="SalesAccountCode"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="PurchaseAccountCode_OverrideForStore" asp-input="PurchaseAccountCode" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="PurchaseAccountCode" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="PurchaseAccountCode" />
+                        <span asp-validation-for="PurchaseAccountCode"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="NonVatAccountCode_OverrideForStore" asp-input="NonVatAccountCode" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="NonVatAccountCode" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="NonVatAccountCode" />
+                        <span asp-validation-for="NonVatAccountCode"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="PostageAccountCode_OverrideForStore" asp-input="PostageAccountCode" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="PostageAccountCode" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="PostageAccountCode" />
+                        <span asp-validation-for="PostageAccountCode"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="DiscountAmountAccountCode_OverrideForStore" asp-input="DiscountAmountAccountCode" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="DiscountAmountAccountCode" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="DiscountAmountAccountCode" />
+                        <span asp-validation-for="DiscountAmountAccountCode"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="RewardPointsAccountCode_OverrideForStore" asp-input="RewardPointsAccountCode" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="RewardPointsAccountCode" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="RewardPointsAccountCode" />
+                        <span asp-validation-for="RewardPointsAccountCode"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="BatchSize_OverrideForStore" asp-input="BatchSize" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="BatchSize" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="BatchSize" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="AuthorizedURL_OverrideForStore" asp-input="AuthorizedURL" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="AuthorizedURL" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="AuthorizedURL" />
+                        <span asp-validation-for="AuthorizedURL"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="AuthorizedResponseType_OverrideForStore" asp-input="AuthorizedResponseType" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="AuthorizedResponseType" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="AuthorizedResponseType" />
+                        <span asp-validation-for="AuthorizedResponseType"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="AuthorizedState_OverrideForStore" asp-input="AuthorizedState" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="AuthorizedState" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="AuthorizedState" />
+                        <span asp-validation-for="AuthorizedState"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="TokenURL_OverrideForStore" asp-input="TokenURL" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="TokenURL" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="TokenURL" />
+                        <span asp-validation-for="TokenURL"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="TokenGrantType_OverrideForStore" asp-input="TokenGrantType" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="TokenGrantType" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="TokenGrantType" />
+                        <span asp-validation-for="TokenGrantType"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="Scope_OverrideForStore" asp-input="Scope" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="Scope" />
+                    </div>
+                    <div class="col-md-9">
+                        <textarea asp-for="Scope" style="width:798px; height:100px"></textarea>
+                        <span asp-validation-for="Scope"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="ConnectionsURL_OverrideForStore" asp-input="ConnectionsURL" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="ConnectionsURL" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="ConnectionsURL" />
+                        <span asp-validation-for="ConnectionsURL"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="PaymentMethodAdditonalFeeAccountCode_OverrideForStore" asp-input="PaymentMethodAdditonalFeeAccountCode" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="PaymentMethodAdditonalFeeAccountCode" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="PaymentMethodAdditonalFeeAccountCode" />
+                        <span asp-validation-for="PaymentMethodAdditonalFeeAccountCode"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-9 col-md-offset-3">
+                        <input type="submit" name="save" class="btn bg-primary" value="@T("Admin.Common.Save")" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+</form>

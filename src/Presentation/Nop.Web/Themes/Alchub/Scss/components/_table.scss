@@ -1,0 +1,46 @@
+@import "../helpers/helpers";
+
+
+.products {
+
+    @include media(desktop) {
+        float: left;
+        width: 70%;
+    }
+
+    .title {
+        display: none;
+    }
+
+    .table-wrapper {
+        thead {
+            tr {
+                th {
+                    border-style: none;
+                    padding: 20px;
+                }
+
+                .name {
+                    width: 100%;
+                }
+            }
+        }
+
+        tbody {
+            tr {
+                td {
+                    border-style: none;
+                }
+                .product{
+                    em{
+                        a{
+                            &:hover{
+                                color:$primaryBrandClr-hover;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

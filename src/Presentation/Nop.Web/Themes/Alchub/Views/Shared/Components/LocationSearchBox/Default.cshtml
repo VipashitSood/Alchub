@@ -1,0 +1,113 @@
+﻿@model string
+@using Microsoft.AspNetCore.Mvc.Controllers
+<script src="https://maps.googleapis.com/maps/api/js?key=@(Model)&libraries=places&v=weekly&callback=initVoidMap"
+        defer></script>
+<script asp-location="Head">
+    function initVoidMap() {
+        //nothing here.
+        return;
+    }
+</script>
+@{
+    bool showSearchBox = true;
+    //hide searchbox on checkout process
+    var controllerName = (this.ViewContext.ActionDescriptor as ControllerActionDescriptor).ControllerName;
+    if (controllerName.Equals("Checkout", StringComparison.InvariantCultureIgnoreCase))
+    {
+        showSearchBox = false;
+    }
+}
+@if (showSearchBox)
+{
+    <div id="enter-delivery-address-search-box" class="enter-delivery-address-search search-icon">
+        <div class="loction-wrap">
+            <span class="loction-icon"></span>
+            <input id="location-search-input" placeholder="Enter Delivery Address Area" type="text" class="textbox" />
+            <span class="down-arrow"></span>
+        </div>
+    </div>
+
+    <text>
+        <script asp-location="Footer">
+            //search autocomplete
+            function googleSearchAutocomplete() {
+
+                // Create the search box and link it to the UI element.
+                const input = document.getElementById("location-search-input");
+                const searchBox = new google.maps.places.SearchBox(input);
+
+                // Listen for the event fired when the user selects a prediction and retrieve
+                // more details for that place.
+                searchBox.addListener("places_changed", () => {
+                    const places = searchBox.getPlaces();
+
+                    if (places.length == 0) {
+                        return;
+                    }
+
+                    //ajax call
+                    set_customer_searched_coordinates(places[0].geometry.location.lat(), places[0].geometry.location.lng(), $('#location-search-input').val(), false);
+                });
+            }
+
+            function set_customer_searched_coordinates(lat, lng, searchtext, clearlocation) {
+                if (clearlocation === false && (!lat || !lng)) {
+                    alert('coordinates missing');
+                    return;
+                }
+                show_clearlocation_loader(true);
+                var postData = {
+                    latitude: lat,
+                    longitude: lng,
+                    searchedText: searchtext,
+                    clearLocation: clearlocation
+                };
+                addAntiForgeryToken(postData);
+                $.ajax({
+                    cache: false,
+                    type: "GET", //using get type because post ajax call is not working. issue need to be reolved at theme base level
+                    url: "@(Url.RouteUrl("SetCustomerSearchedCoordinates"))",
+                    data: postData,
+                    beforeSend: function () {
+                        displayAjaxLoading(true);
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.Success) {
+                            //success
+                            console.log(data.Result);
+                            //reload the page.
+                            window.location.reload();
+                        } else {
+                            alert(data.Result);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('Error while setting coordinates');
+                        show_clearlocation_loader(false);
+                    },
+                    complete: function (jqXHR, textStatus) {
+                        displayAjaxLoading(false);
+                        //show_clearlocation_loader(false);
+                    }
+                });
+            }
+
+            function show_clearlocation_loader(visible) {
+                var clearLocationProgress = $("#clearlocation-loading-progress");
+                var clearLocationCross = $("#clearlocation-cross");
+                if (visible === true) {
+                    clearLocationProgress.show();
+                    clearLocationCross.hide();
+                } else {
+                    clearLocationProgress.hide();
+                    clearLocationCross.show();
+                }
+            }
+
+            //ready
+            $(document).ready(function () {
+                googleSearchAutocomplete();
+            })
+        </script>
+    </text>
+}

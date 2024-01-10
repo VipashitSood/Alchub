@@ -1,0 +1,306 @@
+﻿@model CatalogProductsModel
+@using Nop.Services.Catalog;
+@using Nop.Core.Domain.Catalog;
+@inject ICategoryService categoryService
+@{
+    var categoryIds = Model?.CatalogProductsCommand?.SearchTermFilter?.CategoryIdsFilterItem?.CategoryIdsSearch ?? "";
+    var subCategoryIds = Model?.CatalogProductsCommand?.SearchTermFilter?.SubCategoryIdFilterItem?.SubCategoryIdSearch ?? "";
+}
+@if (Model.CategoryFilterModel.Categories.Any())
+{
+    <div class="product-filter product-category-filter">
+        <div class="filter-title">
+            <div class="toogle-wrap">
+                <strong>@T("Filtering.CategoryFilter")</strong>
+            </div>
+        </div>
+        <div class="filter-content">
+            <ul class="group product-category-group">
+                @foreach (var category in Model.CategoryFilterModel.Categories)
+                {
+                    <li class="item">
+                        <input class="applyCategoryFilter" checked="@category.IsSelected" name="categoryfilter" value="@category.Id" type="radio" id="attribute-category-@category.Id" />
+                        @if (category.NumberOfProducts.HasValue && category.NumberOfProducts > 0)
+                        {
+                            <label for="attribute-category-@category.Id">
+                                @category.Name (@category.NumberOfProducts)
+                            </label>
+                        }
+                        else
+                        {
+                            <label for="attribute-category-@category.Id">
+                                @category.Name
+                            </label>
+                        }
+
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    @if (Model.CategoryFilterModel.SubCategories.Any())
+    {
+        var subcategoryIdsList = new List<int>();
+        if (!string.IsNullOrEmpty(subCategoryIds))
+            subcategoryIdsList = subCategoryIds.Split(',').Select(int.Parse).ToList();
+
+        var categoryIdsList = categoryIds.Split(',').Select(int.Parse).ToList();
+        bool isCategory = false;
+        @foreach (var catId in categoryIdsList)
+        {
+            if (Model.CategoryFilterModel.SubCategories.Any(x => x.ParentCategryId == catId))
+            {
+                isCategory = true;
+                break;
+            }
+            @*if ((await categoryService.GetAllCategoriesByParentCategoryIdAsync(catId)).Count > 0)
+            {
+                isCategory = true;
+                break;
+            }*@
+        }
+        if (isCategory)
+        {
+            <div class="product-filter product-category-filter">
+                <div class="filter-title">
+                    <div class="toogle-wrap">
+                        <strong data-target="#SubCategoryFilter">@T("Filtering.SubCategories")</strong>
+                    </div>
+                </div>
+                <div class="filter-content">
+
+
+
+                    @{
+                        var listedSubCategoriesIds = new List<int>();
+                    }
+
+                    @*Show subcategories as per selected category ids*@
+                    @foreach (var catId in categoryIdsList)
+                    {
+                        var subCategorys = Model.CategoryFilterModel.SubCategories.Where(c => c.ParentCategryId == catId)?.ToList();
+                        @*var subCategorys = await categoryService.GetAllCategoriesByParentCategoryIdAsync(catId);*@
+                        listedSubCategoriesIds.AddRange(subCategorys?.Select(x => x.Id));
+                        if (subCategorys.Count > 0)
+                        {
+                            <ul class="group product-subcategory-group " id="list-filter">
+
+                                @foreach (var subCategory in subCategorys.OrderBy(x => x.DisplayOrder))
+                                {
+                                    var subCategoryModel = Model.CategoryFilterModel.SubCategories.FirstOrDefault(x => x.Id == subCategory.Id);
+                                    <li class="item">
+                                        <input class="applySubCategoryFilter parent-categoryId_@catId sub-@subCategory.Id" @(subCategoryIds.Contains(subCategory.Id.ToString()) ? "checked" : "" ) name="subCategoryfilter" value="@subCategory.Id" type="checkbox" id="attribute-category-@subCategory.Id" />
+                                        @if (subCategoryModel != null && subCategoryModel.NumberOfProducts.HasValue && subCategoryModel.NumberOfProducts > 0)
+                                        {
+                                            <label for="attribute-category-@subCategory.Id">
+                                                @subCategory.Name (@subCategoryModel.NumberOfProducts)
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <label for="attribute-category-@subCategory.Id">
+                                                @subCategory.Name
+                                            </label>
+                                        }
+                                        @*//show child category only if this subcategory is checked. Date: 06-12-22*@
+                                        @if (subCategoryIds.Contains(subCategory.Id.ToString()))
+                                        {
+                                            var subCategoryChildCategories = Model.CategoryFilterModel.ChildCategories.Where(sb => sb.ParentCategryId == subCategory.Id);
+                                            @*var subCategoryChildCategories = await categoryService.GetAllCategoriesByParentCategoryIdAsync(subCategory.Id);*@
+                                            <ul>
+                                                @if (subCategoryChildCategories.Any())
+                                                {
+                                                    foreach (var item in subCategoryChildCategories.OrderBy(x => x.DisplayOrder))
+                                                    {
+                                                        var childCategoryModel = Model.CategoryFilterModel.ChildCategories.FirstOrDefault(x => x.Id == item.Id);
+                                                        <li class="subparent-item ">
+                                                            <input class="applySubCategoryFilter parent-categoryId_@subCategory.Id" @(subCategoryIds.Contains(item.Id.ToString()) ? "checked" : "" ) name="subCategoryfilter" value="@item.Id" type="checkbox" id="attribute-category-@item.Id" />
+                                                            @if (childCategoryModel != null && childCategoryModel.NumberOfProducts.HasValue && childCategoryModel.NumberOfProducts > 0)
+                                                            {
+                                                                <label for="attribute-category-@item.Id">
+                                                                    @item.Name (@childCategoryModel.NumberOfProducts)
+                                                                </label>
+                                                            }
+                                                            else
+                                                            {
+                                                                <label for="attribute-category-@item.Id">
+                                                                    @item.Name
+                                                                </label>
+                                                            }
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    }
+
+                </div>
+            </div>
+        }
+    }
+
+    <script asp-location="Footer">
+        //prepare url with category parameter
+        $('input.applyCategoryFilter').on('change', function () {
+            var location = window.location.href;
+            var pageNumber = getParameterByName("pagenumber", location);
+
+            if (pageNumber != null && pageNumber != "") {
+                location = updateQueryStringParameter(location, "pagenumber", 1);
+            }
+            var categoryValue = $('input[name="categoryfilter"]:checked').map(function () {
+                return this.value;
+            }).get().join(",");
+
+            if (categoryValue !== "") {
+                location = updateQueryStringParameter(location, "cid", categoryValue);
+
+                //unselect subcategories where parent category is unselected
+                var allElements = [];
+                categoryValue.split(',').forEach(function (catId) {
+                    var checkedSubCategories = $('input[name="subCategoryfilter"]:checked').map(function () {
+                        return this.value;
+                    }).get().join(",");
+
+                    var subCategoryIds = $('input.parent-categoryId_' + catId).map(function () {
+                        return this.value;
+                    }).get().join(",");
+
+                    if (checkedSubCategories !== "") {
+                        checkedSubCategories.split(',').forEach(function (subCatid) {
+                            if (subCategoryIds.indexOf(subCatid) != -1) {
+                                allElements.push(subCatid);
+                            }
+                        });
+                    }
+                });
+
+                if (allElements.length > 0) {
+                    allElements.join(",");
+                    location = removeParam("subCatid", location);
+                    location = updateQueryStringParameter(location, "cid", categoryValue + "&subCatid=" + allElements);
+                }
+                else {
+                    location = removeParam("subCatid", location);
+                }
+            }
+            else {
+                location = removeParam("cid", location);
+                location = removeParam("subCatid", location);
+            }
+            setLocation(location);
+        });
+
+        //prepare url with subcategory parameter
+        $("input.applySubCategoryFilter").on('change', function () {
+            var selectedCheckBoxValue = $(this).val();
+            var location = window.location.href;
+            var pageNumber = getParameterByName("pagenumber", location);
+            if (pageNumber != null && pageNumber != "") {
+                location = updateQueryStringParameter(location, "pagenumber", 1);
+            }
+            var subcategoryValue = $('input[name="subCategoryfilter"]:checked').map(function () {
+                return this.value;
+            }).get().join(",");
+
+            //remove child categories when parent subcategory is unchecked
+            if ($(this).prop('checked') !== true) {
+                var childCategories = $('input.parent-categoryId_' + selectedCheckBoxValue).map(function () {
+                    return this.value;
+                }).get().join(",");
+
+                subcategoryValue = removeItemOnce(subcategoryValue, childCategories);
+            }
+
+            //prepare url with subcategory parameter
+            if (subcategoryValue !== null || subcategoryValue !== "") {
+                location = updateQueryStringParameter(location, "subCatid", subcategoryValue);
+                var allElements = [];
+                subcategoryValue.split(',').forEach(function (catId) {
+                    var subCategoryIds = $('input.parent-categoryId_' + catId).map(function () {
+                        return this.value;
+                    }).get().join(",");
+                    //if subcategory is selected and has child category
+                    if (subCategoryIds !== "") {
+                        subcategoryValue.split(',').forEach(function (subCatid) {
+                            if (subCategoryIds.indexOf(subCatid) !== -1) {
+                                if (allElements.indexOf(subCatid) == -1) {
+                                    allElements.push(subCatid);
+                                }
+                            }
+                            else {
+                                if (allElements.indexOf(catId) == -1) {
+                                    allElements.push(catId);
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        var parentSubCategories = $('input.sub-' + catId).map(function () {
+                            return this.value;
+                        }).get().join(",");
+                        //if subcategory is selected but has not any child category
+                        if (parentSubCategories !== "") {
+                            parentSubCategories.split(',').forEach(function (subCatid) {
+                                if (allElements.indexOf(subCatid) == -1) {
+                                    allElements.push(subCatid);
+                                }
+                            });
+                        }
+                        //when selected is child category of subcategory, then auto select subcategory with this.
+                        else {
+                            var childCategories = $('input.child-' + catId).map(function () {
+                                return this.value;
+                            }).get().join(",");
+                            if (childCategories !== "") {
+                                childCategories.split(',').forEach(function (childCat) {
+                                    var subCategoryId = $('input.parent-categoryId-' + childCat).val();
+                                    if (subCategoryId !== "") {
+                                        if (allElements.indexOf(subCategoryId) == -1) {
+                                            allElements.push(subCategoryId);
+                                        }
+                                        if (allElements.indexOf(childCat) == -1) {
+                                            allElements.push(childCat);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+
+                if (allElements.length > 0) {
+                    allElements.join(",");
+                    location = updateQueryStringParameter(location, "subCatid", allElements);
+                }
+                else {
+                    location = removeParam("subCatid", location);
+                }
+            }
+            else {
+                location = removeParam("subCatid", location);
+            }
+            setLocation(location);
+        });
+
+        function removeItemOnce(arr, value1) {
+            let baseArr;
+            var array1 = value1.split(',');
+            var arrayMain = arr.split(',');
+            for (let i = 0; i < array1.length; ++i) {
+                // do something with `substr[i]`
+                var index = arrayMain.indexOf(array1[i]);
+                if (index > -1) {
+                    arrayMain.splice(index, 1);
+                }
+                baseArr = arrayMain;
+            }
+            return baseArr.join(',');
+        }
+    </script>
+}

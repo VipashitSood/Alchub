@@ -1,0 +1,250 @@
+﻿@model IEnumerable<dynamic>
+@inject Nop.Services.Html.IHtmlFormatter htmlFormatter
+@inject Nop.Core.IWebHelper webHelper
+@using Nop.Core.Infrastructure;
+@using Nop.Services.Helpers;
+@using Nop.Services.Configuration;
+@using Nop.Services.Alchub.Slots;
+@{
+    NopHtml.AppendPageCssClassParts("html-shopping-cart-pages");
+    <script src="~/lib/fullCalendar/moment.min.js"></script>
+    var settingService = EngineContext.Current.Resolve<ISettingService>();
+    var _dateTimeHelper = EngineContext.Current.Resolve<IDateTimeHelper>();
+    var addDay = await settingService.GetSettingByKeyAsync<int>("Alchub.Slot.Visible.After.Day", defaultValue: 1);
+    var datetime = await _dateTimeHelper.ConvertToUserTimeAsync(DateTime.Now);
+    DateTime startD = Convert.ToDateTime(datetime.AddDays(addDay).ToString());
+    var Weeks = new List<DateTime>();
+    for (int i = 0; i < 7; i++)
+    {
+        Weeks.Add(startD.AddDays(i));
+    }
+    ViewBag.Weeks = Weeks;
+}
+
+@if (Model != null && Model.ToList().Count > 0)
+{
+    <text>
+        <script asp-location="Footer">
+            $(document).ready(function () {
+                if (typeof disableAddToCart == 'function' && $("#base_product_published").val() == '1') {
+                    disableAddToCart(false);
+                }
+            });
+        </script>
+    </text>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 px-0">
+                <div class="chooseDateTable">
+                    <ul class="nav navTabs">
+                        <li class="active">
+                            <span id="sp-first"></span>
+                        </li>
+                    </ul>
+                    <input type="hidden" id="firstStartDate" />
+                    <input type="hidden" id="firstEndDate" />
+                    <input type="hidden" id="secStartDate" />
+                    <input type="hidden" id="secEndDate" />
+                    <input type="hidden" id="thirdStartDate" />
+                    <input type="hidden" id="thirdEndDate" />
+                    <div id="slotsDiv" class="slotGrid">
+                        @if (Model != null)
+                        {
+                            <div class="head-part">
+                                <div class="head-slot-box">
+                                    <table class="slotGridTablehead head-content">
+                                        <thead>
+                                            <tr>
+                                                @{
+                                                    var week = ViewBag.Weeks as List<DateTime>;
+                                                }
+                                                <th class="slot-grid--times-filler">Slots</th>
+                                                @foreach (var item in week)
+                                                {
+                                                    <th class="slot-grid--date">
+                                                        <span class="slot-grid--weekday"> @item.DayOfWeek</span>
+                                                        <span class="slot-grid--day">   @item.Date.Day </span>
+                                                        @if (item.Date.Day == 1 || item.Date.Day == 21 || item.Date.Day == 31)
+                                                        {
+                                                            <span class="slot-grid--prefix">st</span>
+
+                                                        }
+                                                        @if (item.Date.Day == 2 || item.Date.Day == 22)
+                                                        {
+                                                            <span class="slot-grid--prefix">nd</span>
+
+                                                        }
+                                                        @if (item.Date.Day == 3 || item.Date.Day == 23)
+                                                        {
+                                                            <span class="slot-grid--prefix">rd</span>
+                                                        }
+                                                        @if (item.Date.Day == 4 || item.Date.Day == 5 || item.Date.Day == 6 || item.Date.Day == 7 || item.Date.Day == 8 || item.Date.Day == 9 || item.Date.Day == 10)
+                                                        {
+                                                            <span class="slot-grid--prefix">@T("Alchub.Slot.Grid.Prefix")</span>
+                                                        }
+                                                        @if (item.Date.Day == 11 || item.Date.Day == 12 || item.Date.Day == 13 || item.Date.Day == 14 || item.Date.Day == 15 || item.Date.Day == 16 || item.Date.Day == 17)
+                                                        {
+                                                            <span class="slot-grid--prefix">@T("Alchub.Slot.Grid.Prefix")</span>
+                                                        }
+                                                        @if (item.Date.Day == 18 || item.Date.Day == 19 || item.Date.Day == 20 || item.Date.Day == 24 || item.Date.Day == 25 || item.Date.Day == 26 || item.Date.Day == 27 || item.Date.Day == 28 || item.Date.Day == 29 || item.Date.Day == 30)
+                                                        {
+                                                            <span class="slot-grid--prefix">@T("Alchub.Slot.Grid.Prefix")</span>
+                                                        }
+                                                    </th>
+                                                }
+                                            </tr>
+                                        </thead>
+
+
+                                        @foreach (var slotsDate in Model)
+                                        {
+                                            <tr>
+                                                @{
+                                                    //prepare 12h slot timing
+                                                    string slotTiming = slotsDate.Key;
+                                                    slotTiming = SlotHelper.ConvertTo12hoursSlotTime(slotTiming);
+                                                }
+                                                <td class="slot-grid--times">@slotTiming</td>
+                                                @foreach (var item in slotsDate)
+                                                {
+                                                    <td>
+                                                        @if (item.IsAvailable)
+                                                        {
+                                                            string id = "a" + item.BlockId + "_" + item.Id;
+                                                            var bookid = "a" + item.BlockId + "_" + item.Id;
+                                                            if (item.IsSelected)
+                                                            {
+                                                                <div class="slot-grid--item  fastest-wrapper"><a class="button button-secondary small available-slot--button fastest" id="@id" data-price="@item.Price" onclick="BookSlot('@item.Id','@item.Price','@item.BlockId', '@slotsDate.Key', '@item.Start', '@item.End','@item.IsPickup')">@T("Alchub.Slot.IsSelected")</a></div>
+                                                            }
+                                                            else if (item.IsBook)
+                                                            {
+                                                                <div class="slot-grid--item  fastest-wrapper"><a class="button button-secondary small available-slot--button fastest" id="@id" data-price="@item.Price" onclick="BookSlot('@item.Id','@item.Price','@item.BlockId', '@slotsDate.Key', '@item.Start', '@item.End','@item.IsPickup')">@T("Alchub.Slot.IsFastest")</a></div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="slot-grid--item available"><a class="button button-secondary small available-slot--button booked" id="@id" data-price="@item.Price" onclick="BookSlot('@item.Id','@item.Price','@item.BlockId','@slotsDate.Key', '@item.Start', '@item.End','@item.IsPickup')">@T("Alchub.Slot.Booked")</a></div>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="slot-grid--item unavailable"><span class="available-slot--button">@T("Alchub.Slot.NotAvailable")</span></div>
+                                                        }
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+
+
+                                    </table>
+                                </div>
+
+                            </div>
+                        }
+                        else
+                        {
+                            @T("Alchub.No.Data.Available")
+                        }
+                    </div>
+                    <div class="table-bottom-content">
+                        <span>@T("Alchub.Slot.Note.Fastest.Slot.Selected")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <text>
+        <script asp-location="Footer">
+            $(document).ready(function () {
+                if (typeof disableAddToCart == 'function') {
+                    disableAddToCart(true);
+                }
+            });
+        </script>
+    </text>
+    @T("Alchub.No.Data.Available")
+
+}
+
+
+<script asp-location="Footer">
+
+    $(function () {
+        SetDates();
+    });
+    function SetDates() {
+        $(".overlay").show();
+        // First Tab
+        var date = new Date();
+        var endDateFirstWeek = new Date();
+        endDateFirstWeek.setDate(endDateFirstWeek.getDate() + 6);
+        $("#firstStartDate").val(moment(date).format('MM/DD/YYYY'));
+        $("#firstEndDate").val(moment(endDateFirstWeek).format('MM/DD/YYYY'));
+
+        // Second Tab
+        var startDateSecondWeek = new Date();
+        startDateSecondWeek.setDate(startDateSecondWeek.getDate() + 7);
+        var endDateSecondWeek = new Date();
+        endDateSecondWeek.setDate(endDateSecondWeek.getDate() + 13);
+        $("#secStartDate").val(moment(startDateSecondWeek).format('MM/DD/YYYY'));
+        $("#secEndDate").val(moment(endDateSecondWeek).format('MM/DD/YYYY'));
+
+        // Third Tab
+        var startDateThirdWeek = new Date();
+        startDateThirdWeek.setDate(startDateThirdWeek.getDate() + 14);
+        var endDateThirdWeek = new Date();
+        endDateThirdWeek.setDate(endDateThirdWeek.getDate() + 20);
+        $("#thirdStartDate").val(moment(startDateThirdWeek).format('MM/DD/YYYY'));
+        $("#thirdEndDate").val(moment(endDateThirdWeek).format('MM/DD/YYYY'));
+
+        $("li #sp-first").text(moment(date).format('MMM D') + " - " + moment(endDateFirstWeek).format('D'));
+        $("li #sp-second").text(moment(startDateSecondWeek).format('MMM D') + " - " + moment(endDateSecondWeek).format('D'));
+        $("li #sp-third").text(moment(startDateThirdWeek).format('MMM D') + " - " + moment(endDateThirdWeek).format('D'));
+
+    }
+
+    function BookSlot(slotId, price, blockId, timeSlot, start, end, isPickup) {
+        var isBook = true;
+        var productvendor = $("input[name='vendor_products']:checked").val();
+        var productId = productvendor.split("__")[0];
+        var vendorId = productvendor.substring(productvendor.lastIndexOf('__') + 2);
+        if (productId > 0) {
+            $.ajax({
+                cache: false,
+                url: "@(Url.Action("BookSlot", "Product"))",
+                data: { slotId: slotId, isBook: isBook, blockId: blockId, timeSlot: timeSlot, productId: productId, startDate: start, endDate: end, vendorId: vendorId, isPickup: isPickup },
+                beforeSend: function () {
+                    displayAjaxLoading(true);
+                },
+                success: function (data, textStatus, jqXHR) {
+                    //update slot management
+                    $('#SlotManagement').html(data);
+                    var $container = $(".head-slot-box");
+                    var $scrollTo = $('.fastest-wrapper');
+
+
+                    //alert($container.Length);
+                    if ($container.length > 0 && $scrollTo.length > 0) {
+                        if ($scrollTo.offset() !== undefined || $scrollTo.offset() !== ''
+                            && $container.offset() !== undefined || $container.offset() !== ''
+                            && $container.scrollTop() !== undefined || $container.scrollTop() !== '') {
+                            $container.animate({ scrollTop: $scrollTo.offset().top - $container.offset().top + $container.scrollTop() - 150, scrollLeft: 0 }, 0);
+                        }
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('something went wrong..');
+                },
+                complete: function () {
+                    displayAjaxLoading(false);
+                }
+            });
+        }
+        else {
+            alert('Please select vendor');
+        }
+    }
+
+</script>

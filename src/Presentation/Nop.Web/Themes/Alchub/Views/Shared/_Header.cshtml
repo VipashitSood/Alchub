@@ -1,0 +1,132 @@
+﻿
+<div class="header-full-width">
+    <div class="header" id="myHeader">
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderBefore })
+        <div class="bgoverlay"></div>
+        <!--Mobile header start-->
+        <section class="header__mobileHeader container-box">
+            <div class="mobile-wrap">
+                <div class="row">
+                    <div class="col-4 align-self-center px-0">
+                        <div class="left-side">
+                            <div class="Mobileheader__links">
+                                <div class="Mobileheader__closeicon">
+                                    <span class="sidebar-button"></span>
+                                    <span class="search-mobile"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 align-self-center text-center p-0 px-0">
+                        <div class="header-logo">
+                            @await Component.InvokeAsync("Logo")
+
+                        </div>
+                    </div>
+                    <div class="col-4 align-self-center text-end px-0">
+                        <div class="right-side">
+                            @await Component.InvokeAsync("HeaderLinks")
+                            @*<span class="my-account-button"></span>
+                            <span class="cart-button"></span>*@
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="Mobileheader__mobileMenu">
+                <div class="header-logo">
+                    @await Component.InvokeAsync("Logo")
+                </div>
+                <div class="Mobileheader__closeMenu">
+                    <span></span>
+                </div>
+                <div class="Mobileheader__megamenu">
+                    <ul>
+                        <li><a href="/">@T("header.homepage")</a></li>
+                        <li class="header__mobileSelecter">
+                            <!-- Top menu mobile categories -->
+                            @await Component.InvokeAsync("TopMenuMobileCategories")
+                        </li>
+                        <li><a href="/wishlist">@T("header.wishlist")</a></li>
+                        <li><a href="/cart">@T("header.shoppingcart")</a></li>
+                        @await Component.InvokeAsync("HeaderLinks")
+
+                    </ul>
+
+                </div>
+            </div>
+            <div class="Mobileheader__location"></div>
+            <div class="Mobileheader__mobilesearch">
+            </div>
+            <div class="ico-wrap">
+                @await Component.InvokeAsync("HeaderLinks")
+            </div>
+        </section>
+        <!--/ End Mobile Header-->
+        <div class="header-wrapper container-box">
+            <div class="header-upper">
+                <div class="row">
+
+                    <div class="col-lg-3 px-0">
+                        <div class="upper-header-wraper">
+                            <div class="header-logo">
+                                @await Component.InvokeAsync("Logo")
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6 px-0">
+                        <div class="search-box store-search-box">
+                            @await Component.InvokeAsync("SearchBox")
+                        </div>
+
+                        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderSelectors })
+                    </div>
+                    <div class="col-3 px-0">
+                        <div class="header-links-wrapper">
+                            @await Component.InvokeAsync("HeaderLinks")
+                            @await Component.InvokeAsync("FlyoutShoppingCart")
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderMiddle })
+
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderAfter })
+    </div>
+
+
+
+</div>
+
+<div class="header-lower-wrapper">
+    <div class="header-lower container-box">
+        <div class="row">
+            <div class="col-8 px-0 col-lg-9 d-xl-block d-none">
+                <div class="header-menu">
+                    @await Component.InvokeAsync("TopMenu")
+                </div>
+            </div>
+            <div class="col-12 col-xl-3 px-0">
+                <div class="loction-input-wrapper">
+                    @*<label>Enter Delivery Address</label>*@
+                    @await Component.InvokeAsync("LocationSearchBox")
+                    <!-- customers last searched location -->
+                    @await Component.InvokeAsync("LastSearchedLocation")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="overlayOffCanvas">
+</div>
+
+

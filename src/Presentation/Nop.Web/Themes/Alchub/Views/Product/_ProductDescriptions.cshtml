@@ -1,0 +1,8 @@
+﻿@model ProductDetailsModel
+
+@if (!string.IsNullOrEmpty(Model.ShortDescription))
+{
+    <div class="short-description toggle-text">
+        @Html.Raw(Model.ShortDescription)
+    </div>
+}

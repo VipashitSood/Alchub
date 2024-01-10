@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment methods",
+  "FriendlyName": "Credit/Debit Card",
+  "SystemName": "Payments.StripeConnectRedirect",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "TMotions",
+  "DisplayOrder": 0,
+  "FileName": "Nop.Plugin.Payments.StripeConnectRedirect.dll",
+  "Description": "This plugin allows paying with Stripe Connect Redirect"
+}

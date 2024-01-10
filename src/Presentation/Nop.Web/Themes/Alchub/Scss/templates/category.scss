@@ -1,0 +1,121 @@
+@import "../helpers/_helpers";
+
+.html-category-page {
+    .breadcrumb {
+        padding: 0 15px;
+        text-align: center;
+        display: inline-block;
+        float: none;
+        width: 100%;
+
+        @include media(landscapeTablet) {
+            padding: 0 65px;
+            text-align: left
+        }
+
+        ul {
+            display: block;
+
+            @include media(small) {
+                max-width: 100%;
+                width: auto;
+            }
+
+            li {
+                vertical-align: bottom;
+            }
+        }
+    }
+
+    .category-page {
+        padding: 0 15px;
+
+        @include media(landscapeTablet) {
+            padding: 0 65px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 15px;
+
+            @include media(landscapeTablet) {
+                text-align: left;
+                margin-bottom: 0px;
+            }
+
+            h1 {
+                font-size: $fontSizeXXM;
+            }
+        }
+    }
+
+
+
+    .products-container {
+        float: left;
+        margin: 35px 0px;
+        width: 100%;
+
+        @include media(small) {
+            margin-bottom: 0px;
+        }
+
+        .products-wrapper {
+            .product-grid, .product-list {
+                @include media(small) {
+                    margin-bottom: 0px;
+                }
+
+                .item-box {
+                    @include media(small) {
+                        width: 48.25%;
+                        margin: 0 0 2% 2%;
+
+                        &:nth-child(2n+1) {
+                            margin-left: 0px;
+                        }
+                    }
+
+                    @include media(tablet) {
+                        width: 32.25%;
+
+                        &:nth-child(2n+1) {
+                            clear: none;
+                        }
+
+                        &:nth-child(3n+1) {
+                            margin-left: 0px;
+                        }
+
+                        min-height: 360px;
+                    }
+
+                    @include media(landscapeTablet) {
+                        width: 24.25%;
+
+                        &:nth-child(3n+1) {
+                            margin-left: 1%;
+                        }
+
+                        &:nth-child(4n+1) {
+                            margin-left: 0;
+                            clear: both;
+                        }
+
+                        min-height: 360px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+

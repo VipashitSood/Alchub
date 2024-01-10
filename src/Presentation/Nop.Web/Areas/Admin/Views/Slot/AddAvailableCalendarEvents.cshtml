@@ -1,0 +1,352 @@
+@model Nop.Web.Areas.Admin.Models.Slots.SlotModel
+
+<style>
+    .form-group .new-sloat, .form-group .date-sloat {
+        padding-top: 7px;
+    }
+
+    #divStart {
+        padding-top: 7px;
+    }
+
+    .label-wrapper {
+        margin-bottom: 10px;
+    }
+
+    #divWeekly label, input {
+        margin-left: 7px;
+    }
+</style>
+
+
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            var date_start = document.getElementById("Start").value;
+            var date_string_start = moment(date_start, "DD/MM/YYYY").format("MM/DD/YYYY");
+            $("#divStart").html(date_string_start);
+        }, 100);
+    });
+</script>
+<div class="form-horizontal">
+
+    <div class="col-md-12" id="Freeslot">
+        <form asp-controller="Slot" asp-action="AddAvailableCalendarEvents" method="post">
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.Zone.Name)
+            @Html.HiddenFor(model => model.Zone.Id)
+            @Html.HiddenFor(model => model.Start)
+            @Html.HiddenFor(model => model.Name)
+            @Html.HiddenFor(model => model.End)
+            @Html.HiddenFor(model => model.Sequence_Id)
+            <div asp-validation-summary="ModelOnly" class="message-error"></div>
+
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <nop-label asp-for="Name" />
+                        </div>
+                        <div class="col-md-9">
+                            <div class="new-sloat">
+                                @Html.DisplayFor(m => m.Name)
+                            </div>
+
+                        </div>
+                        <div class="col-md-3">
+                            <nop-label asp-for="Start" />
+                        </div>
+                        <div class="col-md-9" id="divStart">
+                            <div class="sloat-date">
+                                @Html.DisplayFor(m => m.Start)
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <nop-label asp-for="End" />
+                        </div>
+                        <div class="col-md-9">
+                            <div class="date-sloat">
+                                @string.Format("{0:htt}", Model.Start)?.ToLowerInvariant() - @string.Format("{0:htt}", Model.End)?.ToLowerInvariant()
+                            </div>
+
+                        </div>
+                        <div class="col-md-3">
+                            <nop-label asp-for="IsUnavailable" />
+                        </div>
+                        <div class="col-md-9" onclick="unavailableFunction()">
+                            <nop-editor asp-for="IsUnavailable" />
+                            <span asp-validation-for="IsUnavailable"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <nop-label asp-for="Capacity" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="Capacity" />
+                            <span asp-validation-for="Capacity"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <nop-label asp-for="Price" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="Price" />
+                            <span asp-validation-for="Price"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <nop-label asp-for="SelectedCategoryIds" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-select asp-for="SelectedCategoryIds" asp-items="Model.AvailableCategories" asp-multiple="true" />
+                            <script>
+                                $(document).ready(function () {
+                                    var categoryIdsInput = $('#@Html.IdFor(model => model.SelectedCategoryIds)').data("kendoMultiSelect");
+                                    categoryIdsInput.setOptions({
+                                        autoClose: false,
+                                        filter: "contains"
+                                    });
+
+                                @if (Model.AvailableCategories.Count == 0)
+                                {
+                                    <text>
+                                            categoryIdsInput.setOptions({
+                                                enable: false,
+                                                placeholder: '@T("Admin.Catalog.Products.Fields.Categories.NoCategoriesAvailable")'
+                                            });
+                                        categoryIdsInput._placeholder();
+                                        categoryIdsInput._enable();
+                                    </text>
+                                }
+                                            });
+                            </script>
+                        </div>
+
+                        <div class="col-md-3">
+                            <nop-label asp-for="IsRecurring" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="IsRecurring" />
+                            <span asp-validation-for="IsRecurring"></span>
+                        </div>
+
+                        <div id="divRecurringType" style="display:none;">
+                            <div class="row">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-9">
+                                    @foreach (var value in Enum.GetValues(typeof(Nop.Core.Domain.Slots.RecurringType)))
+                                    {
+                                        var id = string.Format("{0}_{1}", "rdbtn_recurringtype", value);
+
+                                        @Html.RadioButtonFor(model => model.RecurringType, value, new { id })
+                                        @Html.Label(value.ToString())
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-9" id="divWeekly"></div>
+                        </div>
+                        <div class="col-md-9"> @Html.HiddenFor(model => model.WeekDays)</div>
+                        <div class="form-group" id="divEndDate" style="display:none;">
+                            <div class="row">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-9">
+                                    <div id="divCurrentDay" style="display:none;">
+                                        @T("Every.Current.Day") <b>@Model.Day</b>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <nop-label asp-for="EndDate" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="EndDate" />
+                                    <span asp-validation-for="EndDate"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="form-group" id="divName" style="display:none;">
+                <div class="col-md-3">
+                <nop-label asp-for="Name" />
+                </div>
+                <div class="col-md-9">
+                <nop-editor asp-for="Name" />
+                <span asp-validation-for="Name"></span>
+                </div>
+                </div>*@
+
+            </div>
+            <div class="clear mb-5"></div>
+
+        </form>
+    </div>
+
+</div>
+
+@if (Model.IsRecurring)
+{
+
+    <script>
+        var x = document.getElementById('divEndDate');
+        var y = document.getElementById('divRecurringType')
+        x.style.display = 'block';
+        y.style.display = 'none';
+    </script>
+    if (Model.RecurringType == Nop.Core.Domain.Slots.RecurringType.Daily)
+    {
+        <script>
+            $('#rdbtn_recurringtype_Daily').prop("checked", true);
+        </script>
+    }
+    else if (Model.RecurringType == Nop.Core.Domain.Slots.RecurringType.Weekly)
+    {
+        <script>
+            $('#rdbtn_recurringtype_Weekly').prop("checked", true);
+            $('#divWeekly').show();
+        </script>
+    }
+    else if (Model.RecurringType == Nop.Core.Domain.Slots.RecurringType.CurrentDay)
+    {
+        <script>
+            $('#rdbtn_recurringtype_CurrentDay').prop("checked", true);
+            $('#divCurrentDay').show();
+        </script>
+    }
+}
+@if (Model.IsUnavailable)
+{
+    <script>
+        var x = document.getElementById('divName');
+        x.style.display = 'block';
+        //$("#Capacity").prop('disabled', true);
+        //$("#Price").prop('disabled', true);
+        $("#IsRecurring").prop('disabled', true);
+    </script>
+}
+
+@if (Model.Id > 0)
+{
+    <script>
+        $("#IsRecurring").prop('disabled', true);
+        //$("#Capacity").prop('disabled', true);
+        //$("#Price").prop('disabled', true);
+        setTimeout(function () {
+            $("#divRecurringType").hide();
+            $("#divEndDate").hide();
+        }, 200);
+    </script>
+
+}
+<script>
+    $(document).ready(function () {
+        $('#IsRecurring').click(function () {
+            recurringFunction();
+        });
+
+        var date = document.getElementById("EndDate").value;
+        //var date_string = moment(date, "MM/DD/YYYY").format("DD/MM/YYYY");
+        //var date_string = moment(date, "DD/MM/YYYY").format("MM/DD/YYYY");
+        $('#EndDate').val(date);
+        $("#IsRecurring").prop("checked", false);
+        recurringFunction();
+    });
+
+    function recurringFunction() {
+        if ($("#IsRecurring").is(":checked")) {
+            $("#rdbtn_recurringtype_Daily").prop("checked", true);
+            $("#divRecurringType").show();
+            $("#divEndDate").show();
+        }
+        else {
+            $("#rdbtn_recurringtype_Daily").prop("checked", true);
+            $("#divRecurringType").hide();
+            $("#divEndDate").hide();
+            $("#divWeekly").hide();
+        }
+    }
+
+    function unavailableFunction() {
+        var x = document.getElementById('divName');
+        var y = document.getElementById('divEndDate');
+        var z = document.getElementById('divRecurringType')
+        if (x.style.display === 'none') {
+            x.style.display = 'block';
+            $("#Capacity").prop('disabled', true);
+            $("#Price").prop('disabled', true);
+
+            $("#IsRecurring").prop("checked", false);
+            $("#IsRecurring").prop('disabled', true);
+            y.style.display = 'none';
+            z.style.display = 'none';
+        }
+        else {
+            x.style.display = 'none';
+            $("#Capacity").prop('disabled', false);
+            $("#Price").prop('disabled', false);
+            $("#IsRecurring").prop('disabled', false);
+        }
+    }
+
+    $(".btnSaveModalForm").click(function () {
+        var weekdays_val = [];
+        var count = 1;
+        $('input.cls-weekdays').each(function (i) {
+            if ($(this).is(':checked')) {
+                weekdays_val[count] = $(this).val();
+                count = count + 1;
+            }
+        })
+        $("#WeekDays").val(weekdays_val);
+
+        var date = document.getElementById("EndDate").value;
+        var date_string = moment(date, "DD/MM/YYYY").format("MM/DD/YYYY");
+        //var date_string = moment(date, "MM/DD/YYYY").format("DD/MM/YYYY");
+        $('#EndDate').val(date);
+
+        var startDate = document.getElementById("Start").value;
+        var startdate_string = moment(startDate, "DD/MM/YYYY HH:mm:ss").format("MM/DD/YYYY HH:mm:ss");
+        $('#Start').val(startdate_string);
+
+        var end = document.getElementById("End").value;
+        var end_string = moment(end, "DD/MM/YYYY HH:mm:ss").format("MM/DD/YYYY HH:mm:ss");
+        $('#End').val(end_string);
+
+    });
+
+    $(function () {
+        $('#rdbtn_recurringtype_Daily').click(function (e) {
+            $('#divWeekly').hide();
+            $('#divCurrentDay').hide();
+        });
+        $('#rdbtn_recurringtype_Weekly').click(function (e) {
+            $('#divCurrentDay').hide();
+
+            $('#divWeekly').show();
+            $('#divWeekly').html('');
+            var weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+            for (var value of weekdays) {
+                $('#divWeekly').append(
+                    $('<input>').prop({
+                        type: 'checkbox',
+                        id: 'chkweekdays',
+                        name: 'chkweekdays',
+                        value: value,
+                        class: 'cls-weekdays'
+                    })
+                ).append(
+                    $('<label>').prop({
+                        for: value
+                    }).html(value)
+                )
+            }
+
+        });
+        $('#rdbtn_recurringtype_CurrentDay').click(function (e) {
+            $('#divWeekly').hide();
+            $('#divCurrentDay').show();
+        });
+    });
+
+</script>

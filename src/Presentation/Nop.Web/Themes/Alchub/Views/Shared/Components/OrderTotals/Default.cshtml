@@ -1,0 +1,564 @@
+﻿@model OrderTotalsModel
+@inject IThemeContext themeContext
+
+@{
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+    //by default do not show shipping address.
+    bool showShipping = false;
+}
+
+<div class="total-info">
+    <div class="text">
+        <span>Order Summary</span>
+    </div>
+    <div class="subtotal-grid">
+        <div class="subtotal-grid-left" colspan="2">
+            <label>@T("ShoppingCart.Totals.SubTotal"):</label>
+        </div>
+        <div class="subtotal-grid-right" colspan="2">
+            <span class="value-summary">@Model.SubTotal</span>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SubTotalDiscount))
+    {
+        <div class="order-subtotal-discount  subtotal-grid">
+            <div class="cart-total-left subtotal-grid-left " colspan="2">
+                <label>@T("ShoppingCart.Totals.SubTotalDiscount"):</label>
+            </div>
+            <div class="cart-total-right subtotal-grid-right" colspan="2">
+                <span class="value-summary">@Model.SubTotalDiscount</span>
+            </div>
+        </div>
+    }
+
+    @*tex category*@
+    @if (Model.DisplayTax)
+    {
+        <div class="tax-value  subtotal-grid">
+            <div class="cart-total-left  subtotal-grid-left" colspan="2">
+                <label>@T("ShoppingCart.Totals.Tax"):</label>
+            </div>
+            <div class="cart-total-right  subtotal-grid-right" colspan="2">
+                <span class="value-summary">@Model.Tax</span>
+            </div>
+        </div>
+    }
+
+    @*service fee*@
+    @if (!string.IsNullOrEmpty(Model.ServiceFee))
+    {
+        <div class="service-fee subtotal-grid">
+            <div class="cart-total-left subtotal-grid-left" colspan="2">
+                <label>@T("ShoppingCart.Totals.ServiceFee"):</label>
+            </div>
+            <div class="cart-total-right subtotal-grid-right" colspan="2">
+                <span class="value-summary">@Model.ServiceFee</span>
+            </div>
+        </div>
+    }
+
+    @*Alchub Start*@
+    @if (!string.IsNullOrEmpty(Model.DeliveryFee))
+    {
+        <div class="delivery-fee subtotal-grid">
+            <div class="cart-total-left subtotal-grid-left" colspan="2">
+                <label>@T("Alchub.ShoppingCart.Totals.DeliveryFee"):</label>
+                <button type="button" id="vendor-wise-delivery-fee-popup-button" class="btn btn-default font-weight-bold" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><img src="../Themes/@(themeName)/Content/images/information_icon.png" /></button>
+                @await Html.PartialAsync("_VendorWiseDeliveryFee", Model.VendorWiseDeliveryFees)
+            </div>
+            <div class="cart-total-right subtotal-grid-right" colspan="2">
+                <span class="value-summary">@Model.DeliveryFee</span>
+            </div>
+        </div>
+    }
+    @*Alchub End*@
+
+    @if (!Model.HideShippingTotal && showShipping)
+    {
+        <div class="shipping-cost subtotal-grid">
+            <div class="cart-total-left subtotal-grid-left" colspan="2">
+                <label>@T("ShoppingCart.Totals.Shipping"):</label>
+                @if (Model.RequiresShipping && !string.IsNullOrEmpty(Model.SelectedShippingMethod))
+                {
+                    <span class="selected-shipping-method">@T("ShoppingCart.Totals.Shipping.Method", Model.SelectedShippingMethod)</span>
+                }
+            </div>
+            <div class="cart-total-right subtotal-grid-right" colspan="2">
+                @if (Model.RequiresShipping)
+                {
+                    if (!string.IsNullOrEmpty(Model.Shipping))
+                    {
+                        <span class="value-summary">@Model.Shipping</span>
+                    }
+                    else
+                    {
+                        <span>@T("ShoppingCart.Totals.CalculatedDuringCheckout")</span>
+                    }
+                }
+                else
+                {
+                    <span>@T("ShoppingCart.Totals.Shipping.NotRequired")</span>
+                }
+            </div>
+        </div>
+    }
+
+
+
+
+
+    @if (!string.IsNullOrEmpty(Model.PaymentMethodAdditionalFee))
+    {
+        <div class="additional-fees subtotal-grid">
+            <div class="cart-total-left  subtotal-grid-left" colspan="2">
+                <label>@T("ShoppingCart.Totals.PaymentMethodAdditionalFee"):</label>
+            </div>
+            <div class="cart-total-right subtotal-grid-right" colspan="2">
+                <span class="value-summary">@Model.PaymentMethodAdditionalFee</span>
+            </div>
+        </div>
+    }
+
+    @if (Model.DisplayTaxRates && Model.TaxRates.Count > 0)
+    {
+        foreach (var taxRate in Model.TaxRates)
+        {
+            <div class="tax-rate subtotal-grid">
+                <div class="cart-total-left  subtotal-grid-left" colspan="2">
+                    <label>@string.Format(T("ShoppingCart.Totals.TaxRateLine").Text, taxRate.Rate):</label>
+                </div>
+                <div class="cart-total-right subtotal-grid-right " colspan="2">
+                    <span>@taxRate.Value</span>
+                </div>
+            </div>
+        }
+    }
+
+    @*Slot fee*@
+    @if (!string.IsNullOrEmpty(Model.SlotFee))
+    {
+        <div class="delivery-fee subtotal-grid ">
+            <div class="cart-total-left subtotal-grid-left" colspan="2">
+                <label>@T("ShoppingCart.Totals.SlotFee"):</label>
+                <button type="button" id="slot-fee-popup-button" class="btn btn-default font-weight-bold" data-bs-toggle="modal" data-bs-target="#vendor-slot-fee">@*@T("ShoppingCart.Totals.Details.SlotFee")*@<img src="../Themes/@(themeName)/Content/images/information_icon.png" /></button>
+                @await Html.PartialAsync("_SlotWiseFee", Model.SlotFeesList)
+            </div>
+            <div class="cart-total-right subtotal-grid-right" colspan="2">
+                <span class="value-summary">@Model.SlotFee</span>
+            </div>
+        </div>
+    }
+
+
+    @*Alchub Start*@
+    <div class="tip-fee subtotal-grid">
+        <div class="cart-total-left subtotal-grid-left" colspan="2">
+            <label>@T("Alchub.ShoppingCart.Totals.TipFee"):</label>
+            <button type="button" id="vendor-wise-tip-fee-popup-button" class="btn btn-default font-weight-bold" data-bs-toggle="modal" data-bs-target="#vendor-wise-tip-fee"><img src="../Themes/@(themeName)/Content/images/information_icon.png" /></button>
+            @await Html.PartialAsync("_VendorWiseTipFee", Model.VendorWiseTipFees)
+        </div>
+        <div class="cart-total-right subtotal-grid-right" colspan="2">
+            <span class="value-summary">@Model.TipFee</span>
+        </div>
+
+    </div>
+
+
+    @if (Model.IsEditable)
+    {
+        <div class="custome-box">
+            <div class="wrapper">
+                @foreach (var tipType in Model.AvailableTipTypes)
+                {
+                    <div class="inputs tip-div @((Model.TipTypeId == Convert.ToInt32(@tipType.Value) ? "active" : ""))">
+                        <span class="@tipType.Value">
+                            <input type="radio" asp-for="TipTypeId" value="@tipType.Value" checked="@(Model.TipTypeId == Convert.ToInt32(@tipType.Value))" id="@tipType.Value" onchange="ontypechange();" />
+                            <label class="@tipType.Value" for="@tipType.Value">@tipType.Text</label>
+                        </span>
+                    </div>
+
+                }
+            </div>
+            <div id="custom-tip-amount" style="display:none">
+                <div class="dollor-sign">
+                    <span>@T("Alchub.Dollor.sign")</span>
+                    <input asp-for="CustomTipAmount" placeholder="Tip" class="custom-tip-amount-input" type="number" onkeypress="return isValidDecimal(this, event)" onchange="ontypechange();" />
+                </div>
+
+                <button type="submit" name="applytip" id="applytip" class="button-2 apply-discount-coupon-code-button">@T("Alchub.Tipfee.Custom.Apply.Button")</button>
+            </div>
+        </div>
+        <script asp-location="Footer">
+            $(document).ready(function () {
+                showHideCustomTipAmountFields();
+                $('#CustomTipAmount').keydown(function (event) {
+                    if (event.keyCode == 13) {
+                        $('#applytip').click();
+                        return false;
+                    }
+                });
+            });
+
+            $('input[name="TipTypeId"]').change(function () {
+                $('#CustomTipAmount').val('');
+                addActiveClass();
+                showHideCustomTipAmountFields();
+
+                if ($('input[name="TipTypeId"]:checked').val() != 0) {
+                    $('#applytip').click();
+                }
+            });
+
+            function addActiveClass() {
+                $('.tip-div').removeClass('active');
+                $('input[name="TipTypeId"]:checked').parent().parent().addClass('active');
+            }
+
+            function showHideCustomTipAmountFields() {
+                if ($('input[name="TipTypeId"]:checked').val() == 0) {
+                    $('#custom-tip-amount').show();
+                }
+                else {
+                    $('#custom-tip-amount').hide();
+                }
+            }
+
+            function isValidDecimal(el, evnt) {
+                var charC = (evnt.which) ? evnt.which : evnt.keyCode;
+                if (charC == 46) {
+                    if (el.value.indexOf('.') === -1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    if (charC > 31 && (charC < 48 || charC > 57))
+                        return false;
+                }
+                return true;
+            }
+
+
+            function ontypechange() {
+                addActiveClass();
+                showHideCustomTipAmountFields();
+                if ($('input[name="TipTypeId"]:checked').val() != 0) {
+                    $('#applytip').click();
+                }
+            }
+
+            //validate tip amount - should be positive
+            $("#CustomTipAmount").change(function (event) {
+                var regex = /^([0-9]{0,5})?(\d*\.?\d*)$/;
+                if (!regex.test(this.value)) {
+                    this.value = 0;
+                }
+            });
+
+        </script>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.OrderTotalDiscount))
+    {
+        <div class="discount-total subtotal-grid">
+            <div class="cart-total-left subtotal-grid-left" colspan="2">
+                <label>@T("ShoppingCart.Totals.OrderTotalDiscount"):</label>
+            </div>
+            <div class="cart-total-right subtotal-grid-right" colspan="2">
+                <span class="value-summary">@Model.OrderTotalDiscount</span>
+            </div>
+        </div>
+    }
+
+    @if (Model.GiftCards.Count > 0)
+    {
+        foreach (var gc in Model.GiftCards)
+        {
+            <div class="giftcard-summary  subtotal-grid ">
+                <div class="cart-total-left subtotal-grid-left" colspan="2">
+                    <label>@T("ShoppingCart.Totals.GiftCardInfo"):</label>
+                    <span>@T("ShoppingCart.Totals.GiftCardInfo.Code", gc.CouponCode)</span>
+
+                </div>
+                <div class="cart-total-right subtotal-grid-right" colspan="2">
+                    <span class="value-summary">@gc.Amount</span>
+                    <span class="giftcard-remaining">
+                        @string.Format(T("ShoppingCart.Totals.GiftCardInfo.Remaining").Text, gc.Remaining)@if (Model.IsEditable)
+                        {
+                            //little hack here with empty "value" element
+                            <button type="submit" name="removegiftcard-@gc.Id" class="remove-gift-card-button"></button>
+                        }
+                    </span>
+
+                </div>
+            </div>
+
+        }
+    }
+
+    @if (Model.RedeemedRewardPoints > 0)
+    {
+        <div class="reward-points subtotal-grid">
+            <div class="cart-total-left subtotal-grid-left" colspan="2">
+                <label>@string.Format(T("ShoppingCart.Totals.RewardPoints").Text, Model.RedeemedRewardPoints):</label>
+            </div>
+            <div class="cart-total-right subtotal-grid-right" colspan="2">
+                <span class="value-summary">@Model.RedeemedRewardPointsAmount</span>
+            </div>
+        </div>
+    }
+
+    <div class="order-total subtotal-grid">
+        <div class="cart-total-left  subtotal-grid-left" colspan="2">
+            <label>@T("ShoppingCart.Totals.OrderTotal"):</label>
+        </div>
+        <div class="cart-total-right subtotal-grid-right" colspan="2">
+            @if (!string.IsNullOrEmpty(Model.OrderTotal))
+            {
+                <span class="value-summary"><strong>@Model.OrderTotal</strong></span>
+            }
+            else
+            {
+                <span>@T("ShoppingCart.Totals.CalculatedDuringCheckout")</span>
+            }
+        </div>
+    </div>
+
+    @if (Model.WillEarnRewardPoints > 0)
+    {
+        <div class="earn-reward-points subtotal-grid">
+            <div class="cart-total-left subtotal-grid-left" colspan="2">
+                <label>@T("ShoppingCart.Totals.RewardPoints.WillEarn"):</label>
+            </div>
+            <div class="cart-total-right subtotal-grid-right" colspan="2">
+                <span class="value-summary">@string.Format(T("ShoppingCart.Totals.RewardPoints.WillEarn.Point").Text, Model.WillEarnRewardPoints)</span>
+            </div>
+
+        </div>
+    }
+
+
+
+
+    <!--<table class="cart-total">
+        <tbody>
+            <tr class="order-subtotal">
+                <td class="cart-total-left" colspan="2">
+                    <label>@T("ShoppingCart.Totals.SubTotal"):</label>
+                </td>
+                <td class="cart-total-right" colspan="2">
+                    <span class="value-summary">@Model.SubTotal</span>
+                </td>
+            </tr>
+    @if (!string.IsNullOrEmpty(Model.SubTotalDiscount))
+    {
+                                                <tr class="order-subtotal-discount">
+                                                    <td class="cart-total-left" colspan="2">
+                                                        <label>@T("ShoppingCart.Totals.SubTotalDiscount"):</label>
+                                                    </td>
+                                                    <td class="cart-total-right" colspan="2">
+                                                        <span class="value-summary">@Model.SubTotalDiscount</span>
+                                                    </td>
+                                                </tr>
+    }
+    @if (!Model.HideShippingTotal && showShipping)
+    {
+                                                <tr class="shipping-cost">
+                                                    <td class="cart-total-left" colspan="2">
+                                                        <label>@T("ShoppingCart.Totals.Shipping"):</label>
+                @if (Model.RequiresShipping && !string.IsNullOrEmpty(Model.SelectedShippingMethod))
+                {
+                                                                                            <span class="selected-shipping-method">@T("ShoppingCart.Totals.Shipping.Method", Model.SelectedShippingMethod)</span>
+                }
+                                                    </td>
+                                                    <td class="cart-total-right" colspan="2">
+                @if (Model.RequiresShipping)
+                {
+                    if (!string.IsNullOrEmpty(Model.Shipping))
+                    {
+                                                                                                                                <span class="value-summary">@Model.Shipping</span>
+                    }
+                    else
+                    {
+                                                                                                                                <span>@T("ShoppingCart.Totals.CalculatedDuringCheckout")</span>
+                    }
+                }
+                else
+                {
+                                                                                            <span>@T("ShoppingCart.Totals.Shipping.NotRequired")</span>
+                }
+                                                    </td>
+                                                </tr>
+    }-->
+    @*Alchub Start*@
+    <!--<tr class="delivery-fee">
+        <td class="cart-total-left" colspan="2">
+            <label>@T("Alchub.ShoppingCart.Totals.DeliveryFee"):</label>
+            <button type="button" id="vendor-wise-delivery-fee-popup-button" class="btn btn-default font-weight-bold" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><img src="../Themes/@(themeName)/Content/images/information_icon.png" /></button>
+    @await Html.PartialAsync("_VendorWiseDeliveryFee", Model.VendorWiseDeliveryFees)
+        </td>
+        <td class="cart-total-right" colspan="2">
+            <span class="value-summary">@Model.DeliveryFee</span>
+        </td>
+    </tr>-->
+    @*Alchub End*@
+    <!--@if (!string.IsNullOrEmpty(Model.PaymentMethodAdditionalFee))
+    {
+                                        <tr class="additional-fees">
+                                            <td class="cart-total-left" colspan="2">
+                                                <label>@T("ShoppingCart.Totals.PaymentMethodAdditionalFee"):</label>
+                                            </td>
+                                            <td class="cart-total-right" colspan="2">
+                                                <span class="value-summary">@Model.PaymentMethodAdditionalFee</span>
+                                            </td>
+                                        </tr>
+    }
+    @if (Model.DisplayTaxRates && Model.TaxRates.Count > 0)
+    {
+        foreach (var taxRate in Model.TaxRates)
+        {
+                                                                            <tr class="tax-rate">
+                                                                                <td class="cart-total-left" colspan="2">
+                                                                                    <label>@string.Format(T("ShoppingCart.Totals.TaxRateLine").Text, taxRate.Rate):</label>
+                                                                                </td>
+                                                                                <td class="cart-total-right" colspan="2">
+                                                                                    <span>@taxRate.Value</span>
+                                                                                </td>
+                                                                            </tr>
+        }
+    }
+    @if (Model.DisplayTax)
+    {
+                                        <tr class="tax-value">
+                                            <td class="cart-total-left" colspan="2">
+                                                <label>@T("ShoppingCart.Totals.Tax"):</label>
+                                            </td>
+                                            <td class="cart-total-right" colspan="2">
+                                                <span class="value-summary">@Model.Tax</span>
+                                            </td>
+                                        </tr>
+    }-->
+    @*service fee*@
+    <!--<tr class="tax-value">
+        <td class="cart-total-left" colspan="2">
+            <label>@T("ShoppingCart.Totals.ServiceFee"):</label>
+        </td>
+        <td class="cart-total-right" colspan="2">
+            <span class="value-summary">@Model.ServiceFee</span>
+        </td>
+    </tr>-->
+    @*Slot fee*@
+    <!--@if (!string.IsNullOrEmpty(Model.SlotFee))
+    {
+                                        <tr class="delivery-fee">
+                                            <td class="cart-total-left" colspan="2">
+                                                <label>@T("ShoppingCart.Totals.SlotFee"):</label>
+                                                <button type="button" id="slot-fee-popup-button" class="btn btn-default font-weight-bold">@T("ShoppingCart.Totals.Details.SlotFee")</button>
+                @await Html.PartialAsync("_SlotWiseFee", Model.SlotFeesList)
+                                                <script asp-location="Footer">
+                                                    $(document).ready(function () {
+                                                        $('#slot-fee-popup-button').on('click',
+                                                            function (e) {
+                                                                e.preventDefault();
+                                                                $('#slot-wise-delivery-fee-popup').show();
+                                                            });
+                                                    });
+                                                </script>
+                                            </td>
+                                            <td class="cart-total-right" colspan="2">
+                                                <span class="value-summary">@Model.SlotFee</span>
+                                            </td>
+                                        </tr>
+    }-->
+    @*Alchub Start*@
+    <!--<tr class="tip-fee">
+        <td class="cart-total-left" colspan="2">
+            <label>@T("Alchub.ShoppingCart.Totals.TipFee"):</label>
+            <button type="button" id="vendor-wise-tip-fee-popup-button" class="btn btn-default font-weight-bold" data-bs-toggle="modal" data-bs-target="#vendor-wise-tip-fee"><img src="../Themes/@(themeName)/Content/images/information_icon.png" /></button>
+    @await Html.PartialAsync("_VendorWiseTipFee", Model.VendorWiseTipFees)
+        </td>
+        <td class="cart-total-right" colspan="2">
+            <span class="value-summary">@Model.TipFee</span>
+        </td>
+
+    </tr>-->
+    @*Alchub End*@
+
+    <!--@if (!string.IsNullOrEmpty(Model.OrderTotalDiscount))
+    {
+                                                <tr class="discount-total">
+                                                    <td class="cart-total-left" colspan="2">
+                                                        <label>@T("ShoppingCart.Totals.OrderTotalDiscount"):</label>
+                                                    </td>
+                                                    <td class="cart-total-right" colspan="2">
+                                                        <span class="value-summary">@Model.OrderTotalDiscount</span>
+                                                    </td>
+                                                </tr>
+    }
+
+    @if (Model.GiftCards.Count > 0)
+    {
+        foreach (var gc in Model.GiftCards)
+        {
+                                                                                    <tr class="giftcard-summary">
+                                                                                        <td class="cart-total-left" colspan="2">
+                                                                                            <label>@T("ShoppingCart.Totals.GiftCardInfo"):</label>
+                                                                                            <span>@T("ShoppingCart.Totals.GiftCardInfo.Code", gc.CouponCode)</span>
+                    @if (Model.IsEditable)
+                    {
+                        //little hack here with empty "value" element
+                                                                                                                                <button type="submit" name="removegiftcard-@gc.Id" class="remove-gift-card-button"></button>
+                    }
+                                                                                            <span class="giftcard-remaining">@string.Format(T("ShoppingCart.Totals.GiftCardInfo.Remaining").Text, gc.Remaining)</span>
+                                                                                        </td>
+                                                                                        <td class="cart-total-right" colspan="2">
+                                                                                            <span class="value-summary">@gc.Amount</span>
+                                                                                        </td>
+                                                                                    </tr>
+
+        }
+    }
+    @if (Model.RedeemedRewardPoints > 0)
+    {
+                                                <tr class="reward-points">
+                                                    <td class="cart-total-left" colspan="2">
+                                                        <label>@string.Format(T("ShoppingCart.Totals.RewardPoints").Text, Model.RedeemedRewardPoints):</label>
+                                                    </td>
+                                                    <td class="cart-total-right" colspan="2">
+                                                        <span class="value-summary">@Model.RedeemedRewardPointsAmount</span>
+                                                    </td>
+                                                </tr>
+    }
+            <tr class="order-total">
+                <td class="cart-total-left" colspan="2">
+                    <label>@T("ShoppingCart.Totals.OrderTotal"):</label>
+                </td>
+                <td class="cart-total-right" colspan="2">
+    @if (!string.IsNullOrEmpty(Model.OrderTotal))
+    {
+                                                        <span class="value-summary"><strong>@Model.OrderTotal</strong></span>
+    }
+    else
+    {
+                                                        <span>@T("ShoppingCart.Totals.CalculatedDuringCheckout")</span>
+    }
+                </td>
+            </tr>
+
+    @if (Model.WillEarnRewardPoints > 0)
+    {
+                                                <tr class="earn-reward-points">
+                                                    <td class="cart-total-left" colspan="2">
+                                                        <label>@T("ShoppingCart.Totals.RewardPoints.WillEarn"):</label>
+                                                    </td>
+                                                    <td class="cart-total-right" colspan="2">
+                                                        <span class="value-summary">@string.Format(T("ShoppingCart.Totals.RewardPoints.WillEarn.Point").Text, Model.WillEarnRewardPoints)</span>
+                                                    </td>
+
+                                                </tr>
+    }
+
+        </tbody>
+    </table>-->
+</div>

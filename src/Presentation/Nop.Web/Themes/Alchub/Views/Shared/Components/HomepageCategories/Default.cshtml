@@ -1,0 +1,47 @@
+﻿@model IList<CategoryModel>
+@using Nop.Services.Catalog;
+@inject ICategoryService categoryService
+
+@if (Model.Count > 0)
+{
+    <div class="category-grid home-page-category-grid">
+        <div class="title"><strong>Categories</strong></div>
+        <div class="item-grid categorySlider owl-carousel owl-theme" id="category-slider">
+            @foreach (var item in Model)
+             {
+                <div class="item-box">
+                    <div class="category-item">
+                        <div class="picture">
+                            @{ 
+                                var url = string.Empty;
+                                var subCategoryParentCategoryId = 0;
+                                var category = await categoryService.GetCategoryByIdAsync(item.Id);
+                                var parentCategoryId =  category == null ? 0 : category.ParentCategoryId;
+                                if (parentCategoryId == 0)
+                                    url = "search?cid=" + item.Id;
+                                else
+                                {
+                                    var subCategory = await categoryService.GetCategoryByIdAsync(parentCategoryId);
+                                    subCategoryParentCategoryId = subCategory == null ? 0 : subCategory.ParentCategoryId;
+
+                                    if (subCategoryParentCategoryId == 0)
+                                        url = "search?cid=" + parentCategoryId + "&subCatid=" + item.Id;
+                                    else
+                                        url = "search?cid=" + subCategoryParentCategoryId + "&subCatid=" + parentCategoryId + "," + item.Id;
+                                }
+                            }
+                            <a href="@url" title="@item.PictureModel.Title">
+                                <img alt="@item.PictureModel.AlternateText" src="@item.PictureModel.ImageUrl" title="@item.PictureModel.Title" />
+                            </a>
+                        </div>
+                        <h2 class="title">
+                            <a href="@url" title="@item.PictureModel.Title" class="product-title-clamp">
+                                @item.Name
+                            </a>
+                        </h2>
+                    </div>
+                </div>
+             }
+        </div>
+    </div>
+}

@@ -1,0 +1,277 @@
+﻿@model ProductDetailsModel.AddToCartModel
+@using Nop.Core.Domain.Orders
+@using Nop.Core
+@using Nop.Services.Orders
+@using Nop.Services.Catalog
+@inject IShoppingCartService shoppingCartService
+@inject IStoreContext storeContext
+@inject IWorkContext workContext
+@inject IProductService productService
+
+@if (Model.UpdatedShoppingCartItemId > 0)
+{
+    <input asp-for="UpdatedShoppingCartItemId" type="hidden" />
+}
+
+@if (!Model.DisableBuyButton || Model.CustomerEntersPrice)
+{
+    <div class="add-to-cart">
+        @if (Model.CustomerEntersPrice)
+        {
+            <div class="customer-entered-price">
+                <div class="price-input">
+                    <label asp-for="CustomerEnteredPrice" asp-postfix=":" class="enter-price-label"></label>
+                    @*round price*@
+                    <input asp-for="CustomerEnteredPrice" value="@Convert.ToInt32(Math.Ceiling(Model.CustomerEnteredPrice))" class="enter-price-input" />
+                </div>
+                <div class="price-range">
+                    @Model.CustomerEnteredPriceRange
+                </div>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.MinimumQuantityNotification))
+        {
+            <div class="min-qty-notification">@Model.MinimumQuantityNotification</div>
+        }
+        @if (!Model.DisableBuyButton)
+        {
+            <div class="add-to-cart-panel">
+                <label asp-for="EnteredQuantity" asp-postfix=":" class="qty-label"></label>
+                @if (Model.AllowedQuantities.Count > 0)
+                {
+                    <select asp-for="EnteredQuantity" asp-items="Model.AllowedQuantities" id="product_enteredQuantity_@Model.ProductId" class="qty-dropdown" aria-label=@T("Products.Qty.AriaLabel")></select>
+                    <script asp-location="Footer">
+                        $(document).ready(function () {
+                            $("#product_enteredQuantity_@Model.ProductId").on("change", function () {
+                                var data = {
+                                    productId: @Model.ProductId,
+                                    quantity: $('#product_enteredQuantity_@Model.ProductId').find(":selected").text()
+                                };
+                                $(document).trigger({ type: "product_quantity_changed", changedData: data });
+                            });
+                        });
+                    </script>
+                }
+                else
+
+                {
+                    <div class="qty-wrapper">
+                        <div class="title">
+                            <span>Quantity</span>
+                        </div>
+                        <button class="minus" onclick="Minus(); return false;">-</button>
+                        <input asp-for="EnteredQuantity" id="product_enteredQuantity_@Model.ProductId" class="qty-input" type="text"  aria-label=@T("Products.Qty.AriaLabel") name="number" onblur="resetQty(); return false;" />
+                        <button class="pluse" onclick="Plus(); return false;">+</button>
+                    </div>
+
+                    <script asp-location="Footer">
+                        //when a customer clicks 'Enter' button we submit the "add to cart" button (if visible)
+                        function Minus() {
+                            var quantity = $('#product_enteredQuantity_@Model.ProductId').val();
+                            if (quantity > 1) {
+                                quantity = parseInt(quantity) - 1;
+                                $('#product_enteredQuantity_@Model.ProductId').val(quantity);
+                            }
+                            else {
+                                var minimumQuantityMessage = "@T("Minumum.AddToCart.Quantity.Message")";
+                                alert(minimumQuantityMessage);
+                                return false;
+                            }
+                        }
+
+                        function Plus() {
+                            var quantity = $('#product_enteredQuantity_@Model.ProductId').val();
+                            quantity = parseInt(quantity) + 1;
+                            $('#product_enteredQuantity_@Model.ProductId').val(quantity);
+                        }
+
+                        $(document).ready(function () {
+                            $("#product_enteredQuantity_@Model.ProductId").on("keydown", function (event) {
+                                if (event.keyCode == 13) {
+                                    var quantity = $('#product_enteredQuantity_@Model.ProductId').val();
+                                    if (!quantity) {
+                                        $('#product_enteredQuantity_@Model.ProductId').val('1');
+                                    }
+                                    $("#add-to-cart-button-@Model.ProductId").trigger("click");
+                                    return false;
+                                }
+                            });
+
+                            $("#product_enteredQuantity_@Model.ProductId").on("input propertychange paste", function () {
+                                //validate qty
+                                var quantity = parseInt($('#product_enteredQuantity_@Model.ProductId').val());
+                                if (quantity <= 0) {
+                                    var minimumQuantityMessage = "@T("Minumum.AddToCart.Quantity.Message")";
+                                    alert(minimumQuantityMessage);
+                                    $('#product_enteredQuantity_@Model.ProductId').val('1');
+                                }
+
+                                var data = {
+                                    productId: @Model.ProductId,
+                                    quantity: $('#product_enteredQuantity_@Model.ProductId').val()
+                                };
+                                $(document).trigger({ type: "product_quantity_changed", changedData: data });
+                            });
+                        });
+
+                        function resetQty() {
+                            var quantity = parseInt($('#product_enteredQuantity_@Model.ProductId').val());
+                            if (!quantity) {
+                                $('#product_enteredQuantity_@Model.ProductId').val('1');
+                            }
+                        }
+                    </script>
+                }
+                @{
+                    var addToCartText = "";
+                    if (Model.UpdatedShoppingCartItemId > 0 && Model.UpdateShoppingCartItemType.HasValue && Model.UpdateShoppingCartItemType.Value == ShoppingCartType.ShoppingCart)
+                    {
+                        addToCartText = T("ShoppingCart.AddToCart.Update").Text;
+                    }
+                    else
+                    {
+                        addToCartText = T("ShoppingCart.AddToCart").Text;
+                        if (Model.IsRental)
+                        {
+                            addToCartText = T("ShoppingCart.Rent").Text;
+                        }
+                        if (Model.AvailableForPreOrder)
+                        {
+                            addToCartText = T("ShoppingCart.PreOrder").Text;
+                        }
+                    }
+                    <button type="button" id="add-to-cart-button-@Model.ProductId" class="button-1 add-to-cart-button" data-productid="@Model.ProductId" onclick="productAddCart();">@addToCartText</button>
+                }
+            </div>
+            if (!string.IsNullOrEmpty(Model.PreOrderAvailabilityStartDateTimeUserTime))
+            {
+                <div class="pre-order-availability-date">
+                    <label>@T("ShoppingCart.PreOrderAvailability"):</label>
+                    @Html.Raw(Model.PreOrderAvailabilityStartDateTimeUserTime)
+                </div>
+            }
+        }
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsAddInfo, additionalData = Model })
+    </div>
+}
+
+<script asp-location="Footer">
+    function productAddCart() {
+        var productvendor = $("input[name='vendor_products']:checked").val();
+        var productId = productvendor.split("__")[0];
+        var masterProductId = $("#master_product_id").val();
+        var isPickup = false;
+        var managedelivery = document.getElementById("btnDelivery").className;
+        if (managedelivery == 'active') {
+            isPickup = false;
+        }
+        var managepickup = document.getElementById("btnStorePickup").className;
+        if (managepickup == 'active') {
+            isPickup = true;
+        }
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "/showaddtocartconfirmboxformultivendorselect/details/" + masterProductId + '/' + productId,
+            data: $('#product-details-form').serialize(),
+            success: function (data, textStatus, jqXHR) {
+                if (data.showMultiVendorConfirmBox) {
+                    var confirmText = "@T("Alchub.Product.AddToCart.MultiVendor.Warning").Text";
+                    if (confirm(confirmText) == true) {
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+
+        var data = JSON.stringify({
+            'productId': productId,
+        });
+
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "/showaddtocartconfirmbox/details/" + productId + '/' + isPickup,
+            data: $('#product-details-form').serialize(),
+            success: function (data, textStatus, jqXHR) {
+                if (data.showAddToCartConfirmBox) {
+                    var text = "@T("Alchub.Product.AddToCart.Additional.DeliveryFee.Warning").Text";
+                    if (confirm(text) == true) {
+                        AddIntoCart('#product-details-form'); return false;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
+                    AddIntoCart('#product-details-form'); return false;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                AddIntoCart('#product-details-form'); return false;
+            }
+        });
+    }
+
+    function AddIntoCart(formselector) {
+        var productvendor = $("input[name='vendor_products']:checked").val();
+        var productId = productvendor.split("__")[0];
+        var quantity = $('#product_enteredQuantity_@Model.ProductId').val();
+
+        //get master & grouped product id from hiddent fields
+        var masterProductId = $("#master_product_id").val();
+        var groupedProductId = 0;
+        var grpProductHidden = $("#grouped_product_id");
+        if (grpProductHidden.length > 0) {
+            groupedProductId = grpProductHidden.val();
+        }
+
+        var isPickup = false;
+        var managedelivery = document.getElementById("btnDelivery").className;
+        if (managedelivery == 'active') {
+            isPickup = false;
+        }
+        var managepickup = document.getElementById("btnStorePickup").className;
+        if (managepickup == 'active') {
+            isPickup = true;
+        }
+
+        var postData = {
+            productId: productId,
+            shoppingCartTypeId: 1,
+            masterProductId: masterProductId,
+            groupedProductId: groupedProductId,
+            quantity: quantity,
+            ispickup: isPickup,
+            form: $(formselector).serialize()
+        };
+        addAntiForgeryToken(postData);
+
+        //add a product to the cart from the product details page
+        AjaxCart.setLoadWaiting(true);
+        $.ajax({
+            cache: false,
+            url: "@(Url.Action("AddProductToCart_Details", "ShoppingCart"))",
+            data: postData,
+            type: "POST",
+            beforeSend: function () { },
+            success: function (data, textStatus, jqXHR) {
+                if (data.success) {
+                    //reset qty
+                    $('#product_enteredQuantity_@Model.ProductId').val('1');
+                }
+                //proceed success
+                AjaxCart.success_process(data);
+            },
+            complete: function (jqXHR, textStatus) {
+                AjaxCart.resetLoadWaiting();
+            },
+        });
+    }
+</script>

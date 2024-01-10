@@ -1,0 +1,1409 @@
+@import "../helpers/_helpers";
+
+.html-checkout-page {
+    .master-wrapper-content {
+        width: 100%;
+
+        @include media(desktop) {
+            padding: 0 65px;
+        }
+
+        @include media(small) {
+            padding: 0px;
+        }
+    }
+
+    .center-1 {
+        margin-bottom: 10px;
+
+        .mobile-view {
+            @include media(tablet) {
+                padding: 0px;
+            }
+        }
+    }
+
+    .order-progress {
+        @include media(desktop) {
+            margin-bottom: 20px;
+        }
+    }
+
+    .checkout-page {
+
+
+        .page-title {
+            border-bottom: none;
+
+            h1 {
+                font-size: $fontSizeXM;
+
+                @include media(small) {
+                    font-size: $fontSizeSM;
+                }
+            }
+        }
+    }
+
+    .method-name {
+        input {
+            position: absolute;
+            left: -999px;
+        }
+    }
+
+    .font-weight-bold {
+        border: none;
+    }
+
+    .page-body {
+        .method-name, .method-list {
+            background-color: $colorBaseWhite;
+            padding: 0px;
+
+            label {
+                margin-bottom: 0px;
+                color: $colorBlack;
+                font-size: $fontSizeS;
+            }
+
+            .payment-description, .method-description {
+                font-size: $fontSizeXXS;
+                font-weight: $fontWeightSemiBold;
+                color: $colorDarklight;
+            }
+        }
+
+        .address-box, .info-list {
+            font-size: $fontSizeS;
+            color: $colorDarklight;
+        }
+    }
+
+    .checkout-data {
+        @include media(small) {
+            padding: 0 15px;
+        }
+
+        .order-summary {
+            margin-top: 50px;
+
+            .vendor-name {
+                .info {
+                    .list {
+                        p {
+                            font-size: $fontSizeXXS;
+
+                            a {
+                                font-size: $fontSizeXS;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+ 
+// Belling address pages
+
+.billing-address-page {
+    .ship-to-same-address {
+        .selector {
+            label {
+                margin-bottom: 0px;
+                font-size: $fontSizeMM;
+                font-weight: $fontWeightSemiBold;
+            }
+        }
+    }
+
+    .checkout-data {
+        .order-summary {
+
+            .title {
+                font-size: $fontSizeL;
+                font-weight: $fontWeightBold;
+                font-family: $national;
+            }
+        }
+
+        .billing-addresses {
+            .select-billing-address {
+                .title {
+                    display: none;
+                    font-size: $fontSizeXM;
+                }
+
+                .address-grid {
+
+                    > div {
+
+
+                        &:nth-child(2n+1) {
+                            @include media(landscapeTablet) {
+                                margin-left: 0;
+                            }
+
+                            @include media(desktop) {
+                                margin-left: 1%;
+                            }
+                        }
+                    }
+
+                    .address-item {
+                        width: 100%;
+                        margin: 0 0% 40px;
+
+                        .adress-box-top {
+                            text-align: center;
+                            background-color: $colorBaseWhite;
+                            border: 1px solid $colorBorder;
+                            border-radius: 3px;
+                            vertical-align: top;
+                            padding: 40px 20px;
+
+                            @include media(small) {
+                                padding: 20px 20px;
+                            }
+
+                            @include media(landscapeTablet) {
+                                min-height: 386.453px;
+                            }
+
+
+
+
+                            .address-box {
+                                background-color: $colorBaseWhite;
+                                padding: 0px;
+
+                                li {
+                                    margin-bottom: 0px;
+                                    margin-bottom: 3px;
+
+                                    @include media(small) {
+                                        font-size: $fontSizeXXS;
+                                    }
+                                }
+
+                                .name {
+                                    color: $colorBlack;
+                                }
+
+                                .email {
+                                    label, span {
+                                        font-weight: $fontWeightBold;
+                                        color: $colorBlack;
+                                        margin-bottom: 0px;
+                                    }
+                                }
+
+                                .phone {
+                                    label {
+                                        margin-bottom: 0px;
+                                    }
+                                }
+                            }
+
+                            .select-button {
+                                .select-billing-address-button {
+
+                                    @include media(small) {
+                                        font-size: $fontSizeXXXS;
+                                    }
+
+
+                                    &:hover {
+                                        background-color: $primaryBrandClr-hover;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    .add-button {
+                        border: 1px solid $colorBorder;
+                        min-height: 295.453px;
+
+                        @include media(desktop) {
+                            min-height: 386.453px;
+                        }
+
+                        .btn-holder {
+                            text-align: center;
+                            margin-top: 30px;
+
+                            &:before {
+                                display: block;
+                                margin-bottom: 20px;
+                                content: "U";
+                                font-size: 100px;
+                                color: $colorFooterSocial;
+                                transition: all .3s ease;
+                                font-family: "emporium-icons";
+                            }
+
+                            .open-address-form, .close-address-form {
+                                background-color: $primaryBrandClr;
+                            }
+
+                            .open-address-form {
+                                transition: width .3s ease .3s, max-width .3s ease .3s, padding .3s ease .3s, opacity .3s ease .3s, background-color .2s ease 0s;
+                                opacity: 1;
+
+                                &::before {
+                                    display: inline-block;
+                                    vertical-align: bottom;
+                                    margin-right: 10px;
+                                    font-size: $rootFontSize;
+                                    text-transform: none;
+                                    font-weight: normal;
+                                    font-family: $iconFontFamily;
+                                    content: "\52";
+                                }
+                            }
+
+                            .close-address-form {
+                                width: 0;
+                                max-width: 0;
+                                padding: 0;
+                                opacity: 0;
+
+                                &:before {
+                                    display: inline-block;
+                                    vertical-align: bottom;
+                                    margin-right: 10px;
+                                    font-size: $fontSizeXXXS;
+                                    text-transform: none;
+                                    font-weight: normal;
+                                    font-family: $iconFontFamily;
+                                    content: "\76";
+                                    opacity: 0;
+                                }
+
+                                span {
+                                    opacity: 0;
+                                }
+                            }
+
+                            &.add-address-wrapper {
+                                position: relative;
+
+                                .open-address-form {
+                                    width: 0;
+                                    max-width: 0;
+                                    padding: 0;
+                                    opacity: .4;
+                                    transition-delay: 0s;
+                                }
+
+                                .close-address-form {
+                                    width: auto;
+                                    max-width: 280px;
+                                    padding: 0 25px;
+                                    opacity: 1;
+                                    transition: width .3s ease .3s, max-width .3s ease .3s, padding .3s ease .3s, opacity .3s ease .3s, background-color .2s ease 0s;
+                                    color: $textcolor;
+
+                                    &::before {
+                                        opacity: 1;
+                                    }
+
+                                    span {
+                                        opacity: 1;
+                                    }
+                                }
+                            }
+                        }
+
+                        .active {
+                            &:before {
+                                color: $primaryBrandClr;
+                            }
+                        }
+
+                        .enter-address {
+                            padding: 40px 40px 0;
+                            display: none;
+
+                            @include media(small) {
+                                padding: 20px 15px 0;
+                            }
+
+                            .edit-address {
+                                background-color: $colorBaseWhite;
+                                padding: 0px 0px;
+                                border-top: none;
+                                margin-bottom: 0px;
+
+                                @include media(small) {
+                                    padding: 0px;
+                                }
+
+                                .inputs {
+                                    select {
+                                        width: 430px;
+                                        height: 45px;
+                                        color: $colorFooterSocial;
+                                        border-radius: $borderRadius;
+                                        width: 100%;
+                                        vertical-align: middle;
+                                    }
+                                }
+
+                                .buttons {
+                                    margin-bottom: 45px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// common content of belling address page
+
+.billing-info-wrap, .shipping-info-wrap {
+    background-color: $colorBaseWhite;
+    border: 1px solid $colorBorder;
+    border-radius: 3px;
+    width: 100%;
+
+
+
+    @include media(tablet) {
+        display: inline-block;
+    }
+
+    @include media(landscapeTablet) {
+        display: block;
+    }
+
+    .billing-info, .shipping-info {
+        text-align: center;
+
+        .title {
+            text-align: center;
+            line-height: 60px;
+            background-color: $bgcolorLightGrey;
+            border-radius: 3px 3px 0 0;
+            padding: 0px;
+            margin: -20px -20px 30px;
+
+            strong {
+                font-size: $fontSizeMM;
+            }
+        }
+
+        .info-list {
+            .name {
+                font-weight: $fontWeightnormal;
+                color: $colorBlack;
+            }
+
+            li {
+                padding: 2px 0;
+            }
+        }
+    }
+
+    .payment-method-info, .shipping-method-info {
+        text-align: center;
+
+        .title {
+            text-align: center;
+        }
+
+        .info-list {
+            li {
+                span {
+                    padding: 2px 0;
+                    font-size: $fontSizeSM;
+                    color: $colorDarklight;
+
+                    @include media(small) {
+                        font-size: $fontSizeXXS;
+                    }
+                }
+            }
+
+            .name {
+                font-weight: $fontWeightnormal;
+                color: $colorBlack;
+            }
+        }
+    }
+}
+
+.checkout-page {
+    .title {
+        strong {
+            @include media(small) {
+                font-size: $fontSizeMM;
+            }
+        }
+    }
+
+    .order-summary-content {
+        padding: 10px;
+
+        @include media(small) {
+            padding: 0px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+
+            @include media(tablet) {
+                float: none;
+            }
+
+            @include media(desktop) {
+                width: 70%;
+                float: left;
+            }
+
+            thead {
+                th {
+                    border-style: none;
+                    padding: 20px;
+                    color: $colorFooterLinks;
+                    font-size: $fontSizeMM;
+                }
+
+                .product {
+                    width: 100%;
+                }
+            }
+
+            tbody {
+                td {
+                    border-style: none;
+                    padding: 20px;
+                    min-width: 100px;
+
+
+                    a, span {
+                        font-size: $fontSizeMM;
+                    }
+                }
+
+                .cart-item-row {
+                    .unit-price {
+                        margin-top: 0px;
+
+                        label {
+                            @include media(small) {
+                                padding-left: 8px;
+                            }
+                        }
+                    }
+                }
+
+
+                .subtotal {
+                    span {
+                        font-size: $fontSizeM;
+                        font-weight: $fontWeightBold;
+                        font-family: $national;
+                    }
+                }
+
+
+                .product-picture {
+
+
+                    a {
+                        text-align: center;
+                        display: inline-block;
+                        min-width: 50px;
+                    }
+                }
+
+                .product {
+                    a {
+                        text-decoration: none;
+                        font-weight: $fontWeightLight;
+
+                        &:hover {
+                            color: $primaryBrandClr;
+                        }
+                    }
+                }
+
+                .subtotal {
+                    border-right: 1px solid $colorBorder;
+                }
+            }
+        }
+
+        .cart-footer {
+            @include media(desktop) {
+                float: none;
+                width: 100%;
+            }
+
+            .totals {
+                margin-top: 20px;
+
+                @include media(tablet) {
+                    border: 1px solid $lightgray;
+                }
+
+                @include media(desktop) {
+                    float: right;
+                    width: calc(30% - 20px);
+                    margin-top: 0px;
+                }
+
+                width: 100%;
+                max-width: 1200px;
+
+                .cart-total {
+                    border: none;
+                }
+
+                tbody {
+                    tr {
+                        td {
+                            label, span {
+                                font-size: $fontSizeS;
+                                font-style: normal;
+                            }
+                        }
+                    }
+
+                    .order-total {
+                        .cart-total-left, .cart-total-right {
+                            color: $primaryBrandClr;
+                            font-family: $national;
+
+                            label, strong {
+                                font-size: $fontSizeXXM;
+                            }
+
+                            button {
+                                border: none;
+                            }
+                        }
+                    }
+                }
+
+                .total-info {
+                    .text {
+                        text-align: center;
+                    }
+                }
+            }
+        }
+
+        .cart-options {
+            display: none;
+        }
+    }
+
+    .new-billing-address {
+        display: none;
+    }
+}
+
+//payement info page
+
+.payment-info-page {
+    .payment-info {
+        max-width: 800px;
+        margin: 0 auto 45px;
+
+        .info {
+            @include media(small){
+                padding:30px 0px;
+            }
+            table {
+                border: 1px solid $colorBorder;
+                padding-top: 30px;
+
+                td {
+                    padding: 30px 20px 20px 20px;
+
+                    p {
+                        text-align: center;
+                        color: $colorBlack;
+
+                        b {
+                            font-weight: $fontWeightnormal;
+                            font-size: $fontSizeS;
+                        }
+                    }
+                }
+
+                tbody {
+                    tr {
+                        &:first-child {
+                            padding-top: 30px;
+
+                            @include media(landscapeTablet) {
+                                padding-top: 0px;
+                            }
+                        }
+
+                        td {
+                            padding: 0px;
+
+                            label {
+                                color: $textcolor;
+                                font-size: $fontSizeS;
+                            }
+
+                            select, input {
+                                height: 45px;
+                                max-width: 250px;
+                                padding: 0 35px 0 20px;
+                                border: 1px solid $btnGrey-hover;
+                                border-radius: $borderRadius;
+                            }
+
+
+                            select {
+                                -webkit-appearance: none;
+                                background: url('../../Content/images/latest-img/select-arrow-dark.svg')no-repeat right 15px center;
+                                appearance: none;
+                            }
+
+                            input[name="CardCode"] {
+                                width: 270px !important;
+                            }
+
+                            span {
+                                text-align: left;
+                            }
+                        }
+
+                        &:first-child {
+                            td {
+
+                                @include media(landscapeTablet) {
+                                    padding-top: 30px;
+                                }
+
+                                select {
+                                    width: 100%;
+                                }
+                            }
+                        }
+
+                        &:last-child {
+                            td {
+                                padding-bottom: 15px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        form {
+            .info {
+                tr {
+                    text-align:center;
+                    td {
+                        width: 100% !important;
+                        text-align: center;
+
+                        label {
+                            font-size: $fontSizeS;
+                        }
+                    }
+                }
+
+
+                .details {
+                    padding: 20px;
+
+                    &:first-child {
+                        width: 100% !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// shipping payement options page
+
+.shipping-method-page {
+    .shipping-method {
+        .method-list {
+            li {
+                padding: 22px 22px 22px 85px;
+                display: block;
+                margin: 0 auto 10px;
+                text-align: left;
+                position: relative;
+                border: 1px solid $colorBorder;
+                border-radius: 3px;
+                max-width: 560px;
+                width: 100%;
+            }
+        }
+    }
+}
+
+//order confirm page
+
+.order-confirm-page {
+   
+
+    .order-summary-content {
+        .order-review-data {
+            max-width: 1200px;
+            margin: auto;
+
+            .billing-info-wrap, .shipping-info-wrap {
+                background-color: #fff;
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto;
+                float: none;
+
+                @include media(small) {
+                    width: 100%;
+                }
+            }
+
+            .shipping-info-wrap {
+
+                @include media(tablet) {
+                    margin-left: 20px;
+                }
+
+                @include media(landscapeTablet) {
+                    margin-left: 0px;
+                }
+            }
+        }
+    }
+}
+
+// payement method page
+
+.payment-method-page {
+
+
+
+    .payment-method {
+        ul {
+
+            li {
+                position: relative;
+                border: 1px solid $colorBorder;
+                border-radius: 3px;
+                padding: 22px 22px 22px 70px;
+                max-width: 560px;
+                text-align: left;
+                margin: 0 auto 10px;
+                display: block;
+                width: 100%;
+                padding: 12px 22px 12px 50px;
+
+                @include media(small) {
+                    padding: 12px 22px 12px 40px;
+                }
+
+                @include media(landscapeTablet) {
+                    width: 55%;
+                    max-width: 560px;
+                    padding: 12px 22px 12px 40px;
+                }
+
+                .method-name {
+
+                    .payment-logo {
+                        background-color: $colorBaseWhite;
+                        display: inline-block;
+                        margin: 0 15px 0 0;
+                        vertical-align: middle;
+
+                        @include media(small) {
+                            display: block;
+                            margin: 0 0 0 10px;
+                        }
+                    }
+
+                    .payment-details {
+                        display: inline-block;
+                        vertical-align: middle;
+                        max-width: calc(100% - 95px);
+                        text-align: left;
+                        margin-top: 0px;
+                        width: 300px;
+
+                        @include media(small) {
+                            width: 100%;
+                            max-width: 100%;
+                        }
+
+                        label {
+                            display: block;
+                            width: 100%;
+                            margin-bottom: 0px;
+
+                            @include media(small) {
+                                margin-top: 8px;
+                            }
+                        }
+
+                        input[type=radio] + label:before {
+                            content: "";
+                            left: 20px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.btn-holder {
+    &__commentButton {
+        position: relative;
+        height: 45px;
+
+        .btn {
+            width: auto;
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+
+            &:focus {
+                box-shadow: none;
+            }
+        }
+
+
+        .open-comment {
+            transition: width .3s ease .3s, max-width .3s ease .3s, padding .3s ease .3s, opacity .3s ease .3s, background-color .2s ease 0s;
+            opacity: 1;
+            background-color: $primaryBrandClr;
+            color: $colorBaseWhite;
+            border: none;
+            padding: 0 25px;
+            line-height: 45px;
+            text-transform: uppercase;
+            font-family: $national;
+            z-index: 9;
+
+            &:hover {
+                background: $primaryBrandClr-hover;
+            }
+        }
+
+        .close-comment {
+            background-color: $bgcolorButtonGrey;
+            opacity: 0;
+        }
+
+        &.active-comment {
+            .open-comment {
+                width: 0;
+                max-width: 0;
+                padding: 0;
+                opacity: .4;
+                transition-delay: 0s;
+            }
+
+            .close-comment {
+                width: auto;
+                max-width: 280px;
+                padding: 11px 27px;
+                opacity: 1;
+                transition: width .3s ease .3s, max-width .3s ease .3s, padding .3s ease .3s, opacity .3s ease .3s, background-color .2s ease 0s;
+
+                span {
+                    opacity: 1;
+                    color: $colorDarklight;
+                    text-transform: uppercase;
+                    font-family: $national;
+                }
+            }
+        }
+
+        .open-comment, .close-comment {
+            @include media(small) {
+                font-size: $fontSizeXXS;
+            }
+        }
+    }
+}
+
+//order-completed-page
+
+.html-order-details-page {
+    .master-wrapper-content {
+        padding: 70px 6vw;
+        width: 100%;
+
+        @include media(small) {
+            padding: 30px 3vw;
+        }
+
+        .center-1 {
+            margin-bottom: 0px;
+        }
+    }
+
+    .order-details-page {
+        .page-title {
+
+            h1 {
+                border-bottom: none;
+                font-size: $fontSizeM;
+            }
+
+            .print-order-button, .pdf-invoice-button {
+                display: inline-block;
+                line-height: 45px;
+                padding: 0 25px;
+                margin: 0 2px;
+                font-size: $fontSizeXS;
+                white-space: nowrap;
+                overflow: hidden;
+                min-width: 100px;
+                color: $colorDarklight;
+
+                &:hover {
+                    background-color: $colorWhite;
+                    text-decoration: none;
+                }
+            }
+
+            a {
+                background-color: $bgcolorButtonGrey;
+            }
+        }
+
+        .page-body {
+            .order-overview {
+                padding: 20px;
+                margin-bottom: 10px;
+
+                .order-number {
+                    strong {
+                        font-size: $fontSizeM;
+                        color: $primaryBrandClr;
+                        font-weight: $fontWeightnormal;
+                        text-transform: capitalize;
+                    }
+                }
+
+                .order-overview-content {
+                    li {
+                        font-size: $fontSizeS;
+                        color: $colorDarklight;
+                        line-height: 1.5;
+                        font-weight: $fontWeightLight;
+
+                        strong {
+                            font-weight: $fontWeightnormal;
+                            color: $colorBlack;
+                            font-size: $fontSizeS;
+                        }
+                    }
+                }
+            }
+
+            .order-details-area {
+                max-width: 1200px;
+                margin: auto;
+
+                .billing-info-wrap, .shipping-info-wrap {
+                    background-color: $colorBaseWhite;
+                    border: 1px solid $colorBorder;
+                    border-radius: 3px;
+
+                    @include media(tablet) {
+                        display: inline-block;
+                    }
+
+                    @include media(landscapeTablet) {
+                        display: block;
+                    }
+
+                    .billing-info, .shipping-info {
+                        text-align: center;
+
+                        .title {
+                            text-align: center;
+                            line-height: 60px;
+                            background-color: $bgcolorLightGrey;
+                            border-radius: 3px 3px 0 0;
+                            padding: 0px;
+                            margin: -20px -20px 30px;
+                        }
+
+                        .info-list {
+                            li {
+                                padding: 2px 0;
+
+                                @include media(small) {
+                                    font-size: $fontSizeXXS;
+                                }
+                            }
+                        }
+                    }
+
+                    .payment-method-info, .shipping-method-info {
+                        text-align: center;
+
+                        .title {
+                            text-align: center;
+                        }
+
+                        .info-list {
+                            li {
+                                span {
+                                    padding: 2px 0;
+                                    font-size: $fontSizeSM;
+                                    color: $colorDarklight;
+
+                                    @include media(small) {
+                                        font-size: $fontSizeXXS;
+                                    }
+                                }
+                            }
+
+                            .repost {
+                                .re-order-button {
+                                    background-color: $primaryBrandClr;
+                                    padding: 0px 15px;
+                                    text-transform: capitalize;
+
+                                    &:hover {
+                                        background-color: $primaryBrandClr-hover;
+                                    }
+                                }
+
+                                .hint {
+                                    margin-top: 10px;
+
+                                    em {
+                                        font-style: normal;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .shipping-info-wrap {
+                    @include media(tablet) {
+                        margin-left: 20px;
+                    }
+
+                    @include media(landscapeTablet) {
+                        margin-left: 0px;
+                    }
+                }
+            }
+
+            .products {
+                .data-table {
+                    @include media(landscapeTablet) {
+                        border: 1px solid $bgcolorButtonGrey;
+                    }
+
+                    thead, tbody {
+                        tr {
+
+
+                            th {
+                                font-size: $rootFontSize;
+                                color: $titlecolor;
+                            }
+
+                            &:last-child {
+
+                                @include media(landscapeTablet) {
+                                    border-bottom: none;
+                                }
+                            }
+                        }
+                    }
+
+                    tbody {
+                        tr {
+                            min-height: 260px;
+                            border: 1px solid $colorBorder;
+
+                            @include media(small) {
+                                min-height: 200px;
+                            }
+
+                            td {
+
+                                em {
+                                    a {
+                                        font-size: $fontSizeS;
+                                        font-style: normal;
+                                    }
+                                }
+
+                                .attributes {
+                                    font-size: $fontSizeS;
+                                }
+
+                                span {
+                                    font-size: $fontSizeS;
+                                    color: $colorDarklight;
+                                }
+
+                                padding: 5px;
+
+                                @include media(landscapeTablet) {
+                                    padding: 10px;
+                                }
+
+                                label {
+                                    font-weight: $fontWeightMediumBold;
+                                }
+                            }
+
+                            .quantity {
+                                margin-bottom: 0px;
+                                margin-top: 0px;
+                                text-align: center;
+                            }
+
+                            .unit-price {
+                                padding-top: 10px;
+                                text-align: center;
+                            }
+
+                            .total {
+                                padding-bottom: 10px;
+                                text-align: center;
+
+                                @include media(landscapeTablet) {
+                                    padding-bottom: 5px;
+                                }
+                            }
+
+                            .product {
+
+                                @include media(landscapeTablet) {
+                                    padding-left: 20px;
+                                }
+
+                                .attributes {
+                                    margin: 5px;
+                                    color: $colorDarklight;
+                                    margin-left: 0px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .options {
+                display: none;
+            }
+
+            .totals {
+                padding: 30px 20px;
+                background-color: $colorgrey;
+                width: 100%;
+                margin-bottom: 0px;
+
+                @include media(desktop) {
+                    float: right;
+                    width: calc(30% - 20px);
+                    clear: initial;
+                }
+
+                .total-info {
+                    background-color: $colorgrey;
+                    width: 100%;
+                    max-width: 380px;
+                    margin: 0 auto;
+                    padding: 0px;
+
+                    label {
+                        margin-bottom: 0px;
+                    }
+
+                    .value-left, .value-right {
+                        label, span {
+                            color: $primaryBrandClr;
+                            font-size: $fontSizeMM;
+                            font-family: $national;
+                        }
+                    }
+                }
+
+                .cart-total {
+                    border: none;
+
+                    tbody {
+                        tr {
+                            td {
+                                label, span {
+                                    font-size: $fontSizeS;
+                                    text-transform: capitalize;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .actions {
+                margin-top: 0px;
+
+                .re-order-button {
+                    width: 100%;
+                }
+            }
+        }
+
+        .billing-info-wrap {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            float: none;
+            margin-bottom: 30px;
+        }
+
+        tbody {
+            tr {
+                width: 100%;
+                margin: 0px;
+            }
+        }
+    }
+
+
+
+    .totals {
+        .actions {
+
+            .re-order-button {
+                background-color: $primaryBrandClr;
+                font-family: $national;
+                text-transform: uppercase;
+                font-size: $fontSizeS;
+
+                &:hover {
+                    background-color: $primaryBrandClr-hover;
+                }
+            }
+        }
+    }
+}
+
+//order completed page
+.order-completed-page, .page {
+    .page-title {
+        border-bottom: none;
+        margin-bottom: 0px;
+
+        h1 {
+            font-size: $fontSizeXL;
+            font-family: $national;
+            font-weight: $fontWeightMediumBold;
+        }
+    }
+
+    .no-data {
+        text-align: center;
+        font-size: $fontSizeMM;
+    }
+
+    .order-completed {
+        .title {
+            strong {
+                font-weight: $fontWeightLight;
+                font-size: $fontSizeSM;
+            }
+        }
+
+        .details {
+            max-width: 800px;
+            border: 1px solid $colorBorder;
+            border-radius: $borderRadius;
+            padding: 30px;
+            margin: 0 auto 30px;
+            text-align: center;
+
+            a {
+                display: inline-block;
+                margin: 20px 0 0;
+                padding: 0 20px;
+                max-width: 100%;
+                height: 45px;
+                line-height: 45px;
+                background-color: $colorBorder;
+                color: $colorDarklight;
+                border-radius: $borderRadius;
+                font-size: $fontSizeXS;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                font-weight: $fontWeightBold;
+                text-transform: uppercase;
+
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+
+            .order-number {
+                strong {
+                    font-size: $fontSizeMM;
+                    color: $primaryBrandClr;
+                    font-family: $national;
+                }
+            }
+        }
+    }
+}
+
+.html-order-confirm-page {
+    .order-confirm-page {
+        .order-summary {
+            margin-top: 25px;
+            .billing-info-wrap{
+                margin-bottom:20px;
+            }
+        }
+    }
+}
+
+.payment-info-page {
+    .pay-method {
+        form {
+            .info {
+                table {
+                    tbody {
+                        tr {
+                            td {
+
+                                &:first-child {
+                                   /* width: 100% !important;*/
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

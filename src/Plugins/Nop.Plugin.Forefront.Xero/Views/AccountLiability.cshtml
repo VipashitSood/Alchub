@@ -1,0 +1,89 @@
+﻿@model Nop.Plugin.Forefront.Xero.Models.ForeFrontXeroModel
+@inject IEventPublisher eventPublisher
+
+@{ Layout = ""; }
+
+<style>
+    .accountliability {
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .lialibity {
+        margin-bottom: 16px;
+    }
+</style>
+<form asp-controller="ForefrontXero" asp-action="SavePaymentinformation" method="post">
+    <div class="panel-group">
+
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <div class="form-group row">
+                    <div class="col-md-8">
+                        <h4>Payment Account Mapping</h4>
+                        <h5>Map payment method with Xero account so payments are created in Xero respectively. Payment method system name is also updated in payment reference of Xero.</h5>
+                    </div>
+                    <div class="col-md-4 text-right">
+
+                        <input type="submit" name="save" class="btn bg-primary" value="@T("Admin.Common.Save")" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="form-group row">
+                    <div class="col-md-4">
+                        <div class="form-text-row accountliability" style="">Payment Method</div>
+
+                    </div>
+                    <div class="col-md-8 accountliability">
+                        <div class="form-text-row">Xero Account</div>
+                    </div>
+                </div>
+                @foreach (var a in Model.AccountLiabilityModels)
+                {
+    <div class="form-group row">
+        <div class="col-md-4">
+            <div class="form-text-row">@a.NopPaymentMethodName</div>
+
+        </div>
+        <div class="col-md-8">
+            <select class="form-control valid" name="Account_@a.PaymentMethodSystemName" id="Account_@a.PaymentMethodSystemName">
+
+                @foreach (var bx in a.AvailablePaymentMethod)
+                {
+                    if (bx.Selected)
+                    {
+
+<option selected="selected" value="@bx.Value">@bx.Text</option> }
+                    else
+                    {
+
+<option value="@bx.Value">@bx.Text</option>}
+
+
+                }
+
+            </select>
+
+        </div>
+    </div>}
+
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+
+
+
+
+
+
+

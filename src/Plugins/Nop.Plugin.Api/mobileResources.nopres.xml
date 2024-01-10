@@ -1,0 +1,729 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--<Language Name="English">
+  <LocaleResource Name="Account.AccountActivation">
+    <Value>Account activation</Value>
+  </LocaleResource>
+</Language>-->
+
+<Language Name="English">
+    <LocaleResource Name="Nop.Api.Mobile.app_name">
+        <Value>NOP</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.user_name">
+        <Value>User name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.email">
+        <Value>Email</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.password">
+        <Value>Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="appbar_scrolling_view_behavior">
+        <Value>android.support.design.widget.AppBarLayout$ScrollingViewBehavior</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.first_name">
+        <Value>First Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.last_name">
+        <Value>Last Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.date_of_birth">
+        <Value>Date of Birth</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.date_of_birth2">
+        <Value>Date of Birth</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.gender">
+        <Value>Gender</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.confirm_password">
+        <Value>Confirm Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.register">
+        <Value>Register</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.recover_email">
+        <Value>Recover Email</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.title_activity_home">
+        <Value>HomeActivity</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.navigation_drawer_open">
+        <Value>Open navigation drawer</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.navigation_drawer_close">
+        <Value>Close navigation drawer</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.nav_header_desc">
+        <Value>Navigation header</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.action_settings">
+        <Value>Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.alert">
+        <Value>Alert</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.menu_home">
+        <Value>Home</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.menu_gallery">
+        <Value>Gallery</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.menu_slideshow">
+        <Value>Slideshow</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.phone_number">
+        <Value>Phone Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.update_profile">
+        <Value>Update Profile</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.home">
+        <Value>Home</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.category">
+        <Value>Category</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.search">
+        <Value>Search</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.my_profile">
+        <Value>My Profile</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.order_information">
+        <Value>Order Information</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.order_summary">
+        <Value>Order Summary</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Nop.Api.Mobile.clear">
+        <Value>Clear Search History</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.search_hint">
+        <Value>Search...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.name">
+        <Value>Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.email_address">
+        <Value>Email Address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.your_subject">
+        <Value>Your Subject</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.your_enquiry">
+        <Value>Your Enquiry</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.enter_your_enquiry">
+        <Value>Enter Your Enquiry</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.old_password">
+        <Value>Old Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.new_password">
+        <Value>New Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.confirm_new_password">
+        <Value>Confirm New Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.friend_s_email">
+        <Value>Friend\'s Email</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.your_email_address">
+        <Value>Your Email Address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.personal_message">
+        <Value>Personal Message</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.choose_the_language">
+        <Value>Choose the Language</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Nop.Api.Mobile.enter_name">
+        <Value>Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.enter_email">
+        <Value>Email</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.mobile_number">
+        <Value>Mobile Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.country">
+        <Value>Country</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.state_province">
+        <Value>State/Province</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.pincode">
+        <Value>Pincode</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.address">
+        <Value>Address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.locality_town">
+        <Value>Locality/Town</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.city_district">
+        <Value>City/District</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.action_notification">
+        <Value>Notification</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.title_activity_login">
+        <Value>LoginActivity</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.choose_camera">
+        <Value>Choose Camera</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.choose_from_gallery">
+        <Value>Choose From Gallery</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.action_sign_in">
+        <Value>Sign in or register</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.action_sign_in_short">
+        <Value>Sign in</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.invalid_username">
+        <Value>Not a valid username</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.login_failed">
+        <Value>Login failed</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.guest_user_alert">
+        <Value>Please login first to continue!!</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.cancel">
+        <Value>Cancel</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.cantinue">
+        <Value>Continue</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Nop.Api.Mobile.capture_button_alt">
+        <Value>Capture</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.switch_camera_button_alt">
+        <Value>Switch camera</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.gallery_button_alt">
+        <Value>Gallery</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.back_button_alt">
+        <Value>Back</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.share_button_alt">
+        <Value>Share</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.share_hint">
+        <Value>Share using</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.capture_mode_camera">
+        <Value>Camera</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.capture_mode_hdr">
+        <Value>HDR</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.capture_mode_night">
+        <Value>Night</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.delete_button_alt">
+        <Value>Delete</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.delete_dialog">
+        <Value>Are you sure to delete current photo?</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.yes">
+        <Value>Yes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.no">
+        <Value>No</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.logout_confirmation">
+        <Value>Are you sure you want to signout ?</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.enter_first_name">
+        <Value>Enter First Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.enter_last_name">
+        <Value>Enter Last Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.enter_mobile_no">
+        <Value>Enter Mobile No</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.enter_pincode">
+        <Value>Enter Pincode</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.enter_address">
+        <Value>Enter Address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.enter_city">
+        <Value>Enter City</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.save">
+        <Value>Save</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.my_address">
+        <Value>My Address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.my_orders">
+        <Value>My Orders</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.orderhistory">
+        <Value>Order History</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.return_request">
+        <Value>Return Request</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.choose_language">
+        <Value>Choose Language</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.change_password">
+        <Value>Change Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.reset_password">
+        <Value>Reset Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.reward_point">
+        <Value>Reward Point</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.shopping_cart">
+        <Value>Shopping Cart</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.deals_of_the_day">
+        <Value>Deals of the Day</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.featured_products">
+        <Value>Featured Products</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.checkout">
+        <Value>Checkout</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.email_a_friend">
+        <Value>Email a Friend</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.contact_us">
+        <Value>Contact Us</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.compare_list">
+        <Value>Compare List</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.my_notification">
+        <Value>My Notification</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.my_wishlist">
+        <Value>My Wishlist</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.about_us">
+        <Value>About Us</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.privacy_policy">
+        <Value>Privacy Policy</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.legal">
+        <Value>Legal</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.logout">
+        <Value>Logout</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.return_item_s_from">
+        <Value>Return Item\'s From</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.which_items_do_you_want_to_return">
+        <Value>Which items do you want to return?</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.unit_price">
+        <Value>Unit Price :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.qty_to_return">
+        <Value>Qty. to Return :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.why_are_you_returning_these_items">
+        <Value>Why are you returning these items?</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.return_reason">
+        <Value>Return Reason</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.return_reason2">
+        <Value>Return Reason :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.return_action">
+        <Value>Return Action</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.return_action2">
+        <Value>Return Action :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.upload_file">
+        <Value>Upload File</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.upload_your_files">
+        <Value>Upload your files</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.try_to_upload_more_files_to_see_them_here">
+        <Value>Try to upload more files to see them here</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.submit_return_request">
+        <Value>Submit Return Request</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.product_reviews_for">
+        <Value>Product Reviews For</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.review_title">
+        <Value>Review Title</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.review_text">
+        <Value>Review Text</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.rating">
+        <Value>Rating</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.bad">
+        <Value>Bad</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.excellent">
+        <Value>Excellent</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.submit">
+        <Value>Submit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.customer_review">
+        <Value>Customer Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.view_all">
+        <Value>View All</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.method">
+        <Value>Method</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.billing_address">
+        <Value>Billing Address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.shipping_address">
+        <Value>Shipping Address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.same_as_billing_address">
+        <Value>Same as billing address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.compare_with_similar_items">
+        <Value>COMPARE WITH SIMILAR ITEMS</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.email_your_wishlist_to_a_friend">
+        <Value>Email your wishlist to a Friend !</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.send_email">
+        <Value>Send Email</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.apply">
+        <Value>Apply</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.product_found">
+        <Value>Product found</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.forgot_your_password">
+        <Value>Forgot your Password?</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.please_enter_your_email_address_below_you_will_receive_a_link_to_reset_your_password">
+        <Value>Please enter your email address below, you will receive a link to reset your password.</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.find_a_language">
+        <Value>Find a Language</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.login">
+        <Value>Login</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.please_login_to_your_account">
+        <Value>Please login to your account</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.email_id">
+        <Value>Email Id</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.remember_me">
+        <Value>Remember me</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.forgot_password">
+        <Value>Forgot Password?</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.don_t_have_an_acoount">
+        <Value>Don’t have an acoount ?</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.create_an_account">
+        <Value>Create an Account</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.continue_as_guest_user">
+        <Value>Continue as Guest User</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.showing_all_orders">
+        <Value>Showing All Orders</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.filters">
+        <Value>Filters</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.male">
+        <Value>Male</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.female">
+        <Value>Female</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.order_number">
+        <Value>Order Number :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.order_date">
+        <Value>Order Date :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.order_status">
+        <Value>Order Status :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.order_total">
+        <Value>Order Total :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.shipping_details">
+        <Value>Shipping Details</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.total_mrp">
+        <Value>Total MRP</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.shipping_charges">
+        <Value>Shipping Charges</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.tax_amp_charges">
+        <Value><![CDATA[Tax & Charges]]></Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.total_amount">
+        <Value>Total Amount</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.re_order">
+        <Value>Re-Order</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.total_order_discount">
+        <Value>Total Order Discount</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.gift_discount">
+        <Value>Gift Discount</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.shipping_method">
+        <Value>Shipping Method</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.payment_method">
+        <Value>Payment Method</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.price_inclusive_of_all_taxes">
+        <Value>Price inclusive of all taxes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.quantity">
+        <Value>Quantity</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.product_details">
+        <Value>Product Details</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.add_to_wishlist">
+        <Value>Add to Wishlist</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.add_to_cart">
+        <Value>Add to Cart</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.sort">
+        <Value>SORT</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.filter">
+        <Value>FILTER</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.please_enter_detail_to_register">
+        <Value>Please enter detail to Register</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.already_have_an_account">
+        <Value>Already have an account ?</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.available_offers_10_instant_discount_on_debit_cards">
+        <Value>Available Offers 10% instant discount on Debit Cards.</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.apply_coupons">
+        <Value>Apply Coupons</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.apply_gift_card">
+        <Value>Apply Gift Card</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.place_order">
+        <Value>Place Order</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.your_order_has_been_successfully_processed">
+        <Value>your order has been successfully processed</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.payment_amp_shipping_details">
+        <Value><![CDATA[PAYMENT & SHIPPING DETAILS]]></Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.order_no">
+        <Value>Order No</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.order_amount">
+        <Value>Order Amount</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.order_discount">
+        <Value>Order Discount</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.continue_shopping">
+        <Value>Continue Shopping</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.update">
+        <Value>Update</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.price">
+        <Value>Price</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.review">
+        <Value>Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.all_review">
+        <Value>All Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.clear_filter">
+        <Value>Clear Filter</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.sort_by">
+        <Value>SORT BY</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.no_connection">
+        <Value>No Connection</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.please_check_your_internet_connectivity_and_try_again">
+        <Value>Please check your internet connectivity and try again</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.retry">
+        <Value>Retry</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.no_data_found">
+        <Value>No data found</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.search_your_product">
+        <Value>Search Your Product</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.something_went_wrong">
+        <Value>Something went wrong</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.Please_select_atleast_one_shipping_method">
+        <Value>Please select atleast one shipping method</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.Please_select_atleast_one_payment_method">
+        <Value>Please select atleast one payment method</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.add_new_address">
+        <Value>Add New Address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.please_try_again_later">
+        <Value>Please try again later</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.default_address">
+        <Value>Default Address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.edit">
+        <Value>Edit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.delete">
+        <Value>Delete</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.delete_title">
+        <Value>Delete Item</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.view_details">
+        <Value>View Details</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.total">
+        <Value>Total :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.exchange_return">
+        <Value>Exchange/ Return :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.no_internet_connection">
+        <Value>No Internet Connection</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.verify_otp">
+        <Value>Verify OTP</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.please_type_verification_code_sent_on">
+        <Value>Please type verification code sent on</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.enter_4_digit_otp">
+        <Value>Enter 4 digit OTP</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.resend_otp">
+        <Value>Resend OTP</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.confirm_otp">
+        <Value>Confirm OTP</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.return_item">
+        <Value>Return Item :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.return_item2">
+        <Value>Return Item </Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.date_requested">
+        <Value>Date Requested :</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.date">
+        <Value>Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.points">
+        <Value>Points</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.points_balance">
+        <Value>Points Balance</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.message">
+        <Value>Message</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.end_date">
+        <Value>End Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.all">
+        <Value>All</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.pending">
+        <Value>Pending</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.processing">
+        <Value>Processing</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.complete">
+        <Value>Completed</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.Api.Mobile.cancelled">
+        <Value>Cancelled</Value>
+    </LocaleResource>
+    <LocaleResource Name="Nop.api.register.successfully">
+        <Value>Registration successful</Value>
+    </LocaleResource>
+    <LocaleResource Name="api.address.saved.successfully">
+        <Value>Address saved</Value>
+    </LocaleResource>
+    <LocaleResource Name="api.address.view">
+        <Value>View address</Value>
+    </LocaleResource>
+    <LocaleResource Name="api.Address.Updated.successfully">
+        <Value>Address updated successfully</Value>
+    </LocaleResource>
+    <LocaleResource Name="api.Address.NotFound">
+        <Value>Address not found</Value>
+    </LocaleResource>
+    <LocaleResource Name="api.Address.Delete.successfully">
+        <Value>Address deleted</Value>
+    </LocaleResource>
+    <LocaleResource Name="nop.api.shoppingcartitems">
+        <Value>shopping cart items</Value>
+    </LocaleResource>
+    <LocaleResource Name="nop.api.checkout.billingaddress.saved">
+        <Value>Checkout Billing saved. </Value>
+    </LocaleResource>
+    <LocaleResource Name="nop.api.checkout.paymentmethod.selected.saved">
+        <Value>Checkout payment method saved</Value>
+    </LocaleResource>
+    <LocaleResource Name="nop.api.checkout.orderplace.success">
+        <Value>Order placed succesfully</Value>
+    </LocaleResource>
+    <LocaleResource Name="nop.api.productdetailsvendors">
+        <Value>Vendors</Value>
+    </LocaleResource>
+    <LocaleResource Name="nop.api.onlyregisteruser">
+        <Value>Guest user cannot like/unlike the review</Value>
+    </LocaleResource>
+</Language>

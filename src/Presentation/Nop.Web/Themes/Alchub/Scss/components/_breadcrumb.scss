@@ -1,0 +1,104 @@
+@import "../helpers/helpers";
+
+.breadcrumb {
+    background: $colorBaseWhite;
+    top: 15px;
+    left: 150px;
+    margin-bottom: 15px;
+    padding: 0px;
+
+    ul {
+        margin-bottom: 5px;
+        padding: 0px;
+        margin-top: 0px;
+        display: flex;
+
+        @include media(desktop) {
+            margin-top: -10px;
+        }
+
+        li {
+            height: 30px;
+
+            a {
+                &:focus {
+                    color: $orangecolor;
+                }
+
+                &:hover {
+                    color: $orangecolor;
+                }
+            }
+
+            span {
+                margin: 0px;
+                font-size: $fontSizeS;
+                text-transform: capitalize;
+
+                &:hover {
+                    color: $orangecolor;
+                }
+
+                a {
+                    &:hover {
+                        color: $orangecolor;
+                    }
+
+                    &:first-child {
+                        margin-left: 0px;
+                    }
+                }
+            }
+
+            .delimiter {
+                font-weight: $fontWeightDarkBold;
+            }
+
+            strong {
+                overflow: hidden;
+                font-size: $fontSizeS;
+                text-transform: capitalize;
+                margin-left: -4px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                width: 120px;
+                height: 30px;
+            }
+
+            &:last-child {
+                margin-left: -1px;
+                .delimiter {
+                    display: none;
+                }
+            }
+        }
+    }
+    /*  @include media(small) {
+        position: absolute;
+        top: -539px;
+        left: 11px;
+        border-bottom: 1px solid $colorBorder;
+    }*/
+}
+
+@include media(small){
+.image-wrap{
+    .breadcrumb{
+        display:none;
+    }
+}
+}
+.picture-wrapper {
+    .breadcrumb {      
+        border-bottom: 1px solid $lightgray;
+        }
+    }
+        @include media(desktop) {
+            .picture-wrapper {
+                .breadcrumb {
+                    display: none;
+                    border-bottom: 1px solid $lightgray;
+                }
+            }
+        }
+ 

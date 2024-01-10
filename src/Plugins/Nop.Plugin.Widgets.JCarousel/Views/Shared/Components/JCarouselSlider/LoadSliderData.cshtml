@@ -1,0 +1,65 @@
+@using Nop.Plugin.Widgets.JCarousel.Models.Configuration
+@model JCarouselModel
+@using Nop.Services.Catalog;
+@using Nop.Services.Configuration;
+@inject ICategoryService categoryService
+@inject IStoreContext storeContext
+@inject ISettingService settingService
+
+@{
+    var store = await storeContext.GetCurrentStoreAsync();
+    var settings = await settingService.LoadSettingAsync<JCarouselPluginSettings>(store.Id);
+}
+
+@if (Model.JcarouselProductsModel.Products.Count > 0)
+{
+    var url = string.Empty;
+    @if (Model.ParentCategoryId == 0)
+    {
+        url = $"search?cid={Model.CategoryId}";
+    }
+    else
+    {
+        var parentCategoryId = await categoryService.GetCategoryByIdAsync(Model.ParentCategoryId) != null ?
+                 (await categoryService.GetCategoryByIdAsync(Model.ParentCategoryId)).ParentCategoryId : 0;
+
+        if (parentCategoryId == 0)
+            url = "search?cid=" + Model.ParentCategoryId + "&subCatid=" + Model.CategoryId;
+        else
+            url = "search?cid=" + parentCategoryId + "&subCatid=" + Model.ParentCategoryId + "," + Model.CategoryId;
+    }
+    <div class="product-grid">
+        <div class="view-all-wrapper">
+            <div class="title">
+                <strong>@Model.Name</strong>
+            </div>
+            @*hide view all link for bestseller*@
+            @if (Model.SelectedCategoryId > 0)
+            {
+                <div class="view-btn">
+                    @*<a href="@Url.RouteUrl("Category", new { SeName = jcarousel.SeName })">@T("Plugins.Widgets.JCarousel.Viewall")</a>*@
+                    <a href="@url">@T("Plugins.Widgets.JCarousel.Viewall")</a>
+                </div>
+            }
+        </div>
+        <div class="item-grid owl-carousel owl-theme jcarousel-list">
+            @*call custom product box in catalog and jcarsouel, to handle fastest slot lazy loading.*@
+            @await Html.PartialAsync("_ProductBoxAlchub", Model.JcarouselProductsModel.Products)
+        </div>
+    </div>
+    @if (settings.EnableViewAll)
+    {
+        <script>
+            $(document).ready(function () {
+                // Add a click event listener to the "Next" button
+                $(".item-grid .owl-next").on("click", function () {
+                    // Check if the "disabled" class is present
+                    if ($(this).hasClass("disabled")) {
+                        // Redirect to the category page
+                        window.location.href = "@url";
+                    }
+                });
+            });
+        </script>
+    }
+}

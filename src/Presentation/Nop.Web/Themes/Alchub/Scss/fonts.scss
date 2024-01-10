@@ -1,0 +1,24 @@
+@import "helpers/_helpers";
+
+/*@font-face {
+    font-family: $fontFamilyCustomRegular;
+    src: url('../fonts/national-regular-webfont.woff2') format('woff2'), url('../fonts/national-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: $national;
+    src: url('../fonts/National-Bold.woff2') format('woff2'), url('../fonts/National-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+*/
+@font-face {
+    font-family: $iconFontFamily;
+    src: url('../fonts/emporium-icons.woff') format('woff'), url('../fonts/emporium-icons.svg') format('svg');
+    font-weight: normal;
+    font-style: normal
+}

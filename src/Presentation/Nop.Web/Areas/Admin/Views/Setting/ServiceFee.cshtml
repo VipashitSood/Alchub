@@ -1,0 +1,107 @@
+@model ServiceFeeSettingsModel
+@using Nop.Core.Alchub.Domain.ServiceFee;
+@using Nop.Services
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Configuration.Settings.ServiceFee").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("ServiceFee settings");
+}
+
+@{
+    const string hideInfoBlockAttributeName = "ServiceFeeSettingsPage.HideCommonBlock";
+    var customer = await workContext.GetCurrentCustomerAsync();
+    var hideInfoBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideInfoBlockAttributeName);
+}
+
+<script>
+    $(document).ready(function() {
+        $("#@Html.IdFor(model => model.ServiceFeeTypeId)").change(toggleServiceType);
+        toggleServiceType();
+    });
+
+    function toggleServiceType() {
+        var selectedServiceTypeId = $("#@Html.IdFor(model => model.ServiceFeeTypeId)").val();
+        if (selectedServiceTypeId == @((int)ServiceFeeType.Percentage)) {
+            $('#maximumServiceFee').showElement();
+            $('#serviceFeePercentage').showElement();
+            $('#serviceFee').hideElement();
+        }
+        else {
+            $('#serviceFee').showElement();
+            $('#maximumServiceFee').hideElement();
+            $('#serviceFeePercentage').hideElement();
+        }
+    }
+</script>
+
+<form asp-controller="Setting" asp-action="ServiceFee" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.Configuration.Settings.ServiceFee")
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.Save")
+            </button>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                @await Component.InvokeAsync("StoreScopeConfiguration")
+                <div asp-validation-summary="All"></div>
+
+                <nop-cards id="product-cards">
+                    <nop-card asp-name="service-fee-info" asp-icon="fas fa-info" asp-title="@T("Admin.Configuration.Settings.ServiceFee.Info")" asp-hide-block-attribute-name="@hideInfoBlockAttributeName" asp-hide="@hideInfoBlock" asp-advanced="false">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-override-store-checkbox asp-for="ServiceFeeTypeId_OverrideForStore" asp-input="ServiceFeeTypeId" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                    <nop-label asp-for="ServiceFeeTypeId" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-select asp-for="ServiceFeeTypeId" asp-items="@await ((ServiceFeeType) Model.ServiceFeeTypeId).ToSelectListAsync()" />
+                                    <span asp-validation-for="ServiceFeeTypeId"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row" id="serviceFee">
+                                <div class="col-md-3">
+                                    <nop-override-store-checkbox asp-for="ServiceFee_OverrideForStore" asp-input="ServiceFee" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                    <nop-label asp-for="ServiceFee" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="ServiceFee" />
+                                    <span asp-validation-for="ServiceFee"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row" id="serviceFeePercentage">
+                                <div class="col-md-3">
+                                    <nop-override-store-checkbox asp-for="ServiceFeePercentage_OverrideForStore" asp-input="ServiceFeePercentage" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                    <nop-label asp-for="ServiceFeePercentage" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="ServiceFeePercentage" />
+                                    <span asp-validation-for="ServiceFeePercentage"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row" id="maximumServiceFee">
+                                <div class="col-md-3">
+                                    <nop-override-store-checkbox asp-for="MaximumServiceFee_OverrideForStore" asp-input="MaximumServiceFee" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                    <nop-label asp-for="MaximumServiceFee" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="MaximumServiceFee" />
+                                    <span asp-validation-for="MaximumServiceFee"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </nop-card>
+                </nop-cards>
+            </div>
+        </div>
+    </section>
+</form>

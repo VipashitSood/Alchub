@@ -1,0 +1,172 @@
+﻿@model PriceRangeFilterModel
+@using Nop.Core.Domain.Catalog
+@inject CatalogSettings catalogSettings
+@{
+    var prOptionValue1 = catalogSettings.FilterPriceRangeOption1 > 0 ? catalogSettings.FilterPriceRangeOption1 : 10;
+    var prOptionValue2 = catalogSettings.FilterPriceRangeOption2 > 0 ? catalogSettings.FilterPriceRangeOption2 : 20;
+    var prOptionValue3 = catalogSettings.FilterPriceRangeOption3 > 0 ? catalogSettings.FilterPriceRangeOption3 : 30;
+    var priceRangeOption1 = string.Format(T("Alchub.Catalog.Filter.PriceRange.Option.Text").Text, prOptionValue1);
+    var priceRangeOption2 = string.Format(T("Alchub.Catalog.Filter.PriceRange.Option.Text").Text, prOptionValue2);
+    var priceRangeOption3 = string.Format(T("Alchub.Catalog.Filter.PriceRange.Option.Text").Text, prOptionValue3);
+}
+
+<script asp-exclude-from-bundle="true" src="~/lib_npm/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js" asp-location="Footer"></script>
+
+@*<div class="product-filter price-range-filter1" id="selected-range" style="display:none">
+    <div class="filter-title">
+        <div class="toogle-wrap">
+            <strong>@T("Selected.PriceRange")</strong>
+        </div>
+    </div>
+    <div class="filter-content">
+        <div class="price-text">
+            <label>@T("Price.rangebox")</label>
+            <div class="selected-price-range">
+                <button class="range" id="btn-range"></button>
+            </div>
+        </div>
+
+    </div>
+</div>*@
+
+
+
+<div class="product-filter price-range-filter1">
+    <div class="filter-title">
+        <div class="toogle-wrap">
+            <strong>@T("Filtering.PriceRangeFilter")</strong>
+        </div>
+    </div>
+    <div class="filter-content">
+        <div class="price-text">
+            <label>@T("Alchub.Catalog.Filter.PriceRange.Select")</label>
+            <div class="price-range-wrap">
+                <a id="price-range-option1" class="price-range-option range" onclick="setCustomPriceRange(0,@(prOptionValue1))">@priceRangeOption1</a>
+                <a id="price-range-option2" class="price-range-option range" onclick="setCustomPriceRange(0,@(prOptionValue2))">@priceRangeOption2</a>
+                <a id="price-range-option3" class="price-range-option range" onclick="setCustomPriceRange(0,@(prOptionValue3))">@priceRangeOption3</a>
+                @* <a class="price-range-option range" onclick="toggleCustomPriceRangePnl(true); return false;">@T("Alchub.Catalog.Filter.PriceRange.Custom").Text</a>*@
+            </div>
+            <div id="custom-pricerange-pnl">
+                <input type="number" id="price-range-custom-from" class="price-range-custom-input" placeholder="min"
+                       min="0" step="1" onkeypress='return event.charCode >= 48 && event.charCode <= 57' />
+                <input type="number" id="price-range-custom-to" class="price-range-custom-input" placeholder="max"
+                       min="0" step="1" onkeypress='return event.charCode >= 48 && event.charCode <= 57' />
+                <button class="price-range-option range" onclick="setCustomPriceRange($('#price-range-custom-from').val(),$('#price-range-custom-to').val())">@T("Alchub.Catalog.Filter.PriceRange.Custom.Button.Apply").Text </button>
+            </div>
+        </div>
+    </div>
+
+    <script asp-location="Footer">
+        $(document).ready(function () {
+            //check if price filter appyied, then show in custom price filter
+            var priceRangeFilter = getParameterByName('price', window.location.href);
+            //console.log(priceRangeFilter);
+            if (priceRangeFilter && priceRangeFilter.length > 0) {
+                var qPriceFrom = priceRangeFilter.split("-")[0];
+                var qPriceTo = priceRangeFilter.split("-")[1];
+                $('#price-range-custom-from').val("" + qPriceFrom + "");
+                $('#price-range-custom-to').val("" + qPriceTo + "");
+                //toggleCustomPriceRangePnl(true);
+
+                //add active class for clicked option
+                if (parseInt(qPriceFrom) == 0) {
+                    if (parseInt(qPriceTo) == parseInt(@prOptionValue1)) {
+                        $("#price-range-option1").addClass("active-option");
+                    } else if (parseInt(qPriceTo) == parseInt(@prOptionValue2)) {
+                        $("#price-range-option2").addClass("active-option");
+                    } else if (parseInt(qPriceTo) == parseInt(@prOptionValue3)) {
+                        $("#price-range-option3").addClass("active-option");
+                    }
+                }
+            }
+        });
+
+        const intRegex = /^\d+$/;
+        function setCustomPriceRange(from, to) {
+            if (!intRegex.test(from) || !intRegex.test(to)) {
+                //alert('Not a number');
+                return false;
+            }
+
+            var location = window.location.href;
+            var priceR = "" + from + "-" + to + "";
+            //alert(priceR);
+            location = updateQueryStringParameter(location, "price", priceR);
+            setLocation(location);
+        }
+        @* function toggleCustomPriceRangePnl(display) {
+            $('#custom-pricerange-pnl').toggle();
+
+            //if (display) {
+            //    $('#custom-pricerange-pnl').toggle();
+            //} else {
+            //    $('#custom-pricerange-pnl').hide();
+            //}
+            }*@
+    </script>
+</div>
+
+@*<div class="product-filter price-range-filter">
+    <div class="filter-title">
+        <div class="toogle-wrap">
+            <strong>@T("Filtering.PriceRangeFilter")</strong>
+        </div>
+    </div>
+    <div class="filter-content">
+        <div class="selected-price-range">
+            <span class="from"></span>
+            <span class="to"></span>
+        </div>
+        <div id="price-range-slider"></div>
+        <script asp-location="Footer">
+            $(document).ready(function () {
+                var $priceRangeEl = $("#price-range-slider");
+                $priceRangeEl.slider({
+                    range: true,
+                    min: @Model.AvailablePriceRange.From,
+                    max: @Model.AvailablePriceRange.To,
+                    values: [
+            @Model.SelectedPriceRange.From,
+            @Model.SelectedPriceRange.To
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        ],
+                    slide: function (event, ui) {
+                        setSelectedPriceRange(ui.values[0], ui.values[1]);
+                    },
+                    stop: function () {
+                        CatalogProducts.getProducts();
+                    }
+                });
+
+                setSelectedPriceRange(
+                    $priceRangeEl.slider("values", 0),
+                    $priceRangeEl.slider("values", 1)
+                );
+
+                $(CatalogProducts).on('before', function (e) {
+                    var priceRange = $priceRangeEl.slider('values');
+                    var location = window.location.href;
+                    if (priceRange && priceRange.length > 0) {
+                        location = updateQueryStringParameter(location, "price", priceRange.join('-'));
+                        setLocation(location);
+                        //e.payload.urlBuilder
+                        //    .addParameter('price', priceRange.join('-'));
+                    }
+                });
+            });
+
+            //reset price range
+            $('#btn-range').click(function () {
+                var location = window.location.href;
+                location = removeParam("price", location);
+                setLocation(location);
+            });
+
+            function setSelectedPriceRange(from, to) {
+                var $selectedPriceRangeEl = $('.selected-price-range');
+                $('.from', $selectedPriceRangeEl).html(from);
+                $('.to', $selectedPriceRangeEl).html(to);
+                $('.range', $selectedPriceRangeEl).html(from + "-" + to);
+            }
+        </script>
+    </div>
+</div>*@

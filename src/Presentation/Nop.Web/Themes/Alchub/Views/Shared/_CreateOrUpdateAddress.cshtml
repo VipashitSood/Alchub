@@ -1,0 +1,188 @@
+﻿@model AddressModel
+@using Nop.Services;
+@using Nop.Core.Alchub.Domain.Common;
+
+<input class="address-id" asp-for="Id" type="hidden" />
+<div class="edit-address">
+    <div class="inputs">
+        <label asp-for="FirstName" asp-postfix=":"></label>
+        <input asp-for="FirstName" />
+        <nop-required />
+        <span asp-validation-for="FirstName"></span>
+    </div>
+    <div class="inputs">
+        <label asp-for="LastName" asp-postfix=":"></label>
+        <input asp-for="LastName" />
+        <nop-required />
+        <span asp-validation-for="LastName"></span>
+    </div>
+    <div class="inputs">
+        <label asp-for="Email" asp-postfix=":"></label>
+        <input asp-for="Email" />
+        <nop-required />
+        <span asp-validation-for="Email"></span>
+    </div>
+    @if (Model.PhoneEnabled)
+    {
+        <div class="inputs">
+            <label asp-for="PhoneNumber" asp-postfix=":"></label>
+            <input asp-for="PhoneNumber" />
+            @if (Model.PhoneRequired)
+            {
+                <nop-required />
+            }
+            <span asp-validation-for="PhoneNumber"></span>
+        </div>
+    }
+    @if (Model.CompanyEnabled)
+    {
+        <div class="inputs">
+            <label asp-for="Company" asp-postfix=":"></label>
+            <input asp-for="Company" />
+            @if (Model.CompanyRequired)
+            {
+                <nop-required />
+            }
+            <span asp-validation-for="Company"></span>
+        </div>
+    }
+    @if (Model.CountryEnabled)
+    {
+        <div class="inputs">
+            <label asp-for="CountryId" asp-postfix=":"></label>
+            <select asp-for="CountryId" asp-items="Model.AvailableCountries"
+                data-trigger="country-select"
+                data-url="@(Url.RouteUrl("GetStatesByCountryId"))"
+                data-stateprovince="#@Html.IdFor(model => model.StateProvinceId)"
+                data-loading="#states-loading-progress"></select>
+            <nop-required />
+            <span asp-validation-for="CountryId"></span>
+        </div>
+    }
+
+    @if (Model.CountryEnabled && Model.StateProvinceEnabled)
+    {
+        <div class="inputs">
+            <label asp-for="StateProvinceId" asp-postfix=":"></label>
+            <select asp-for="StateProvinceId" asp-items="Model.AvailableStates"
+                data-trigger="state-select">
+            </select>
+            <span id="states-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait")</span>
+            <span asp-validation-for="StateProvinceId"></span>
+        </div>
+    }
+    @if (Model.CountyEnabled)
+    {
+        <div class="inputs">
+            <label asp-for="County" asp-postfix=":"></label>
+            <input asp-for="County" />
+            @if (Model.CountyRequired)
+            {
+                <nop-required />
+            }
+            <span asp-validation-for="County"></span>
+        </div>
+    }
+    @if (Model.CityEnabled)
+    {
+        <div class="inputs">
+            <label asp-for="City" asp-postfix=":"></label>
+            <input asp-for="City" />
+            @if (Model.CityRequired)
+            {
+                <nop-required />
+            }
+            <span asp-validation-for="City"></span>
+        </div>
+    }
+    @if (Model.StreetAddressEnabled)
+    {
+        <div class="inputs">
+            <label asp-for="Address1" asp-postfix=":"></label>
+            <input asp-for="Address1" placeholder="@T("Alchub.Customer.Address.Location.Placeholder.text")" />
+            @if (Model.StreetAddressRequired)
+            {
+                <nop-required />
+            }
+            <span asp-validation-for="Address1"></span>
+            <span asp-validation-for="GeoLocationCoordinates"></span>
+        </div>
+    }
+    @if (Model.StreetAddress2Enabled)
+    {
+        <div class="inputs">
+            <label asp-for="Address2" asp-postfix=":"></label>
+            <input asp-for="Address2" />
+            @if (Model.StreetAddress2Required)
+            {
+                <nop-required />
+            }
+            <span asp-validation-for="Address2"></span>
+        </div>
+    }
+    @if (Model.ZipPostalCodeEnabled)
+    {
+        <div class="inputs">
+            <label asp-for="ZipPostalCode" asp-postfix=":"></label>
+            <input asp-for="ZipPostalCode" />
+            @if (Model.ZipPostalCodeRequired)
+            {
+                <nop-required />
+            }
+            <span asp-validation-for="ZipPostalCode"></span>
+        </div>
+    }
+    @if (Model.FaxEnabled)
+    {
+        <div class="inputs">
+            <label asp-for="FaxNumber" asp-postfix=":"></label>
+            <input asp-for="FaxNumber" />
+            @if (Model.FaxRequired)
+            {
+                <nop-required />
+            }
+            <span asp-validation-for="FaxNumber"></span>
+        </div>
+    }
+
+    @*Alchub Start*@
+    <div class="inputs">
+        <label asp-for="AddressTypeId" asp-postfix=":"></label>
+        <ul class="option-list">
+            <li>
+                <input type="radio" asp-for="AddressTypeId" value="@((int)AddressType.Home)" checked="@(Model.AddressTypeId == (int)AddressType.Home)" id="address-home" />
+                <label class="forcheckbox address-home" for="address-home">@AddressType.Home.ToString()</label>
+            </li>
+            <li>
+                <input type="radio" asp-for="AddressTypeId" value="@((int)AddressType.Work)" checked="@(Model.AddressTypeId == (int)AddressType.Work)" id="address-work" />
+                <label class="forcheckbox address-work" for="address-work">@AddressType.Work.ToString()</label>
+            </li>
+            <li>
+                <input type="radio" asp-for="AddressTypeId" value="@((int)AddressType.Other)" checked="@(Model.AddressTypeId == (int)AddressType.Other)" id="address-other" />
+                <label class="forcheckbox address-other" for="address-other">@AddressType.Other.ToString()</label>
+            </li>
+        </ul>
+        <nop-required />
+        <span asp-validation-for="AddressTypeId"></span>
+    </div>
+
+    @await Html.PartialAsync("_CreateOrUpdate.GeoCoordinates", Model)
+    @*Alchub End*@
+
+    @if (Model.CustomAddressAttributes.Count > 0)
+    {
+        @await Html.PartialAsync("_AddressAttributes", Model.CustomAddressAttributes)
+    }
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.AddressBottom, additionalData = Model })
+</div>
+<script asp-location="Footer">
+    //checkout billing address popup close issue fixed.
+    $(document).ready(function () {
+        var geoValidatorSpan = $('span[data-valmsg-for="BillingNewAddress.GeoLocationCoordinates"]');
+        if (geoValidatorSpan.length > 0) {
+            if (geoValidatorSpan.hasClass('field-validation-error')) {
+                $(".btn-holder__commentButton .open-comment").click();
+            }
+        }
+    })
+</script>

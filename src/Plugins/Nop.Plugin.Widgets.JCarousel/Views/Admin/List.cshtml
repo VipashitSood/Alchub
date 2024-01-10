@@ -1,0 +1,68 @@
+﻿@using Nop.Plugin.Widgets.JCarousel.Models.Configuration
+@using Nop.Web.Framework.Models.DataTables
+@{
+    Layout = "_AdminLayout";
+    ViewBag.PageTitle = T("Plugins.Widgets.JCarousel.Hint").Text;
+    NopHtml.SetActiveMenuItemSystemName("Jcarousel.List");
+}
+<form asp-controller="JCarousel" asp-action="List" method="post">
+    <div class="card-body">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="content-header clearfix">
+                    <h1 class="float-left">
+                        @T("Plugins.Widgets.JCarousel.ManageJcarousel")
+                    </h1>
+                    <div class="float-right">
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="fas fa-plus-square"></i>
+                            @T("Plugins.Widgets.JCarousel.AddNewCarousel")
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-default">
+            <div class="card-body">
+                @await Html.PartialAsync("Table", new DataTablesModel
+                {
+               Name = "tax-categories-grid",
+               UrlRead = new DataUrl("JCarouselList", "JCarousel", null),
+               UrlDelete = new DataUrl("Delete", "JCarousel", null),
+               Length = Model.PageSize,
+               LengthMenu = Model.AvailablePageSizes,
+               ColumnCollection = new List<ColumnProperty>
+                    {
+                        new ColumnProperty(nameof(JCarouselModel.Name))
+                        {
+                            Title = T("Plugins.Widgets.JCarousel.Name").Text,
+                            Width = "400"
+                        },
+                        new ColumnProperty(nameof(JCarouselModel.DisplayOrder))
+                        {
+                        Title = T("Plugins.Widgets.JCarousel.DisplayOrder").Text,
+                        Width = "150",
+                        ClassName = NopColumnClassDefaults.CenterAll,
+                        Editable = true,
+                        EditType = EditType.Number
+                        },
+                        new ColumnProperty(nameof(JCarouselModel.Id))
+                        {
+                            Title = T("Plugins.Widgets.JCarousel.Edit").Text,
+                            Width = "80",
+                            ClassName =  NopColumnClassDefaults.Button,
+                            Render = new RenderButtonEdit(new DataUrl("Edit"))
+                        },
+                        new ColumnProperty(nameof(JCarouselModel.Id))
+                        {
+                            Title = T("Plugins.Widgets.JCarousel.Delete").Text,
+                            Width = "200",
+                            ClassName =  NopColumnClassDefaults.Button,
+                            Render = new RenderButtonRemove(T("Plugins.Widgets.JCarousel.Delete").Text)
+                        }
+                    }
+               })
+            </div>
+        </div>
+    </div>
+</form>

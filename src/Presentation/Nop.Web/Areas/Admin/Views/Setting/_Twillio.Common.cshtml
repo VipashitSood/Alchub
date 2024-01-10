@@ -1,0 +1,201 @@
+@model TwillioSettingsModel
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        $("#@Html.IdFor(model => model.Enabled)").click(toggleConfiguration);
+        toggleConfiguration();
+    });
+
+    function toggleConfiguration() {
+        if ($('#@Html.IdFor(model => model.Enabled)').is(':checked')) {
+            $('#pnlConfiguration').showElement();
+        } else {
+            $('#pnlConfiguration').hideElement();
+        }
+    }
+</script>
+<div class="card-body">
+    <p><em> <a target="_blank" href="https://www.twilio.com/login">Log in</a> to your Twilio account and use your Account info details to configure this page.</em></p>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-override-store-checkbox asp-for="Enabled_OverrideForStore" asp-input="Enabled" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+            <nop-label asp-for="Enabled" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Enabled" />
+            <span asp-validation-for="Enabled"></span>
+        </div>
+    </div>
+    <div id="pnlConfiguration">
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-override-store-checkbox asp-for="AccountSid_OverrideForStore" asp-input="AccountSid" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                <nop-label asp-for="AccountSid" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="AccountSid" />
+                <span asp-validation-for="AccountSid"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-override-store-checkbox asp-for="AuthToken_OverrideForStore" asp-input="AuthToken" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                <nop-label asp-for="AuthToken" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="AuthToken" />
+                <span asp-validation-for="AuthToken"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-override-store-checkbox asp-for="FromNumber_OverrideForStore" asp-input="FromNumber" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                <nop-label asp-for="FromNumber" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="FromNumber" />
+                <span asp-validation-for="FromNumber"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-override-store-checkbox asp-for="DefaultCountryCode_OverrideForStore" asp-input="DefaultCountryCode" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                <nop-label asp-for="DefaultCountryCode" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="DefaultCountryCode" />
+                <span asp-validation-for="DefaultCountryCode"></span>
+            </div>
+        </div>
+
+        <br />
+        @*body*@
+        <div class="form-group row">
+            <div class="col-md-3">
+                <div class="label-wrapper">
+                    <label class="col-form-label" for="fence-location-search-input">Common Message Tokens:</label>
+                    <div title="" data-toggle="tooltip" class="ico-help" data-original-title="The following message tokens you can use in any of the beloved message templates to prepare the SMS body.">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="input-group input-group-required">
+                    @T("Alchub.Admin.Configuration.Settings.Twillio.CommonMessageTokens.Instruction").Text <br />
+                    @T("Alchub.Admin.Configuration.Settings.Twillio.CommonMessageTokens").Text
+                </div>
+            </div>
+        </div>
+        <div class="card card-default no-margin">
+            <div class="card-header">
+                @T("Alchub.Admin.Configuration.Settings.Twillio.Panel.Customer")
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="OrderPlacedBody_OverrideForStore" asp-input="OrderPlacedBody" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="OrderPlacedBody" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-textarea asp-for="OrderPlacedBody"></nop-textarea>
+                        <span asp-validation-for="OrderPlacedBody"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="OrderItemsDispatchedBody_OverrideForStore" asp-input="OrderItemsDispatchedBody" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="OrderItemsDispatchedBody" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-textarea asp-for="OrderItemsDispatchedBody"></nop-textarea>
+                        <span asp-validation-for="OrderItemsDispatchedBody"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="OrderItemsPickedUpBody_OverrideForStore" asp-input="OrderItemsPickedUpBody" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="OrderItemsPickedUpBody" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-textarea asp-for="OrderItemsPickedUpBody"></nop-textarea>
+                        <span asp-validation-for="OrderItemsPickedUpBody"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="OrderItemsDeliveredBody_OverrideForStore" asp-input="OrderItemsDeliveredBody" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="OrderItemsDeliveredBody" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-textarea asp-for="OrderItemsDeliveredBody"></nop-textarea>
+                        <span asp-validation-for="OrderItemsDeliveredBody"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="OrderItemsCancelBody_OverrideForStore" asp-input="OrderItemsCancelBody" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="OrderItemsCancelBody" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-textarea asp-for="OrderItemsCancelBody"></nop-textarea>
+                        <span asp-validation-for="OrderItemsCancelBody"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="OrderItemsDelivereyDeniedBody_OverrideForStore" asp-input="OrderItemsDelivereyDeniedBody" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="OrderItemsDelivereyDeniedBody" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-textarea asp-for="OrderItemsDelivereyDeniedBody"></nop-textarea>
+                        <span asp-validation-for="OrderItemsDelivereyDeniedBody"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="OrderItemPickupBody_OverrideForStore" asp-input="OrderItemPickupBody" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="OrderItemPickupBody" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-textarea asp-for="OrderItemPickupBody"></nop-textarea>
+                        <span asp-validation-for="OrderItemPickupBody"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-default no-margin">
+            <div class="card-header">
+                @T("Alchub.Admin.Configuration.Settings.Twillio.Panel.Vendor")
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <div class="label-wrapper">
+                            <label class="col-form-label" for="fence-location-search-input">Additional Vendor Message Tokens:</label>
+                            <div title="" data-toggle="tooltip" class="ico-help" data-original-title="Common message tokens + following additional vendor token you can use for vendor message templates to prepare the SMS body.">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="input-group input-group-required">
+                            @T("Alchub.Admin.Configuration.Settings.Twillio.VendorMessageTokens.Instruction").Text <br />
+                            @T("Alchub.Admin.Configuration.Settings.Twillio.VendorMessageTokens").Text
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="OrderPlacedVendorBody_OverrideForStore" asp-input="OrderPlacedVendorBody" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="OrderPlacedVendorBody" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-textarea asp-for="OrderPlacedVendorBody"></nop-textarea>
+                        <span asp-validation-for="OrderPlacedVendorBody"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

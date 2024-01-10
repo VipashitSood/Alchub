@@ -1,0 +1,78 @@
+﻿@model ProductDetailsModel
+
+<script>
+    $(document).ready(function() {
+        $("#@Html.IdFor(model => model.VendorId)").change(function() {
+            var vendorId = $(this).val();
+            var productId = '@Model.Id';
+            //alert(vendorId + ' ' + productId);
+            if (vendorId == '0') {
+                displayPriceSection(false);
+                return false;
+            }
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "@(Url.Action("GetProductPriceByVendorId", "Product"))",
+                data: {
+                    "vendorId": vendorId,
+                    "productId": productId,
+                },
+                beforeSend: function() {
+                    $('#vendor-price-loading-progress').show();
+                },
+                success: function(data, textStatus, jqXHR) {
+                    if (data.success) {
+                        //update price
+                        $('#vendor-product-price-value').html(data.priceModel.Price);
+                        displayPriceSection(true);
+                    } else {
+                        if (data.message) {
+                            displayPriceSection(false);
+                            alert(data.message);
+                        }
+                    }
+                },
+                complete: function() {
+                    $('#vendor-price-loading-progress').hide();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert('something went wrong..');
+                    displayPriceSection(false);
+                }
+            });
+        });
+    });
+
+    function displayPriceSection(show) {
+        if (show) {
+            $('.vendor-product-price-dv').show();
+            //$('#select-vendor-to-price').hide();
+            $('#vendor-pricing-child-section').show();
+        } else {
+            $('.vendor-product-price-dv').hide();
+            $('#vendor-pricing-child-section').hide();
+        }
+    }
+</script>
+
+@if (Model.AvailableVendors.Count > 0)
+{
+    <div id="select-vendor-to-price">
+        <span>@T("Alchub.Products.Detail.SelectVendor.Description").Text</span>
+    </div>
+
+    <div class="form-group row">
+        <div class="">
+            <nop-select asp-for="VendorId" asp-items="Model.AvailableVendors" />
+        </div>
+    </div>
+    <span id="vendor-price-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait")</span>
+
+    <div class="prices vendor-product-price-dv" style="display:none">
+        <div class="product-price">
+            <span id="vendor-product-price-value"> </span>
+        </div>
+    </div>
+}

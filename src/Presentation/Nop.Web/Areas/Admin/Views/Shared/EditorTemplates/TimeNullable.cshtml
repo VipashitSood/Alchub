@@ -1,0 +1,9 @@
+@model string
+<input id="@Html.IdForModel()" name="@Html.NameForModel()" value="@(Model)" />
+<script>
+    $(document).ready(function () {
+        $("#@Html.IdForModel()").kendoTimePicker({
+            animation: false
+        });
+    });
+</script>

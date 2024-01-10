@@ -1,0 +1,37 @@
+﻿@using Nop.Core.Domain.DeliveryFees
+@model IList<VendorWiseDeliveryFee>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog delivery-section">
+       
+        <div class="modal-content">
+            <div class="popup-box">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">@T("Alchub.VendorWise.DeliveryFee.Heading").Text</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="vendor-wise-delivery-fee-popup" class="vendor-wise-delivery-fee-popup">
+                        <div>
+                            <div class="modal-uppertext">
+                                @T("Alchub.VendorWise.DeliveryFee.Popup.Instruction").Text
+                            </div>
+                            <div class="modal-text">
+                                @foreach (var vendorWiseDeliveryFee in Model)
+                                {
+                                    <div class="delivery-fee">
+                                        @vendorWiseDeliveryFee.VendorName - @vendorWiseDeliveryFee.DeliveryFee
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" data-bs-dismiss="modal" class="btn button-1">@T("Alchub.VendorWise.DeliveryFee.Close").Text</button>
+                    </div>
+                </div>
+            </div>
+               
+            </div>
+        
+    </div>
+</div>

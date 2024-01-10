@@ -1,0 +1,38 @@
+@model DeliveryFeeModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Alchub.Admin.DeliveryFee").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("DeliveryFee");
+}
+
+<form asp-controller="DeliveryFee" asp-action="DeliveryFee" method="post" id="delivery-fee-form">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Alchub.Admin.DeliveryFee.Heading")
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.Save")
+            </button>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default">
+                        <div class="card-body">
+                            <div id="delivery-fee-main">
+                                @await Html.PartialAsync("_CreateOrUpdate.DeliveryFee", Model)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

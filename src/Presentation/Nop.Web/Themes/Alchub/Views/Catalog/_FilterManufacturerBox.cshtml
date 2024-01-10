@@ -1,0 +1,140 @@
+﻿@model CatalogProductsModel
+@{
+
+    var manufacturerIds = Model?.CatalogProductsCommand?.SearchTermFilter?.ManufacturerIdsFilterItem?.ManufacturerIdSearch ?? "";
+}
+<div class="product-filter product-manufacturer-filter">
+    <div class="filter-title">
+        <div class="toogle-wrap">
+            <strong>@T("Filtering.ManufacturerFilter")</strong>
+        </div>
+    </div>
+    <div class="filter-content">
+        <ul class="group product-manufacturer-group" id="lists-filter-manufacture">
+            <div class="filter-search" id="filtersearch-wrap-manufacture">
+
+                <div class="container">
+                    <input type="text" placeholder="Search..." id="filtersearch-manufacture">
+                    <div class="search"></div>
+                </div>
+
+            </div>
+            <ul class="ul-list" id="ul-list-1">
+                @foreach (var manufacturer in Model.ManufacturerFilter.Manufacturers)
+                {
+                    <li class="item" id="list-filter-manufactrure-@manufacturer.Value">
+                        <input class="applyManufacturerFilter" checked="@manufacturer.Selected" name="manufacturerfilter" value="@manufacturer.Value" type="checkbox" />
+                        @{
+                            //get product count
+                            var productCount = Model.ManufacturersProductCounts.FirstOrDefault(x => x.Id.ToString().Equals(manufacturer.Value, StringComparison.InvariantCultureIgnoreCase));
+                            if (productCount != null && productCount.NumberOfProducts.HasValue && productCount.NumberOfProducts > 0)
+                            {
+                                <label for="attribute-manufacturer-@manufacturer.Value">
+                                    @manufacturer.Text (@productCount.NumberOfProducts)
+                                </label>
+                            }
+                            else
+                            {
+                                <label for="attribute-manufacturer-@manufacturer.Value">
+                                    @manufacturer.Text
+                                </label>
+                            }
+                        }
+                    </li>
+                    <text>
+                        <script>
+                            //list filter in search
+                            $(document).ready(function () {
+                                //search filter: FE
+                                searchmanufacturerFilter('@manufacturer.Value');
+                            });
+                        </script>
+                    </text>
+                }
+            </ul>
+        </ul>
+        <button class="show-list" id="show-list-manufacture">@T("Alchub.filter.button.all.list")</button>
+        <script>
+            //list filter in search
+            $(document).ready(function () {
+                //arange filter
+                arangemanufacturerFilters();
+            });
+        </script>
+    </div>
+</div>
+<script asp-location="Footer">
+    $(".applyManufacturerFilter").change(function () {
+        var location = window.location.href;
+        var pageNumber = getParameterByName("pagenumber", location);
+        if (pageNumber != null && pageNumber != "") {
+            location = updateQueryStringParameter(location, "pagenumber", 1);
+        }
+        var categoryValue = $('input[name="manufacturerfilter"]:checked').map(function () {
+            return this.value;
+        }).get().join(",");
+
+        if (categoryValue !== "") {
+            location = updateQueryStringParameter(location, "mid", categoryValue);
+        }
+        else {
+            location = removeParam("mid", location);
+        }
+        setLocation(location);
+    });
+
+    function arangemanufacturerFilters() {
+        if ($("#ul-list-1 li").length > 6) {
+            $("#filtersearch-wrap-manufacture").css("display", "block");
+            $("#show-list-manufacture").css("display", "block");
+
+            $("#show-list-manufacture").click(function () {
+                $("#ul-list-1").addClass("custome-height");
+                $("#lists-filter-manufacture .custome-height").css({ "overflow": "auto", "height": "168px", "padding": "10px 0px" });
+            })
+        }
+        else {
+            $("#filtersearch-wrap-manufacture").css("display", "none");
+            $("#show-list-manufacture").css("display", "none");
+        }
+
+        $(document).on('click', '#show-list-manufacture', function () {
+            $(".product-subcategory-group .item").addClass("review-wrp");
+            $("#show-list-manufacture").hide();
+            $("#lists-filter-manufacture .ul-list .item").css("display", "block")
+        })
+    }
+
+    $(document).ready(function () {
+        //filters: show all btn
+        $('.group .ul-list').each(function (index) {
+            const value = $(this); const length = $(this).children();
+            for (let i = 0; i < length.length; i++) {
+                if (i <= 5) { $(length[i]).addClass('show-filter-list'); }
+            }
+        });
+    });
+
+    function searchmanufacturerFilter(manufacturerId) {
+        $('input#filtersearch-manufacture').bind('keyup change', function () {
+            if ($(this).val().trim().length !== 0) {
+
+                $('#list-filter-manufactrure-' + manufacturerId + '').show().hide().each(function () {
+                    if ($(this).is(':icontains(' + $('input#filtersearch-manufacture').val() + ')'))
+                        $(this).show();
+                    $("#show-list-manufacture").hide();
+                });
+            }
+            else {
+                $('#list-filter-manufactrure-' + manufacturerId + '').show().hide().each(function () {
+                    $(this).show();
+                });
+            }
+        });
+
+        //expr
+        $.expr[':'].icontains = function (obj, index, meta, stack) {
+            return (obj.textContent || obj.innerText || jQuery(obj).text() || '').toLowerCase().indexOf(meta[3].toLowerCase()) >= 0;
+        };
+    }
+</script>

@@ -1,0 +1,115 @@
+﻿@model ProductDetailsModel
+
+<div class="variant-title">
+    <span>@T("Alchub.Product.Detail.GroupedProduct.Variant.Size")</span>
+</div>
+@if (Model.AssociatedProducts.Count != 0)
+{
+    <div class="attribute-section">
+        <div class="qty">
+            @foreach (var variant in Model.AssociatedProducts)
+            {
+                <div id="variant_div_@(variant.Id)" class="buttons">
+                    <button id="variant-@(variant.Id)" class="qty-button" type="button" onclick="update_variant_selection(@variant.Id)" role="tab" aria-controls="home" aria-selected="true">
+                        <span class="item-qty"> @variant.Size</span>
+                        <span class="type">@variant.Container</span>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+    <text>
+        <script asp-location="Footer">
+            function update_variant_selection(variantid) {
+                //params
+                var groupedProductId = '@Model.Id';
+                if (!$.isNumeric(groupedProductId) || !$.isNumeric(variantid)) {
+                    //displayPriceSection(false);
+                    alert('invalid product id');
+                    return false;
+                }
+
+                //update hiddent field
+                $("#master_product_id").val(variantid);
+
+                var postData = {
+                    "groupedProductId": groupedProductId,
+                    "variantId": variantid,
+                }
+                addAntiForgeryToken(postData);
+                //update picture & vendors ajax
+                $.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: "@(Url.Action("GroupedProductSelectVariant", "Product"))",
+                    data: postData,
+                    beforeSend: function () {
+                        displayAjaxLoading(true);
+                    },
+                    success: function (response, textStatus, jqXHR) {
+                        //check for errors
+                        if (response.error) {
+                            if (typeof response.message === 'string') {
+                                alert(response.message);
+                            } else {
+                                alert(response.message.join("\n"));
+                            }
+                            return false;
+                        }
+                        //active button.
+                        setActiveVariant(variantid)
+
+                        //update picture
+                        if (response.update_picture_section) {
+                            $('#' + response.update_picture_section.name).html(response.update_picture_section.html);
+                        }
+                        //update vendors
+                        if (response.update_vendors_section) {
+                            $('#' + response.update_vendors_section.name).html(response.update_vendors_section.html);
+                        }
+                        //update specifications
+                        if (response.update_specification_section) {
+                            $('#' + response.update_specification_section.name).html(response.update_specification_section.html);
+                        }
+                        //update descriptions
+                        if (response.update_descriptions_section) {
+                            $('#' + response.update_descriptions_section.name).html(response.update_descriptions_section.html);
+                        }
+                        //$('#vendor-product-price-value').html(data.priceModel.Price);
+                    },
+                    complete: function () {
+                        displayAjaxLoading(false);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('something went wrong..');
+                        displayAjaxLoading(false);
+                    }
+                });
+            }
+
+            function setActiveVariant(variantid) {
+                $(".product-essential .overview .attribute-section .qty .buttons").removeClass("active");
+                $("#variant_div_" + variantid).addClass("active");
+                //reset qty to 1
+                $('#product_enteredQuantity_@Model.Id').val('1');
+            }
+
+            //default select first variant
+            $(document).ready(function () {
+                $("#variant-@(Model.AssociatedProducts.First().Id)").trigger("click");
+            });
+        </script>
+    </text>
+
+}
+else
+{
+    <span style="color:red">@T("Alchub.Product.Detail.GroupedProduct.Variant.NotAvailable").Text</span>
+    <text>
+        <script asp-location="Footer">
+            $(document).ready(function () {
+                HideSlotSection(true);
+            });
+        </script>
+    </text>
+}

@@ -1,0 +1,176 @@
+@import "../helpers/_helpers";
+
+.html-registration-page {
+    .master-wrapper-page {
+        .master-wrapper-content {
+            width: auto;
+
+            .topic-block {
+                position: relative;
+
+                .topic-block-title {
+                    display: none;
+                }
+
+                .topic-block-body {
+                    p {
+                        img {
+                            width: 100%;
+                            height: 456px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .center-1 {
+        margin-bottom: 0px;
+
+        @include media(landscapeTablet) {
+            margin-bottom: 50px;
+        }
+    }
+
+    .registration-page {
+
+        .page-title {
+            margin-top: 32px;
+
+            @include media(small) {
+                margin-top: 70px;
+            }
+
+            h1 {
+                font-size: $fontSizeXL;
+                color: $colorDarkGrey;
+                text-transform: capitalize;
+
+                @include media(small) {
+                    font-size: $fontsizeMedium;
+                }
+            }
+        }
+
+        .fieldset {
+            margin: 0px;
+            border-left: 1px solid $colorBorder;
+            border-right: 1px solid $colorBorder;
+            border-radius: $borderRadius;
+
+            .title {
+                margin: 0;
+                padding: 18px;
+                font-size: $fontSizeMM;
+                color: $colorDarklight;
+                background-color: $bgcolorLightGrey;
+                border-radius: 3px 3px 0 0;
+
+                strong {
+                    font-weight: $fontWeightLight;
+                    color: $colorDarklight;
+                    font-size: $fontSizeMM;
+                }
+            }
+
+            &:first-child {
+                .title {
+                    margin-top: 12px;
+                    border-top: 1px solid $colorBorder;
+                }
+            }
+        }
+
+        .password-block {
+            border-bottom: 1px solid $colorBorder;
+        }
+
+        .form-fields {
+            background: $colorBaseWhite;
+            margin: 0px;
+            border-top: none;
+
+            @include media(tablet) {
+                margin: 0px 50px;
+            }
+
+            @include media(desktop) {
+                margin: 0px 100px;
+            }
+
+            .inputs {
+                margin: 13px 0 21px;
+
+                .required {
+                    margin: 0px 0px 0 3px;
+                }
+
+                .gender {
+                    
+
+                    span {
+                        margin: 0 37px 0 0px;
+                        label{
+                            @include media(small){
+                                width:60px;
+                            }
+                        }
+                    }
+                }
+
+                input[type="text"] {
+                    height: 45px;
+                    color: $colorDarklight;
+                    border-radius: $borderRadius;
+                    width: 100%;
+                }
+
+                input[type=checkbox] {
+                    opacity: 0;
+                    margin-bottom: 7px;
+                }
+            }
+
+            .newsletter-section {
+                column-gap: 10px;
+                display: inline-flex;
+
+                .newsletter-text {
+                    color: $colorDarkGrey;
+                    font-weight: $fontWeightLight;
+                }
+
+                label {
+                    display: flex;
+                    align-items: center;
+                }
+            }
+
+            .date-of-birth {
+                select {
+                    max-width: 33.5%;
+                    height: 45px;
+                    color: $colorDarklight;
+                    border-radius: $borderRadius;
+                    width: 100%;
+                    padding: 0px;
+                    padding-left: 12px;
+                }
+            }
+
+            .date-of-birth select + select {
+                margin: 0px;
+                margin-left: -1px;
+                border-radius: 0 3px 3px 0;
+            }
+        }
+
+        .buttons {
+            margin: 0 0 48px;
+        }
+
+        .external-authentication {
+            margin-bottom: 0px;
+        }
+    }
+}

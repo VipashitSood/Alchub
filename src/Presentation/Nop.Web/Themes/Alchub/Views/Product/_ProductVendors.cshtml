@@ -1,0 +1,127 @@
+﻿@model ProductDetailsModel
+
+<style>
+    input[type=radio] {
+        position: relative;
+        left: 0px;
+    }
+
+    .disableAddToCart {
+        background-color: #908c88 !important;
+        cursor: not-allowed !important;
+        pointer-events: none !important;
+    }
+
+    #vendorSortBy:disabled {
+        background-color: #EDE8E8;
+        color: lightgray;
+    }
+</style>
+<div class="availability-with-price custome-box" id="productVendors">
+    <ul>
+        <li style="width:100%">
+            @if (Model.ProductVendors.Count > 0 && Model.Published)
+            {
+                <text>
+                    <script asp-location="Footer">
+                            $(document).ready(function () {
+                                if($("#base_product_published").val() == '1'){
+                                     //if grouped product is unpublished, then disbale add to cart & slot
+                                     disableAddToCart(false);
+                                     HideSlotSection(false);
+                                }
+                            });
+                    </script>
+                </text>
+                foreach (var item in Model.ProductVendors)
+                {
+                    <div class="box-wrapper">
+                        <ul class="custome-ul">
+                            <li>
+                                <label class="product-price containers" for="vendor@(item.VendorId)_product@(item.ProductId)">
+                                    <input id="vendor@(item.VendorId)_product@(item.ProductId)" type="radio" name="vendor_products" value="@(item.ProductId)__@(item.VendorId)"
+                                   onclick="selectVendorProduct('@(item.ProductId)','@(item.VendorId)','@(item.ManageDelivery)','@(item.PickAvailable)','@(item.DeliveryAvailable)')" />
+                                    <span id="vendor@(item.VendorId)_product@(item.ProductId)_price">@item.VendorProductPrice.Price</span>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="vendorname" for="sizes"> @item.VendorName</label>
+                            </li>
+                            @if (!string.IsNullOrEmpty(item.DeliveryFee))
+                            {
+                                <li class="fee">
+                                    <label for="sizes">@T("Alchub.Product.Detail.ProductVendor.DeliveryFee") @item.DeliveryFee</label>
+                                </li>
+                            }
+                            @if (!string.IsNullOrEmpty(item.OrderAmount))
+                            {
+
+                                <li class="order-minimum">
+                                    <label for="sizes">@T("Alchub.Product.Detail.ProductVendor.OrderMinimum") @item.OrderAmount</label>
+                                </li>
+                            }
+                            @if (!string.IsNullOrEmpty(item.Distance))
+                            {
+
+                                <li class="order-minimum" style="display:none">
+                                    <label for="sizes">@T("Alchub.Product.Detail.ProductVendor.Distance") @item.Distance</label>
+                                </li>
+                            }
+                            @if (!string.IsNullOrEmpty(item.StartTime.ToString()))
+                            {
+
+                                <li class="order-minimum" style="display:none">
+                                    <label for="sizes">@T("Alchub.Product.Detail.ProductVendor.SlotStartTime") @item.StartTime</label>
+                                </li>
+                            }
+                            @if (item.ManageDelivery)
+                            {
+
+                                <li class="available">
+                                    <label for="sizes"> @T("Alchub.Product.Detail.ProductVendor.Delivery.Available")</label>
+                                </li>
+                            }
+                            @if (item.PickAvailable)
+                            {
+
+                                <li class="pickup">
+                                    <label for="sizes"> @T("Alchub.Product.Detail.ProductVendor.Pickup.Available")</label>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            }
+            else
+            {
+                <text>
+                    <script asp-location="Footer">
+                            $(document).ready(function () {
+                                    disableAddToCart(true);
+                                    HideSlotSection(true);
+                            });
+                        $("#btnStorePickup").hide();
+                        $("#pickupHeading").hide();
+                        $("#btnDelivery").hide();
+                        $("#deliveryHeading").hide();
+                        //disable vendor sort dropdown
+                        $("#vendorSortBy").prop("disabled", true);
+                    </script>
+                </text>
+                <div class="no-data">
+                    <label for="sizes">
+                        @T("Alchub.Product.Detail.ProductVendors.Notavailable")
+                    </label>
+                </div>
+            }
+        </li>
+
+    </ul>
+
+</div>
+<script asp-location="Footer">
+    $(document).ready(function () {
+        $("input:radio[name=vendor_products]").click(function () { });
+        $("input:radio[name=vendor_products]:first").prop("checked", true).trigger("click");
+    });
+</script>

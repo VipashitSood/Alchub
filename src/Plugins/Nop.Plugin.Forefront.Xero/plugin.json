@@ -1,0 +1,13 @@
+﻿{
+  "Group": "Forefront",
+  "FriendlyName": "Forefront-Xero",
+  "SystemName": "Forefront.Xero",
+  "Version": "2.00",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "Tmotions Team",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Forefront.Xero.dll",
+  "Description": "This plugin enables authentication"
+}
+
+

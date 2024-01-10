@@ -1,0 +1,119 @@
+@import "../helpers/helpers";
+
+.product-grid {
+    .item-grid {
+       
+
+        .item-box {
+            margin: 0 0 1% 1%;
+            width: 24.25%;
+
+            @include media(small) {
+                padding: 10px 8px 8px;
+            }
+
+            @include media(desktop) {
+                /*min-height: 495px;*/
+                padding: 8px 8px 8px;
+            }
+
+            @include media(ultraWide) {
+                width: 19.2%;
+                margin: 0 0 1% 1%;
+                /*min-height: 527px;*/
+            }
+
+            &:first-child {
+                margin-left: 0px;
+            }
+
+            &:nth-child(4n+1) {
+            }
+
+            &:nth-child(5n+1) {
+                @include media(ultraWide) {
+                    margin-left: 0px;
+                }
+            }
+
+            .details {
+                .product-title {
+                    padding: 0px;
+                }
+            }
+        }
+    }
+}
+
+.product-list {
+    .item-grid {
+        .item-box {
+            width: 100%;
+            padding: 20px 8px 8px;
+            margin-left: 0px;
+            min-height: auto;
+
+            .best-seller {
+                margin-bottom: 15px;
+            }
+
+            .details {
+                padding-right: 20px;
+
+                .product-title {
+                    a {
+                        width: 100%;
+                        max-width: 100%;
+                        font-size: $fontSizeXXS;
+                        @include media(desktop) {
+                            font-size: $fontSizeS;
+                        }
+
+                        &:hover {
+                            color: $orangecolor;
+                        }
+                    }
+                }
+
+
+                .price-range {
+                    font-weight: $fontWeightnormal;
+
+                    span {
+                        @include media(small) {
+                            font-size: $fontSizeXXS;
+                        }
+                    }
+                }
+
+                .description {
+                    text-align: justify;
+
+                    @include media(tablet) {
+                        display: none;
+                    }
+
+                    
+                }
+            }
+        }
+    }
+}
+
+.item-box {
+    @include media(tablet) {
+        padding: 18px 8px 8px;
+    }
+
+    .details {
+        @include media(small) {
+            padding: 0px
+        }
+    }
+}
+
+.best-seller {
+    .bestseller-button{
+        display:none;
+}
+    }

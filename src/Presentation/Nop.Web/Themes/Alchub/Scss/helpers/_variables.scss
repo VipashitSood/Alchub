@@ -1,0 +1,145 @@
+// colors
+$primaryBrandClr: #f0862e; //  red
+$primaryBrandClr-hover: #A02121; //hover red color
+$secondaryBrandClr: #eebe00; //  yellow
+$secondaryBrandClr-hover: #e8af00;
+$btnGrey-hover: #e7e7e7;
+$colorBaseBlack: #000000;
+$colorBaseWhite: #ffffff;
+$colorgrey: #F6F6F6;
+$colorBasetext: #484d55; //color base text
+$colorDarkGrey: #444444;
+$colorBlack: #444441;
+$colorFooterLinks: #959595; // secondary text light light gray
+$colorFooterSocial: #8e8e8e;
+$bgcolorButtonGrey: #f1f1f1;
+$coloralert: #ff4f60;
+$bgcolorcommentTime: #aaaaaa;
+$bgcolorLightGrey: #f9f9f9;
+$colorWhite: #eaeaea;
+$colorWhitishGrey: #d0d0d0;
+$colorReddish: #ff4f60;
+$colorGreyish: #a9a9a9;
+$colorverydarkgray: #454545;
+$sectextcolor: #ffffff; //secondary text color
+$textcolor: #24282f; //primary text color
+$colorborderbottom: #c5c8cb;
+$boxseccolor: #fff5eb; //box secondry color
+$sectextcolor: #ffffff; //secondary text color
+$bgcolor: #fffaf5; // primary background color
+$secbgcolor: #f7f7f7; //secondary background color
+$borderColor: #DEE1E3; //border color
+$secborder: #C4ECF8; //secondry border
+$grayborder: #e5e7e8; //gray boder
+$darkborder: #bbc1c4; //dark border
+$boxcolor: #e1f5fb; //address box bg color
+$imgbackground: #effafd; //image background light sky;
+$colorBorderBottom: #c5c8cb;
+$colorDarklight: #8c8c8c;
+
+//latest color
+$titlecolor: #0f121b;
+$orangecolor: #f0862e;
+$greencolor: #00C965;
+$lightgray: #D9D9D9;
+$buttonbox: #D2A13A;
+$footercolor: #F1EEEA;
+$verylightgray: #d3d3d3;
+$line: #DBDBDB;
+$grayishorg: #FCE7D5;
+$lightyellow: #ffffe0;
+$rating: #ffcd46;
+$blankrating: #e0e0e0;
+$textcolorsec: #D9D9D9;
+$accountlink: #b7b7b7;
+$redcolor: #DB1717;
+$colortext: #909090;
+$adminButton: #f8f9fa;
+// Borders
+$colorBorder: #eeeeee;
+$colorBorderLightGrey: #e6e6e6;
+$colorBorderGrey: #e7e7e7;
+$colorborder: #6A7279;
+$borderRadius: 3px;
+$borderRadiusLarge: 4px;
+$adminButtonBorder: #ddd;
+// Font variables
+$fontFamilyCustomRegular: 'Poppins', sans-serif;
+$iconFontFamily: 'emporium-icons';
+$national: 'Poppins', sans-serif;
+// Base font sizes
+$rootFontSize: 16px;
+$fontSizeXXSS: 0.625rem; // 10px
+$fontSizeXXXS: 0.75rem; // 12px
+$fontSizeXXS: 0.812rem; // 13px
+$fontSizeXS: 0.875rem; // 14px
+$fontSizeS: 0.937rem; // 15px
+$fontSizeSM: 1.0625rem; // 17px
+$fontSizeMM: 1.125rem; //18px
+$fontSizeM: 1.25rem; // 20px
+$fontsizeMedium: 1.375rem; //22px
+$fontSizeXM: 1.5rem; // 24px
+$fontSizeXXM: 1.625rem; //26px
+$fontSizeL: 1.75rem; // 28px //
+$fontSizeXL: 1.875rem; // 30px //
+$fontSizeXML: 2rem; // 32px //
+$fontSizeXXL: 2.25rem; //36px
+$fontSizeXXXL: 2.625rem; //42px
+
+// font weight
+$fontWeightExtraLight: 100;
+$fontWeightLight: 300;
+$fontWeightNormal: 400;
+$fontWeightSemiBold: 500;
+$fontWeightMediumBold: 600;
+$fontWeightnormal: 600;
+$fontWeightBold: 700;
+$fontWeightDarkBold: 800;
+$fontWeightExtraBold: 900;
+
+// Icons size
+$iconSize: 16px;
+$iconSizeLrg: 24px;
+$iconSizeXLrg: 30px;
+
+// line-height
+$lineHeightXS: 1.06; // 17PX
+$lineHeightS: 1.7;
+$lineHeight: 1.5;
+$lineHeightL: 1.2;
+$lineHeightM: 1.3;
+$lineHeightXL: 2.125; // 34px
+$lineHeightN: normal;
+
+// Responsive
+$small_widthS: 350px;
+
+$small_widthL: 500px;
+/* Extra small devices (phones, max-width 575px and down) */
+$small_width: 575px;
+
+$small_widthM: 575px;
+
+/* Small devices (portrait tablets and large phones, min-width 600px and up) */
+$mobile_width: 576px;
+
+/* Medium devices (landscape tablets, min-width: 768px and up) */
+$tablet_width: 768px;
+
+/* Large devices (laptops/desktops, min-width: 992px and up) */
+$landscapeTablet_width: 992px;
+
+/*  (large laptops and desktops, min-width: 1200px and up) */
+$desktop_width: 1200px;
+
+
+/* Extra large devices (large laptops and desktops, min-width: 1200px and up) */
+$wide_width: 1379px;
+
+/* Extra large devices (min-width: 1400px and up) */
+$extraWide_width: 1441px;
+
+$ultra_Wide_width: 1601px;
+
+
+$extra_ultra: 2560px;

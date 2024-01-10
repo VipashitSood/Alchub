@@ -1,0 +1,312 @@
+@model VendorModel
+
+@{
+    //check logged in user
+    var isLoggedInAsVendor = await workContext.GetCurrentVendorAsync() != null;
+    var isVendorManageDelivery = Model.DeliveryAvailable && Model.ManageDelivery;
+}
+
+<div class="card-body">
+    @(await Html.LocalizedEditorAsync<VendorModel, VendorLocalizedModel>("vendor-info-localized",
+        @<div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="@Model.Locales[item].Name" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="@Model.Locales[item].Name" />
+                    <span asp-validation-for="@Model.Locales[item].Name"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="@Model.Locales[item].Description" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="@Model.Locales[item].Description" asp-template="RichEditor" />
+                    <span asp-validation-for="@Model.Locales[item].Description"></span>
+                </div>
+            </div>
+            <input type="hidden" asp-for="@Model.Locales[item].LanguageId" />
+        </div>
+        ,
+        @<div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="Name" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="Name" asp-required="true" />
+                    <span asp-validation-for="Name"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="Description" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="Description" asp-template="RichEditor" />
+                    <span asp-validation-for="Description"></span>
+                </div>
+            </div>
+        </div>))
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Email" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Email" asp-required="true" />
+            <span asp-validation-for="Email"></span>
+        </div>
+    </div>
+
+    @*Alchub custom phone*@
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="PhoneNumber" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="PhoneNumber" asp-required="true" />
+            <span asp-validation-for="PhoneNumber"></span>
+        </div>
+    </div>
+
+    @if (Model.Id > 0)
+    {
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="AssociatedCustomers" />
+            </div>
+            <div class="col-md-9">
+                @if (Model.AssociatedCustomers.Count > 0)
+                {
+                    for (var i = 0; i < Model.AssociatedCustomers.Count; i++)
+                    {
+                        <a asp-action="Edit" asp-controller="Customer" asp-route-id="@Model.AssociatedCustomers[i].Id">
+                            @Model.AssociatedCustomers[i].Email
+                        </a>
+                        if (i != Model.AssociatedCustomers.Count - 1)
+                        {
+                            <text>, </text>
+                        }
+                    }
+                }
+                else
+                {
+                    <div class="form-text-row">@T("Admin.Vendors.Fields.AssociatedCustomerEmails.None")</div>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Active" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Active" />
+            <span asp-validation-for="Active"></span>
+        </div>
+    </div>
+
+    <div class="form-group row advanced-setting">
+        <div class="col-md-3">
+            <nop-label asp-for="PictureId" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="PictureId" />
+            <span asp-validation-for="PictureId"></span>
+        </div>
+    </div>
+
+    <div class="form-group row advanced-setting">
+        <div class="col-md-3">
+            <nop-label asp-for="AdminComment" />
+        </div>
+        <div class="col-md-9">
+            <nop-textarea asp-for="AdminComment"></nop-textarea>
+            <span asp-validation-for="AdminComment"></span>
+        </div>
+    </div>
+
+    @if (Model.VendorAttributes.Count > 0)
+    {
+        @await Html.PartialAsync("_VendorAttributes", Model.VendorAttributes)
+    }
+
+    @*Alchub custom fields*@
+    <div class="form-group row" id="pnl-DeliveryAvailable">
+        <div class="col-md-3">
+            <nop-label asp-for="DeliveryAvailable" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="DeliveryAvailable" />
+            <span asp-validation-for="DeliveryAvailable"></span>
+        </div>
+    </div>
+    <nop-nested-setting asp-for="DeliveryAvailable" disable-auto-generation="false">
+        <div class="form-group row advanced-setting" id="pnl-ManageDelivery">
+            <div class="col-md-3">
+                <nop-label asp-for="ManageDelivery" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="ManageDelivery" />
+                <span asp-validation-for="ManageDelivery"></span>
+            </div>
+        </div>
+    </nop-nested-setting>
+
+    <div class="form-group row" id="pnl-PickAvailable">
+        <div class="col-md-3">
+            <nop-label asp-for="PickAvailable" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="PickAvailable" />
+            <span asp-validation-for="PickAvailable"></span>
+        </div>
+    </div>
+    <nop-nested-setting asp-for="PickAvailable" disable-auto-generation="false">
+        <div class="form-group row advanced-setting" id="pnlpickup">
+            <div class="col-md-3">
+                <nop-label asp-for="PickupAddress" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="PickupAddress" placeholder="sada" />
+                <span asp-validation-for="PickupAddress"></span>
+            </div>
+        </div>
+    </nop-nested-setting>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MinimumOrderAmount" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MinimumOrderAmount" />
+            <span asp-validation-for="MinimumOrderAmount"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="OrderTax" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="OrderTax" />
+            <span asp-validation-for="OrderTax"></span>
+        </div>
+    </div>
+    @if (@Model.Id > 0)
+    {
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="FtpFilePath" />
+            </div>
+            <div class="col-md-9">
+                <input class="form-control text-box single-line" asp-for="FtpFilePath" readonly />
+                <span asp-validation-for="FtpFilePath"></span>
+            </div>
+        </div>
+    }
+    <div style="display:none" class="card card-default advanced-setting">
+        <div class="card-header">
+            @T("Admin.Vendors.Address")
+        </div>
+        <div class="card-body">
+            <nop-editor asp-for="Address" asp-template="Address" />
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#@Html.IdFor(model => model.DeliveryAvailable)").click(toggleDeliveryAvailable);
+        toggleDeliveryAvailable();
+
+        $("#@Html.IdFor(model => model.PickAvailable)").click(togglePickupAddress);
+        togglePickupAddress();
+
+        googleSearchAutocompletePickupAddress();
+
+        //manage filed access call
+        manageFieldAccessibility();
+    });
+
+    function toggleDeliveryAvailable() {
+        if ($('#@Html.IdFor(model => model.DeliveryAvailable)').is(':checked')) {
+            $('#pnl-ManageDelivery').showElement();
+        }
+        else {
+            $('#pnl-ManageDelivery').hideElement();
+            $('#ManageDelivery').val('false');
+        }
+    }
+    function togglePickupAddress() {
+        if ($('#@Html.IdFor(model => model.PickAvailable)').is(':checked')) {
+            $('#pnlpickup').showElement();
+        }
+        else {
+            $('#pnlpickup').hideElement();
+        }
+    }
+
+    //search autocomplete
+    function googleSearchAutocompletePickupAddress() {
+
+        // Create the search box and link it to the UI element.
+        const inputPickupAdderess = document.getElementById("@Html.IdFor(model => model.PickupAddress)");
+        const searchBoxPickupAddress = new google.maps.places.SearchBox(inputPickupAdderess);
+        //change placeholder
+        inputPickupAdderess.placeholder = '@T("Alchub.Admin.Vendors.Fields.PickupAddress.Placeholder").Text';
+    }
+
+    //enable/disbale fields based on vendor/admin (17-05-23)
+    function manageFieldAccessibility() {
+
+        var isVendor = @(isLoggedInAsVendor.ToString().ToLower())
+                    if (isVendor) {
+            //CR: 3.1 Non-Editable fields: disable for vendor, editable for admin only.
+            //get field ids
+            var nonEditableIds = ['#@Html.IdFor(model => model.PickupAddress)',
+                '#location-search-input',
+                '#@Html.IdFor(model => model.ManageDelivery)',
+                '#@Html.IdFor(model => model.DeliveryAvailable)',
+                '#@Html.IdFor(model => model.PickAvailable)'];
+
+            nonEditableIds.forEach(function (id) {
+                //note: we cannot make filed disable, as disbale fields values will not included in form submit, so it will update blank entries
+                $(id).attr("readonly", true);
+                $(id).css("pointer-events", "none");
+
+                //check if checkbox then apply disable effect using css
+                if ($(id).is(':checkbox')) {
+                    $(id).css("opacity", "0.5");
+
+                    //make div disable, bcoz clicking n lable was triggering checkbox.
+                    var pnlId = "#pnl-" + id.replace('#', '');
+                    $(pnlId).css("pointer-events", "none");
+                    //console.log(pnlId);
+                }
+            });
+
+            //make location marker disable
+            //$("#location-map").css("pointer-events", "none");
+
+            //CR: 3.2 If Alchub manage the delivery & 3.3 If Vendor manage the delivery
+            var isDeliveryManageByVendor = @(isVendorManageDelivery.ToString().ToLower())
+                        if (!isDeliveryManageByVendor) {
+                //here, means alchub manages the delivery
+
+                //Minimum order amount
+                $('#@Html.IdFor(model => model.MinimumOrderAmount)').attr("readonly", true);
+                $('#@Html.IdFor(model => model.MinimumOrderAmount)').css("pointer-events", "none");
+                //since we have widget editor, also disable that.
+                var minimumOrderAmountEditor = $('#@Html.IdFor(model => model.MinimumOrderAmount)').closest(":has(.k-numerictextbox .k-numeric-wrap)").find('.k-numeric-wrap:first');
+                minimumOrderAmountEditor.removeClass('k-state-default').addClass('k-state-disabled');
+
+                //hide geofence
+                $('#vendor-geofencing').hideElement();
+            }
+        }
+    }
+</script>

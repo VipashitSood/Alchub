@@ -1,0 +1,106 @@
+@import "../helpers/_helpers";
+
+.modal-content {
+    border: none;
+    max-width: 480px;
+    position: absolute;
+    top: 100px;
+
+    .popup-box {
+        padding: 10px;
+        z-index: 9999;
+    }
+
+    .modal-title {
+        font-weight: $fontWeightnormal;
+        font-size: $fontSizeXXS;
+
+        @include media(landscapeTablet) {
+            font-size: $fontSizeMM;
+        }
+    }
+
+    .modal-header {
+        border-bottom: none;
+    }
+
+    .modal-text {
+        margin-bottom: 0px;
+
+        .delivery-fee {
+            padding: 8px;
+            font-size: $fontSizeXXS;
+            color: $colorDarkGrey;
+            font-weight: $fontWeightMediumBold;
+            margin-bottom: -7px;
+            padding-left: 0px;
+
+            @include media(landscapeTablet) {
+                font-size: $fontSizeXS;
+            }
+        }
+    }
+
+    .modal-uppertext {
+        font-size: $fontSizeXXXS;
+
+        @include media(landscapeTablet) {
+            font-size: $fontSizeXS;
+        }
+    }
+}
+
+.cart-total-left {
+    img {
+        height: 15px;
+        margin-bottom: 2px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+}
+
+.modal-dialog {
+    z-index: 1200;
+    max-width: 627px;
+
+    .modal-footer {
+        border-top: none;
+        padding: 5px 10px;
+
+        .button-1 {
+            font-size: $fontSizeS;
+            color: $colorBaseWhite;
+            width: 30%;
+            height: 30px;
+            font-weight: $fontWeightMediumBold;
+
+            @include media(landscapeTablet) {
+                width: 13%;
+                height: 40px;
+            }
+        }
+    }
+}
+
+.modal-backdrop.fade.show {
+    position: unset;
+}
+
+.modal-body {
+    color: $colorDarklight;
+    margin-top: -9px;
+    @include media(small){
+        padding:0px;
+    }
+    .vendor-wise-delivery-fee-popup {
+        margin-top: -12px;
+    }
+}
+
+#vendor-wise-delivery-fee-popup-button, #vendor-wise-tip-fee-popup-button {
+    box-shadow: none;
+    border: none;
+}
+

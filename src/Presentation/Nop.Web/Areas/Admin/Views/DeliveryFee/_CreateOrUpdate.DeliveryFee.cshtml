@@ -1,0 +1,135 @@
+﻿@model DeliveryFeeModel
+@using Nop.Core.Domain.DeliveryFees;
+
+<div class="card-body">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="IsAdmin" />
+
+    <div class="form-group row" id="div-vendorid" style="display:none">
+        <div class="col-md-3">
+            <nop-label asp-for="VendorId" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="VendorId" asp-items="Model.AvailableVendors" />
+            <span asp-validation-for="VendorId"></span>
+        </div>
+    </div>
+
+    <div id="delivery-fee-main-div" style="display:none">
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="DeliveryFeeTypeId" />
+            </div>
+            <div class="col-md-9">
+                <nop-select asp-for="DeliveryFeeTypeId" asp-items="Model.AvailableDeliveryFeeTypes" />
+                <span asp-validation-for="DeliveryFeeTypeId"></span>
+            </div>
+        </div>
+
+        <div id="delivery-fixed-fee" style="display:none">
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="FixedFee" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="FixedFee" />
+                    <span asp-validation-for="FixedFee"></span>
+                </div>
+            </div>
+        </div>
+
+        <div id="delivery-dynamic-fee" style="display:none">
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="DynamicBaseFee" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="DynamicBaseFee" />
+                    <span asp-validation-for="DynamicBaseFee"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="DynamicBaseDistance" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="DynamicBaseDistance" />
+                    <span asp-validation-for="DynamicBaseDistance"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="DynamicExtraFee" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="DynamicExtraFee" />
+                    <span asp-validation-for="DynamicExtraFee"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="DynamicMaximumFee" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="DynamicMaximumFee" />
+                    <span asp-validation-for="DynamicMaximumFee"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script asp-location="Footer">
+    $(document).ready(function() {
+        if ('@Model.IsAdmin' == 'True') {
+            $('#div-vendorid').show();
+        }
+
+        if($('#VendorId').val() > 0){
+            $('#delivery-fee-main-div').show();
+        }
+        else{
+            $('#delivery-fee-main-div').hide();
+        }
+
+        showHideDeliveryTypeFields();
+    });
+
+    $('#DeliveryFeeTypeId').change(function() {
+        showHideDeliveryTypeFields();
+    });
+
+    function showHideDeliveryTypeFields() {
+        if ($('#@Html.IdFor(model => model.DeliveryFeeTypeId)').val() == @((int)DeliveryFeeType.Fixed)) {
+            $('#delivery-fixed-fee').show();
+            $('#delivery-dynamic-fee').hide();
+        }
+        else if ($('#@Html.IdFor(model => model.DeliveryFeeTypeId)').val() == @((int)DeliveryFeeType.Dynamic)) {
+            $('#delivery-fixed-fee').hide();
+            $('#delivery-dynamic-fee').show();
+        }
+    }
+
+    $('#VendorId').change(function() {
+        var postData = {
+            vendorId: $('#VendorId').val()
+        };
+        addAntiForgeryToken(postData);
+
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "@(Url.Action("ChangeDeliveryFeeVendor", "DeliveryFee"))",
+            data: postData,
+            success: function(data, textStatus, jqXHR) {
+                $("#delivery-fee-main").html(data.html);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert("Error");
+            }
+        });
+    });
+</script>

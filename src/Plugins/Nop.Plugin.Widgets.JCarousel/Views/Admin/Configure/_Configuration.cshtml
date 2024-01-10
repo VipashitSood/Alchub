@@ -1,0 +1,47 @@
+﻿@model Nop.Plugin.Widgets.JCarousel.Models.Configuration.ConfigurationModel
+
+<div class="jcarouselconfigcard">
+    <div class="card-body">
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-override-store-checkbox asp-for="Enabled_OverrideForStore" asp-input="Enabled" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                <nop-label asp-for="Enabled" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="Enabled" />
+                <span asp-validation-for="Enabled"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-override-store-checkbox asp-for="Enabled_EnableViewAll" asp-input="EnableViewAll" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                <nop-label asp-for="EnableViewAll" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="EnableViewAll" />
+                <span asp-validation-for="EnableViewAll"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-override-store-checkbox asp-for="Enabled_LazyLoadNumberOfProductInCarousel" asp-input="LazyLoadNumberOfProductInCarousel" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                <nop-label asp-for="LazyLoadNumberOfProductInCarousel" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="LazyLoadNumberOfProductInCarousel" />
+                <span asp-validation-for="LazyLoadNumberOfProductInCarousel"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                &nbsp;
+            </div>
+            <div class="col-md-9">
+                <input type="submit" name="save" class="btn btn-primary svbtn" value="Save" />
+            </div>
+        </div>
+    </div>
+</div>

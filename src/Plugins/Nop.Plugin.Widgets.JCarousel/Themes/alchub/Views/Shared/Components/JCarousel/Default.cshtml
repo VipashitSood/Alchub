@@ -1,0 +1,189 @@
+﻿@model List<int> // Change the model type to a list of integers for IDs
+@inject IUrlHelper urlHelper
+
+@if (Model != null && Model.Count > 0)
+{
+    <div id="carousel-container">
+        @foreach (var carouselId in Model)
+        {
+            <div class="slider-container" data-carousel-id="@carouselId">
+                 <div class="loader" style="display: none;">Loading...</div>
+            </div>
+        }
+    </div>
+}
+
+
+<script>
+    $(document).ready(function () {
+
+        if ($(window).width() >= 1400) {
+            $(".product-grid .item-box").css('min-height', '500px');
+        }
+        if ($(window).width() < 1400 && $(window).width() > 1200) {
+            $(".product-grid .item-box").css('min-height', '490px');
+        }
+
+        if ($(window).width() > 900) {
+            $(".product-grid .item-box").css('min-height', '470px');
+        }
+
+
+        if ($(window).width() <= 500 && $(window).width() >= 400) {
+            $(".product-grid .item-box").css('min-height', '380px');
+
+        }
+        if ($(window).width() > 340 && $(window).width() <= 399) {
+            $(".product-grid .item-box").css('min-height', '370px');
+
+        }
+        if ($(window).width() <= 340 && $(window).width() <= 800) {
+            $(".product-grid .item-box").css('min-height', '340px');
+
+        }
+
+    @* JavaScript to handle lazy loading when scrolling *@
+          // Initialize lazy loading when scrolling
+            var sliders = $(".slider-container");
+        var currentSliderIndex = 0;
+
+        // Keep track of whether the first slider has been loaded on page load
+        var firstSliderLoaded = false;
+
+        // Function to show the loader for a specific slider
+    function showLoader(slider) {
+        slider.find(".loader").show();
+    }
+
+    // Function to hide the loader for a specific slider
+    function hideLoader(slider) {
+        slider.find(".loader").hide();
+    }
+
+
+        //Function to get the data of the current carousel by its Id
+        function loadSliderData(carouselId) {
+            var sliderContainer = $(".slider-container[data-carousel-id='" + carouselId + "']");
+            showLoader(sliderContainer);
+            sliderContainer.addClass("slider-loading");
+            // Make an AJAX request to load slider data by ID
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "@(Url.Action("LoadSliderData", "JCarouselPublic"))",
+                data: { "carouselId": carouselId },
+                success: function (data) {
+                    
+
+                    // Check if data is not null
+                    if (data != null) {
+                        sliderContainer.html(data);
+
+                        // Initialize Owl Carousel on the loaded data elements
+                        sliderContainer.find(".jcarousel-list").owlCarousel({
+                            loop: true,
+                            margin: 10,
+                            responsiveClass: true,
+                            responsive: {
+                                0: {
+                                    items: 2,
+                                    dots: true,
+                                    nav: true,
+                                },
+                                600: {
+                                    items: 3,
+                                    nav: true
+                                },
+                                1000: {
+                                    items: 4,
+                                    nav: true,
+                                    loop: false
+                                },
+                                1300: {
+                                    items: 5,
+                                    nav: true,
+                                    loop: false
+                                }
+                            }
+                        });
+
+                        // Lazy loading of images
+                        $('.lazy', sliderContainer).lazy({
+                            combined: true,
+                            delay: 4000
+                        });
+                        // Hide the loader when data is loaded
+						hideLoader(sliderContainer);  
+                        sliderContainer.removeClass("slider-loading");
+						currentSliderIndex++;
+
+                        // Load the data for the next slider if it exists
+                        loadNextSlider();
+                    } 
+					else {
+                        // Handle null data - you can choose to display an error message or take another action
+                        console.error("Data is null");
+                        // Hide the loader when data is loaded
+                    hideLoader(sliderContainer);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle AJAX error here
+                    console.error("AJAX error: There is no caorusel for home page with products." + error);
+                }
+            });
+        }
+
+        //Function to load the data of next sliders
+        function loadNextSlider() {
+            if (currentSliderIndex < sliders.length) {
+                var container = $(sliders[currentSliderIndex]);
+                var carouselId = container.data("carousel-id");
+
+                if (!container.hasClass("loaded") && isElementInViewport(container[0])) {
+
+                    // Show the loader for the current slider
+                    showLoader(container);
+
+                    // Load data for the current slider
+                    loadSliderData(carouselId);
+                    container.addClass("loaded");
+                }
+            }
+        }
+
+        //Function to check if the slider is in view port
+        function isElementInViewport(el) {
+            var rect = el.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        // Initialize lazy loading when scrolling
+        $(window).on("scroll", function () {
+            // Check if the first slider has already been loaded on page load
+            if (!firstSliderLoaded) {
+                var firstSlider = $(sliders[0]);
+                var firstCarouselId = firstSlider.data("carousel-id");
+                loadSliderData(firstCarouselId);
+                firstSlider.addClass("loaded");
+                firstSliderLoaded = true;
+            } else {
+                loadNextSlider();
+            }
+        });
+
+        // Load the data of the first slider by default on page load
+        if (sliders.length > 0) {
+            var firstSlider = $(sliders[0]);
+            var firstCarouselId = firstSlider.data("carousel-id");
+            loadSliderData(firstCarouselId);
+            firstSliderLoaded = true;
+        }
+    });
+</script>
+

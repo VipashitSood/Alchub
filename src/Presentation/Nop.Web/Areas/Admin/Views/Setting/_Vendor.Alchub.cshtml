@@ -1,0 +1,36 @@
+@model VendorSettingsModel
+
+<div class="card-body">
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-override-store-checkbox asp-for="DistanceRadiusValue_OverrideForStore" asp-input="DistanceRadiusValue" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+            <nop-label asp-for="DistanceRadiusValue" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="DistanceRadiusValue" />
+            <span asp-validation-for="DistanceRadiusValue"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-override-store-checkbox asp-for="DistanceUnit_OverrideForStore" asp-input="DistanceUnit" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+            <nop-label asp-for="DistanceUnit" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="DistanceUnit" asp-items="Model.DistanceUnitValues" />
+            <span asp-validation-for="DistanceUnit"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-override-store-checkbox asp-for="ShowStoreAddressInFavoriteSection_OverrideForStore" asp-input="ShowStoreAddressInFavoriteSection" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+            <nop-label asp-for="ShowStoreAddressInFavoriteSection" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="ShowStoreAddressInFavoriteSection" />
+            <span asp-validation-for="ShowStoreAddressInFavoriteSection"></span>
+        </div>
+    </div>
+</div>

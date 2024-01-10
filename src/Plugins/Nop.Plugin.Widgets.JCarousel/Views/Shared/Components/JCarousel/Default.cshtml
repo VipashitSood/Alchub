@@ -1,0 +1,33 @@
+﻿@using Nop.Plugin.Widgets.JCarousel.Models.Configuration;
+@model List<JCarouselModel>
+@{
+    Layout = "";
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var jcarousel in Model)
+    {
+        if (jcarousel.JcarouselProductsModel.Products.Count > 0)
+        {
+            <div class="product-grid">
+                <div class="view-all-wrapper">
+                    <div class="title">
+                        <strong>@jcarousel.Name</strong>
+                    </div>
+                    <div class="view-btn">
+                        <a href="@Url.RouteUrl("Category", new { SeName = jcarousel.SeName })">@T("Plugins.Widgets.JCarousel.Viewall")</a>
+                    </div>
+                </div>
+                <div class="item-grid owl-carousel owl-theme jcarousel-list">
+                    @foreach (var products in jcarousel.JcarouselProductsModel.Products)
+                    {
+                        <div class="item-box">
+                            @await Html.PartialAsync("_ProductBox", products)
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+}

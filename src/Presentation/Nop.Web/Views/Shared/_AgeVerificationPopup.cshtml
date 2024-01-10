@@ -1,0 +1,96 @@
+﻿@using Nop.Core
+@using Nop.Services.Customers
+@inject IWorkContext workContext
+@inject ICustomerService _customerService
+@{
+    //current customer
+    var customer = await workContext.GetCurrentCustomerAsync();
+    //age key pattern
+    var verificationPattern = $"{customer.CustomerGuid}__AgeVerified";
+}
+
+@if ((await _customerService.IsGuestAsync(customer)))
+{
+    <text>
+        <script type='text/javascript'>
+            $(document).ready(function() {
+
+                var ageVerificationKey = '@verificationPattern';
+                //alert('key: ' + ageVerificationKey + '  value: ' + localStorage.getItem(ageVerificationKey));
+
+                //check if key available in localstorage
+                if (localStorage.getItem(ageVerificationKey) != "true") {
+                    //show popup
+                    ageVerificationPopup();
+                }
+            });
+
+            function setAgeVerificationKey() {
+                var ageVerificationKey = '@verificationPattern';
+                //set the key in localStorage
+                localStorage.setItem(ageVerificationKey, 'true');
+            };
+
+            function ageVerificationPopup(title, modal, width) {
+                var isModal = (modal ? true : false);
+                var targetWidth = (width ? width : 550);
+                var maxHeight = $(window).height() - 20;
+
+                $('#ageverification-container')
+                    .dialog({
+                        modal: isModal,
+                        width: targetWidth,
+                        maxHeight: maxHeight,
+                        closeOnEscape: false,
+                        open: function(event, ui) {
+                            $(".ui-dialog-titlebar-close", ui.dialog).hide();
+                        },
+                        draggable: false,
+                        create: function(event, ui) {
+                            $("body").css({ overflow: 'hidden' })
+                        },
+                        beforeClose: function(event, ui) {
+                            $("body").css({ overflow: 'inherit' })
+                        },
+                        close: function(event, ui) {
+                            $(this).dialog('destroy').remove();
+                        }
+                    });
+            }
+
+            function closeDialog() {
+                //set key i
+                setAgeVerificationKey();
+                //close the popup
+                $('#ageverification-container').closest('.ui-widget-content').dialog('close');
+            }
+            function btnNoClick() {
+                $("#urge-age-text").show();
+            }
+        </script>
+        <div id="ageverification-container" style="display:none;">
+            <div class="modal-body">
+                <div>
+                    <h3>@T("Alchub.Home.AgeVerificationPopup.Title")</h3>
+                    <br>
+                    <h1>
+                        @T("Alchub.Home.AgeVerificationPopup.Confirmation.Message")
+                    </h1>
+                    <br>
+                    <p>@T("Alchub.Home.AgeVerificationPopup.Description")</p>
+                    <br>
+
+                    <div class="buttons">
+                        <button type="button" id="btn-verification-no" class="verificatop-btn verification-btn-no" onclick="btnNoClick()">@T("Alchub.Home.AgeVerificationPopup.Button.No")</button>
+                        <button type="button" id="btn-verification-yes" class="verificatop-btn verification-btn-yes" onclick="closeDialog()">@T("Alchub.Home.AgeVerificationPopup.Button.Yes")</button>
+                    </div>
+                    <div id="urge-age-text" style="display:none">
+                        <h4>
+                            @T("Alchub.Home.AgeVerificationPopup.UrgerAgeMessage")
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </text>
+}

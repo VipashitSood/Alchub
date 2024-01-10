@@ -1,0 +1,65 @@
+﻿@using Nop.Core.Domain.Seo
+@inject SeoSettings seoSettings
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    if (!string.IsNullOrEmpty(seoSettings.HomepageTitle))
+    {
+        NopHtml.AddTitleParts(seoSettings.HomepageTitle);
+    }
+
+    //meta
+    if (!string.IsNullOrEmpty(seoSettings.HomepageDescription))
+    {
+        NopHtml.AddMetaDescriptionParts(seoSettings.HomepageDescription);
+    }
+
+    //page class
+    NopHtml.AppendPageCssClassParts("html-home-page");
+}
+
+<div class="page home-page ">
+    <div class="page-body">
+        <div class="home-page-banner">
+        </div>
+        @await Component.InvokeAsync("HomepageCategories")
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBeforeCategories })
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageTop })
+        @*@await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBeforeProducts })*@
+        @*@await Component.InvokeAsync("HomepageProducts")*@
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBeforeBestSellers })
+        @*@await Component.InvokeAsync("HomepageBestSellers")*@
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageAfterBestSellers })
+        @await Component.InvokeAsync("ManufacturerCarousel")
+
+        <div class="subscribe-box-wrapper">
+            <div class="row align-items-center">
+                <div class="col-lg-5 col-md-12">
+                    <div class="news-wrapper">
+                        <div class="info">
+                            <p>@T("Alchub.newsletterbox.text")</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7 col-md-12">
+                    <div class="input-box">
+                        @await Component.InvokeAsync("NewsletterBox")
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBeforeNews })
+        @await Component.InvokeAsync("HomepageNews")
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBeforePoll })
+        @await Component.InvokeAsync("HomepagePolls")
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBottom })
+
+        <button onclick="topFunction()" id="myBtn" title="Go to top"></button>
+    </div>
+</div>
+

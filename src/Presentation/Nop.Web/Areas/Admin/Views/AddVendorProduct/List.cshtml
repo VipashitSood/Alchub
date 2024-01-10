@@ -1,0 +1,357 @@
+﻿@model ProductSearchModel
+@using Nop.Core.Domain.Catalog;
+@using Nop.Core.Alchub.Domain;
+@using Nop.Services.Topics;
+@using Nop.Services.Seo;
+@inject ITopicService topicService;
+@inject IUrlRecordService urlRecordService;
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Catalog.Products").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Products");
+}
+
+@{
+    const string hideSearchBlockAttributeName = "ProductListPage.HideSearchBlock";
+    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+
+    const string hideProductBlockAttributeName = "ProductList.HideSearchBlock";
+    var hideProductBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideProductBlockAttributeName);
+
+    //get add new product topic
+    var topic = await topicService.GetTopicBySystemNameAsync(NopAlchubDefaults.TOPIC_ADD_NEW_PRODUCT_VENDOR_SYS_NAME);
+    string topicSeName = "add_new_product_Vednor_instruction"; //default value
+    if (topic != null)
+    {
+        topicSeName = await urlRecordService.GetSeNameAsync(topic);
+    }
+}
+
+
+<form asp-controller="AddVendorProduct" asp-action="AddProduct" id="add-product-vendor-form" method="post">
+    <div class="content-header clearfix">
+        @*    <h1 class="float-left">
+        @T("Admin.Catalog.Products")
+        </h1>*@
+
+        <div class="row pb-3 pt-4">
+            @* <div class="col-5 admin-product">
+            <div class="row search-row @(!hideProductBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+            <div class="search-text">@T("Admin.Common.Add.Product")</div>
+            </div>
+            </div>
+            <div class="col-7 pb-2 works">
+            @T("adminproduct.work")
+            </div>
+            <div class="col-5">
+            </div>
+            <div class="col-7 works-description">
+            @T("adminproduct.description")
+            </div>*@
+
+            <div class="col-6 admin-product">
+                <div class="col-7">
+                    @T("Admin.Common.Add.Product")
+                    @*<i class="fa fa-info-circle" aria-hidden="true" style="padding-left:15px"></i>*@
+                    <a class="fa fa-info-circle" aria-hidden="true" style="padding-left:20px" href="@Url.RouteUrl("Topic", new {SeName = topicSeName})" target="_blank"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default card-search">
+                        <div class="card-body">
+                            @*  <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                            <div class="search-text">@T("Admin.Common.Add.Product")</div>
+                            <div class="icon-search"><i class="fas fa-search" aria-hidden="true"></i></div>
+                            <div class="icon-collapse"><i class="far fa-angle-@(!hideSearchBlock ? "up" : "down")" aria-hidden="true"></i></div>
+                            </div>*@
+                            <div class="search-body @(hideProductBlock ? "opened" : "")">
+                                <div class="row pb-3">
+
+                                    <div class="form-group row">
+                                        <div class="col-2 pb-5">
+                                            <nop-label asp-for="AddProductVendors.Name" />
+                                        </div>
+                                        <div class="col-2 pb-5">
+                                            <nop-editor asp-for="AddProductVendors.Name" />
+                                            <span asp-validation-for="AddProductVendors.Name"></span>
+                                        </div>
+                                        <div class="col-2 pb-5">
+                                            <nop-label asp-for="AddProductVendors.UPCCode" />
+                                        </div>
+                                        <div class="col-2 pb-5">
+                                            <nop-editor asp-for="AddProductVendors.UPCCode" />
+                                        </div>
+                                        <div class="col-2 pb-5">
+                                            <nop-label asp-for="AddProductVendors.Price" />
+                                        </div>
+                                        <div class="col-2 pb-5">
+                                            <nop-editor asp-for="AddProductVendors.Price" />
+                                            <span asp-validation-for="AddProductVendors.Price"></span>
+                                        </div>
+                                        <div class="col-2">
+                                            <nop-label asp-for="AddProductVendors.Stock" />
+                                        </div>
+                                        <div class="col-2">
+                                            <nop-editor asp-for="AddProductVendors.Stock" />
+                                            <span asp-validation-for="AddProductVendors.Stock"></span>
+                                        </div>
+                                        <div class="col-2">
+                                            <nop-label asp-for="AddProductVendors.Category" />
+                                        </div>
+                                        <div class="col-2">
+                                            <nop-editor asp-for="AddProductVendors.Category" />
+                                            <span asp-validation-for="AddProductVendors.Category"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="text-center col-12">
+                                        <button type="button" id="addvendorproduct" class="btn btn-primary btn-search">
+                                            @T("Admin.Common.AddVendorProduct")
+                                        </button>
+                                    </div>
+                                </div>
+                                <script>
+                                    $(document).ready(function () {
+                                        $('#addvendorproduct').click(function () {
+                                            DisableAddButton(true);
+                                            var postData = {
+                                                Name: $("#@Html.IdFor(model => model.AddProductVendors.Name)").val(),
+                                                UPCCode: $("#@Html.IdFor(model => model.AddProductVendors.UPCCode)").val(),
+                                                Price: $("#@Html.IdFor(model => model.AddProductVendors.Price)").val(),
+                                                Stock: $("#@Html.IdFor(model => model.AddProductVendors.Stock)").val(),
+                                                Category: $("#@Html.IdFor(model => model.AddProductVendors.Category)").val()
+                                            };
+                                            addAntiForgeryToken(postData);
+                                            $.ajax({
+                                                cache: false,
+                                                type: "POST",
+                                                url: "@Html.Raw(Url.Action("AddProduct", "AddVendorProduct", null))",
+                                                data: postData,
+                                                success: function (data, textStatus, jqXHR) {
+                                                    if (data.Result) {
+
+                                                        if (data.Result) {
+                                                            $("#@Html.IdFor(model => model.AddProductVendors.Name)").val(""),
+                                                                $("#@Html.IdFor(model => model.AddProductVendors.UPCCode)").val(""),
+                                                                $("#@Html.IdFor(model => model.AddProductVendors.Price)").val(0),
+                                                                $("#@Html.IdFor(model => model.AddProductVendors.Stock)").val(0),
+                                                                $("#@Html.IdFor(model => model.AddProductVendors.Category)").val("")
+                                                            window.location.href = "/Admin/Product/List";
+                                                        }
+                                                        else {
+                                                            window.location.href = "/Admin/AddVendorProduct/List";
+                                                        }
+                                                        //clear input value
+
+                                                    } else {
+                                                        //display errors if returned
+                                                        display_nop_error(data);
+                                                        window.location.href = "/Admin/AddVendorProduct/List";
+                                                    }
+                                                },
+                                                complete: function (jqXHR, textStatus) {
+                                                    DisableAddButton(false);
+                                                    //$('#addvendorproduct').attr('disabled', false);
+                                                }
+                                            });
+                                        });
+                                    });
+
+                                    function DisableAddButton(disable) {
+                                        if (disable) {
+                                            $("#addvendorproduct")
+                                                .text("Please Wait...")
+                                                .attr('disabled', 'disabled');
+                                        } else {
+                                            $("#addvendorproduct")
+                                                .text('@T("Admin.Common.AddVendorProduct")')
+                                                .attr('disabled', false);
+                                        }
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+<form asp-controller="AddVendorProduct" asp-action="List" id="vendor-product-search-form" method="post">
+    @* <div class="row pb-5">
+    <div class="col-5 admin-product">
+    <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+    <div class="search-text">@T("Admin.Common.Search")</div>
+    </div>
+    </div>
+    <div class="col-7 pb-2 works">
+    @T("adminsearch.work")
+    </div>
+    <div class="col-5">
+    </div>
+    <div class="col-7 works-description">
+    @T("adminsearch.workdescription")
+    </div>
+    </div>*@
+    <div class="content-header clearfix">
+        <div class="col-6 admin-product">
+            <div class="col-7">
+                @T("Admin.Common.Search")
+                @*<i class="fa fa-info-circle" aria-hidden="true" style="padding-left:15px"></i>*@
+                <a class="fa fa-info-circle" aria-hidden="true" style="padding-left:20px" href="@Url.RouteUrl("Topic", new {SeName = topicSeName})" target="_blank"></a>
+            </div>
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default card-search">
+                        <div class="card-body">
+
+
+                            <div class="search-body @(hideSearchBlock ? "opened" : "")">
+                                <div class="row pb-3">
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <div class="col-2">
+                                                <nop-label asp-for="SearchProductName" />
+                                            </div>
+                                            <div class="col-2">
+                                                <nop-editor asp-for="SearchProductName" />
+                                            </div>
+                                            <div class="col-2">
+                                                <nop-label asp-for="SearchCategoryId" />
+                                            </div>
+                                            <div class="col-2">
+                                                <nop-select asp-for="SearchCategoryId" asp-items="Model.AvailableCategories" />
+                                            </div>
+                                            <div class="col-2 ">
+                                                <nop-label asp-for="SearchSize" />
+                                            </div>
+                                            <div class="col-2">
+                                                <nop-select asp-for="SearchSize" asp-items="Model.AvailableSize" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="text-center col-12">
+                                        <button type="button" id="search-products" class="btn btn-primary btn-search">
+                                            <i class="fas fa-search"></i>
+                                            @T("Admin.Common.Search")
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-default">
+                        <div class="card-body">
+                            @await Html.PartialAsync("Table", new DataTablesModel
+                            {
+                            Name = "products-grid",
+                            UrlRead = new DataUrl("ProductList", "AddVendorProduct", null),
+                            SearchButtonId = "search-products",
+                            Length = Model.PageSize,
+                            LengthMenu = Model.AvailablePageSizes,
+                            Filters = new List<FilterParameter>
+                            {
+                            new FilterParameter(nameof(Model.SearchProductName)),
+                            new FilterParameter(nameof(Model.SearchCategoryId)),
+                            new FilterParameter(nameof(Model.SearchIncludeSubCategories), typeof(bool)),
+                            new FilterParameter(nameof(Model.SearchManufacturerId)),
+                            new FilterParameter(nameof(Model.SearchStoreId)),
+                            new FilterParameter(nameof(Model.SearchWarehouseId)),
+                            new FilterParameter(nameof(Model.SearchVendorId)),
+                            new FilterParameter(nameof(Model.SearchProductTypeId)),
+                            new FilterParameter(nameof(Model.SearchPublishedId)),
+                            new FilterParameter(nameof(Model.SearchSize))
+                            },
+                            ColumnCollection = new List<ColumnProperty>
+                            {
+                            new ColumnProperty(nameof(ProductModel.SeName))
+                            {
+                            Title = "View",
+                            Width = "80",
+                            ClassName = NopColumnClassDefaults.Button,
+                            Render = new RenderCustom("renderColumnView")
+                            },
+                            new ColumnProperty(nameof(ProductModel.PictureThumbnailUrl))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.PictureThumbnailUrl").Text,
+                            Width = "100",
+                            Render = new RenderPicture("", 75)
+                            },
+                            new ColumnProperty(nameof(ProductModel.Name))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.Name").Text,
+                            Width = "100",
+                            },
+                            new ColumnProperty(nameof(ProductModel.Size))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.Size").Text,
+                            Width = "100"
+                            },
+                            new ColumnProperty(nameof(ProductModel.Category))
+                            {
+                            Title = T("Admin.Catalog.Products.List.Category").Text,
+                            Width = "100"
+                            },
+                            new ColumnProperty(nameof(ProductModel.UPCCode))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.UPCCode").Text,
+                            Width = "100"
+                            },
+
+                            }
+                            })
+                            <script>
+                                function renderColumnView(data, type, row, meta) {
+                                    return celContent = '<a class="btn btn-default" href="/Product/ProductDetails/?productId=' + row.Id + '"><i class="fa fa-eye"></i>View</a>';
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+<script>
+    //bind tab funtionality when press enter to specific inputs
+    $('#add-product-vendor-form input').keydown(function (e) {
+        var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+        if (key == 13) {
+            const inputId = this.id;
+            //alert(inputId);
+            if (inputId == 'AddProductVendors_Name' || inputId == 'AddProductVendors_UPCCode' || inputId == 'AddProductVendors_Price') {
+                e.preventDefault();
+                var inputs = $(this).closest('form').find(':input:visible');
+                inputs.eq(inputs.index(this) + 1).focus();
+            }
+        }
+    });
+    $('#vendor-product-search-form input').keydown(function (e) {
+        var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+        if (key == 13) {
+            const inputId = this.id;
+            //alert(inputId);
+            if (inputId == 'SearchProductName') {
+                e.preventDefault();
+                $("#search-products").click();
+            }
+        }
+    });
+</script>

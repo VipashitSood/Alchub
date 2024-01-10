@@ -1,0 +1,12 @@
+﻿@model string
+
+@if (!string.IsNullOrEmpty(Model))
+{
+    <span class="time">@Model</span>
+}
+else
+{
+    <span class="not-available">
+        @T("Alchub.Catalog.Product.Price.FastestSlotTime.NotAvailable").Text
+    </span>
+}

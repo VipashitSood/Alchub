@@ -1,0 +1,34 @@
+﻿@using Nop.Core.Domain.TipFees
+@model IList<VendorWiseTipFee>
+
+<div class="modal fade" id="vendor-wise-tip-fee" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="vendor-wise-tip-fee-label" aria-hidden="true">
+    <div class="modal-dialog delivery-section">
+          <div class="popup-box">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="vendor-wise-tip-fee-label">@T("Alchub.VendorWise.TipFee.Heading").Text</h5>
+                  </div>
+                  <div class="modal-body">
+                      <div id="vendor-wise-tip-fee-popup" class="vendor-wise-tip-fee-popup">
+                          <div>
+                              <div class="modal-uppertext">
+                                  @T("Alchub.VendorWise.TipFee.Popup.Instruction").Text
+                              </div>
+                              <div class="modal-text">
+                                  @foreach (var vendorWiseTipFee in Model)
+                                  {
+                                      <div class="tip-fee">
+                                          @vendorWiseTipFee.VendorName - @vendorWiseTipFee.TipFee
+                                      </div>
+                                  }
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" data-dismiss="modal" data-bs-dismiss="modal" class="btn button-1">@T("Alchub.VendorWise.TipFee.Close").Text</button>
+                  </div>
+              </div>
+          </div>
+    </div>
+</div>

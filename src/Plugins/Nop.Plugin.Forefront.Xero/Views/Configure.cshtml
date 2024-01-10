@@ -1,0 +1,25 @@
+﻿@model Nop.Plugin.Forefront.Xero.Models.ForeFrontXeroModel
+@inject IEventPublisher eventPublisher
+
+@{ Layout = "_ConfigurePlugin"; }
+
+@inject Nop.Core.IWebHelper webHelper
+
+@await Component.InvokeAsync("StoreScopeConfiguration")
+
+<div class="content">
+    <div class="form-horizontal">
+        <nop-tabs id="forefrontxero-edit">
+            <nop-tab asp-name="tab-info" asp-title="@T("Plugin.Forefront.Xero.Info")" asp-default="true">@await Html.PartialAsync("~/Plugins/Forefront.Xero/Views/ConfigureInfo.cshtml", Model)</nop-tab>
+            <nop-tab asp-name="tab-AccountLiability" asp-title="@T("Plugin.Forefront.Xero.AccountLiability")">@await Html.PartialAsync("~/Plugins/Forefront.Xero/Views/AccountLiability.cshtml", Model)</nop-tab>
+            <nop-tab asp-name="tab-seo" asp-title="@T("Plugin.Forefront.Xero.XeroQueue")">@await Html.PartialAsync("~/Plugins/Forefront.Xero/Views/XeroQueue.cshtml", Model)</nop-tab>
+        </nop-tabs>
+    </div>
+</div>
+
+@{ //custom tabs
+                var eventMessage = new AdminTabStripCreated(this.Html, "forefrontxero-edit");
+                eventPublisher.PublishAsync(eventMessage);
+                foreach (var eventBlock in eventMessage.BlocksToRender)
+                {
+    @eventBlock } }

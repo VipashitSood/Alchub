@@ -1,0 +1,185 @@
+﻿@model CatalogProductsModel
+
+@{
+    var specificationModel = Model.SpecificationFilter;
+}
+
+<div class="product-filter product-spec-filter">
+    <div class="filter-title">
+        <div class="toogle-wrap">
+            <img src="../Themes/Alchub/Content/images/new-icon/nextarrow.svg" />
+            <strong>@T("Filtering.SpecificationFilter")</strong>
+        </div>
+    </div>
+    <div class="filter-content">
+        @foreach (var attr in specificationModel.Attributes)
+        {
+            <ul class="group product-spec-group gropu-box-wrap @(attr.Values.Any(x => !string.IsNullOrEmpty(x.ColorSquaresRgb)) ? " product-spec-color" : null )" id="lists-filter-@attr.Id">
+                <div class="name">
+                    <div class="toogle-wrap">
+                        <strong>@attr.Name</strong>
+                    </div>
+                </div>
+                <div class="group-item-list" id="group-item-list-@attr.Id">
+                    <div class="filter-search" id="filtersearch-wrap-@attr.Id">
+                        <div class="container">
+                            <input type="text" placeholder="Search..." id="filtersearch-@attr.Id">
+                            <div class="search"></div>
+                        </div>
+                    </div>
+                    <ul class="ul-list" id="ul-spec-list-@attr.Id">
+                        @foreach (var value in attr.Values)
+                        {
+                            <li id="list-filter-@value.Id" class="item @(!string.IsNullOrEmpty(value.ColorSquaresRgb) ? " color-item" : null) attributes">
+                                <span class="attribute-square" style="background-color: @(value.ColorSquaresRgb) ;" value=" @value.Id "></span>
+                                <input class="applySpecFilter" checked="@value.Selected" name="specificationfilter" value="@value.Id" type="checkbox" />
+
+                                @{
+                                    //get product count
+                                    var productCount = Model.SpecificationOptionsProductCounts.FirstOrDefault(x => x.Id == value.Id);
+                                    if (productCount != null && productCount.NumberOfProducts.HasValue && productCount.NumberOfProducts > 0)
+                                    {
+                                        <label for="attribute-option-@value.Id" class="@(string.IsNullOrEmpty(value.ColorSquaresRgb)? Html.Raw("attribute-squares color-squares"): null)">
+                                            @value.Name (@productCount.NumberOfProducts)
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <label for="attribute-option-@value.Id" class="@(string.IsNullOrEmpty(value.ColorSquaresRgb)? Html.Raw("attribute-squares color-squares"): null)">
+                                            @value.Name
+                                        </label>
+                                    }
+                                }
+                            </li>
+                        }
+                    </ul>
+                    <button class="show-list" id="show-list-@attr.Id">@T("Alchub.filter.button.all.list")</button>
+                    <script>
+                        //list filter in search
+                        $(document).ready(function () {
+                            //search filter: FE
+                            searchFilter('@attr.Id');
+
+                            //arange filter
+                            arangeFilters('@attr.Id');
+                        });
+                    </script>
+                </div>
+            </ul>
+        }
+    </div>
+</div>
+<script asp-location="Footer">
+    $(document).ready(function () {
+        $(".applySpecFilter").change(function () {
+            var location = window.location.href;
+            var pageNumber = getParameterByName("pagenumber", location);
+            if (pageNumber != null && pageNumber != "") {
+                location = updateQueryStringParameter(location, "pagenumber", 1);
+            }
+            var specValue = $('input[name="specificationfilter"]:checked').map(function () {
+
+                return this.value;
+
+            }).get().join(",");
+
+            if (specValue !== "") {
+                if (this.checked) {
+                    const specValueArray = specValue.split(',');
+                    //re-arrange spec values. latest selected to last.
+                    specValueArray.push(specValueArray.splice(specValueArray.indexOf(this.value), 1)[0]);
+
+                    //re-assign specValue with changed order.
+                    specValue = specValueArray?.join(",")
+                }
+                location = updateQueryStringParameter(location, "specs", specValue);
+            }
+            else {
+                location = removeParam("specs", location);
+
+            }
+            setLocation(location);
+
+
+        });
+
+    });
+    $(function () {
+
+
+        $('.applySpecFilter').each(function () {
+            if ($(this).is(':checked')) {
+
+                $(this).parent('li').children('.attribute-square').addClass("menuitemshow");
+                $(".menuitemshow").css("outline", "1px solid #f0862e");
+    @*  $(this).parent('li').children('.attribute-square').removeClass("attribute-square");*@
+                                                                                            } else {
+
+                $(this).parent('li').children('.attribute-square').removeClass("menuitemshow");
+            }
+        })
+    });
+
+    function arangeFilters(attId) {
+        if ($("#lists-filter-" + attId + " li").length > 6) {
+            $("#filtersearch-wrap-" + attId + "").css("display", "block");
+            $("#show-list-" + attId + "").css("display", "block");
+
+            $("#show-list-" + attId + "").click(function () {
+                $("#ul-spec-list-" + attId + "").addClass("custome-height");
+                $("#group-item-list-" + attId + " .custome-height").css({ "overflow": "auto", "height": "168px", "padding": "10px 0px" });
+            })
+        }
+        else {
+            $("#filtersearch-wrap-" + attId + "").css("display", "none");
+            $("#show-list-" + attId + "").css("display", "none");
+        }
+
+        $(document).on('click', '#show-list-' + attId + '', function () {
+            $(".product-subcategory-group .item").addClass("review-wrp");
+            $("#show-list-" + attId + "").hide();
+            $("#group-item-list-" + attId + " .ul-list .item").css("display", "block")
+        })
+    }
+
+    $(document).ready(function () {
+        //filters: show all btn
+        $('.group .ul-list').each(function (index) {
+            const value = $(this); const length = $(this).children();
+            for (let i = 0; i < length.length; i++) {
+                if (i <= 5) { $(length[i]).addClass('show-filter-list'); }
+            }
+
+            //expand/collaps panel
+            var allCheckedCheckBox = $($(this)).find('.applySpecFilter:checkbox:checked');
+            if (allCheckedCheckBox.length > 0) {
+                console.log('cheched ' + allCheckedCheckBox.length)
+                $($(this)).closest('.group').find('.name').next().slideToggle('slow');
+                $($(this)).closest('.group').find('.name').toggleClass("closed")
+            }
+        });
+    });
+
+    function searchFilter(attId) {
+        $('input#filtersearch-' + attId + '').bind('keyup change', function () {
+            if ($(this).val().trim().length !== 0) {
+
+                $('#group-item-list-' + attId + ' .ul-list li').show().hide().each(function () {
+                    if ($(this).is(':icontains(' + $('input#filtersearch-' + attId + '').val() + ')'))
+                        $(this).show();
+                    $("#show-list-" + attId + "").hide();
+                });
+            }
+            else {
+                $('#lists-filter-' + attId + ' #group-item-list-' + attId + ' .ul-list li').show().hide().each(function () {
+                    $(this).show();
+                });
+            }
+        });
+
+        //expr
+        $.expr[':'].icontains = function (obj, index, meta, stack) {
+            return (obj.textContent || obj.innerText || jQuery(obj).text() || '').toLowerCase().indexOf(meta[3].toLowerCase()) >= 0;
+        };
+    }
+</script>

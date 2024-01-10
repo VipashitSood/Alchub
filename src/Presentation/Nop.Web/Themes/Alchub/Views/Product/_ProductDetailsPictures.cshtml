@@ -1,0 +1,134 @@
+﻿@model ProductDetailsModel
+
+<div class="gallerys">
+    <div class="row">
+
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsBeforePictures, additionalData = Model })
+
+        @*  <div class="packaging">@T("Product.productpackaging")</div>*@
+        @if (Model.PictureModels.Count > 1 && Model.DefaultPictureZoomEnabled)
+        {
+            <link rel="stylesheet" href="~/lib_npm/magnific-popup/magnific-popup.css" />
+            <script asp-exclude-from-bundle="true" src="~/lib_npm/magnific-popup/jquery.magnific-popup.min.js" asp-location="Footer"></script>
+            <div class="picture-thumbs col-2 px-0 ">
+                @foreach (var picture in Model.PictureModels)
+                {
+                    <a class="thumb-item" href="@picture.FullSizeImageUrl" alt="@picture.AlternateText" title="@picture.Title">
+                        <img src="@picture.ThumbImageUrl" alt="@picture.AlternateText" title="@picture.Title" data-defaultsize="@picture.ImageUrl" data-fullsize="@picture.FullSizeImageUrl" />
+                    </a>
+                }
+            </div>
+            <script asp-location="Footer">
+            $(document).ready(function() {
+                $('.picture-thumbs').magnificPopup(
+                    {
+                        type: 'image',
+                        delegate: 'a',
+                        removalDelay: 300,
+                        gallery: {
+                            enabled: true,
+                            navigateByImgClick: true,
+                            preload: [0, 1],
+                            tPrev: '@T("Media.MagnificPopup.Previous")',
+                            tNext: '@T("Media.MagnificPopup.Next")',
+                            tCounter: '@T("Media.MagnificPopup.Counter")'
+                        },
+                        tClose: '@T("Media.MagnificPopup.Close")',
+                        tLoading: '@T("Media.MagnificPopup.Loading")'
+                    });
+            });
+            </script>
+            <script asp-location="Footer">
+            $(document).ready(function() {
+                $('.thumb-item > img').on('click',
+                    function () {
+                       
+                        $('#main-product-img-@Model.Id').attr('src', $(this).attr('data-defaultsize'));
+                        $('#main-product-img-@Model.Id').attr('data-zoom', $(this).attr('data-defaultsize'));
+                        $('#main-product-img-@Model.Id').attr('title', $(this).attr('title'));
+                        $('#main-product-img-@Model.Id').attr('alt', $(this).attr('alt'));
+                        $('#main-product-img-lightbox-anchor-@Model.Id').attr('href', $(this).attr('data-fullsize'));
+                        $('#main-product-img-lightbox-anchor-@Model.Id').attr('title', $(this).attr('title'));
+                    });
+            });
+            </script>
+        }
+        else
+        {
+            if (Model.PictureModels.Count > 1)
+            {
+                <div class="picture-thumbs col-2 px-0 d-none d-xl-block">
+                    @foreach (var picture in Model.PictureModels)
+                    {
+                        <div class="thumb-item ">
+                            <img src="@picture.ThumbImageUrl" alt="@picture.AlternateText" title="@picture.Title" data-defaultsize="@picture.ImageUrl" data-fullsize="@picture.FullSizeImageUrl" />
+                        </div>
+                    }
+                </div>
+                <script asp-location="Footer">
+                $(document).ready(function() {
+                    $('.thumb-item img').on('click',
+                        function () {
+                            
+                            $('#main-product-img-@Model.Id').attr('src', $(this).attr('data-defaultsize'));
+                            $('#main-product-img-@Model.Id').attr('data-zoom', $(this).attr('data-defaultsize'));
+                           @* $('.zoomWindowContainer div').css('background-image',"url('"+$(this).attr('data-defaultsize')+"')");*@
+                            $('#main-product-img-@Model.Id').attr('title', $(this).attr('title'));
+                            $('#main-product-img-@Model.Id').attr('alt', $(this).attr('alt'));
+                            $('#main-product-img-lightbox-anchor-@Model.Id')
+                                .attr('href', $(this).attr('data-fullsize'));
+                            $('#main-product-img-lightbox-anchor-@Model.Id').attr('title', $(this).attr('title'));
+                        });
+                });
+                </script>
+            }
+        }
+        <div class="picture col-sm-12 col-md-10 text-center">
+            @if (Model.DefaultPictureZoomEnabled && Model.PictureModels.Count == 1)
+            {
+                <a href="@Model.DefaultPictureModel.FullSizeImageUrl" title="@Model.DefaultPictureModel.Title" id="main-product-img-lightbox-anchor-@Model.Id" class="zoom">
+                    <img alt="@Model.DefaultPictureModel.AlternateText" data-zoom="@Model.DefaultPictureModel.ImageUrl" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" id="main-product-img-@Model.Id" class="drift-demo-trigger" />
+                </a>
+                <div class="text-wrap">
+                    <span>@T("Alchub.details.image.text")</span>
+                </div>
+
+                <script asp-location="Footer">
+                $(document).ready(function() {
+                    $('#main-product-img-lightbox-anchor-@Model.Id').magnificPopup({ type: 'image' });
+                });
+                </script>
+            }
+            else
+            {
+                <img alt="@Model.DefaultPictureModel.AlternateText" data-zoom="@Model.DefaultPictureModel.ImageUrl" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" id="main-product-img-@Model.Id" class="drift-demo-trigger" />
+                <div class="text-wrap">
+                    <span>@T("Alchub.details.image.bottom.text")</span>
+                </div>
+
+
+            }
+        </div>
+        <div class="zoom">
+            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsAfterPictures, additionalData = Model })
+        </div>
+    </div>
+
+</div>
+<!--image outer-zoom script-->
+<script asp-location="Footer">
+
+   @* $(document).ready(function () {
+        $(window).resize(function () {
+            // This will fire each time the window is resized:
+            if ($(window).width() >= 1200) {
+                // if larger or equal
+                $('.drift-demo-trigger').ezPlus({
+                    zoomType: 'inner',
+                    cursor: 'crosshair'
+                });
+            } 
+        }).resize(); // This will simulate a resize to trigger the initial run.
+ 
+    });*@
+</script>

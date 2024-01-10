@@ -1,0 +1,74 @@
+﻿@model Nop.Web.Areas.Admin.Models.Slots.ZoneModel
+@inject Nop.Services.Configuration.ISettingService settingService
+
+<div asp-validation-summary="All"></div>
+<input asp-for="Id" type="hidden" />
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.StoreDetailsTop, additionalData = Model })
+                <div class="card card-default">
+                    <div class="card-body">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="Name" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <nop-editor asp-for="Name" asp-required="true"/>
+                                        <span asp-validation-for="Name"></span>
+                                        <input type="hidden" id="zoneId" value="@Model.Id" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <nop-label asp-for="IsActive" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <nop-editor asp-for="IsActive" />
+                                        <span asp-validation-for="IsActive"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.StoreDetailsBottom, additionalData = Model })
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(function () {
+        $("#CourierPrice").prop("disabled", true);
+        $('#IsCourier').click(function () {
+            if (!$(this).is(':checked')) {
+                $("#CourierPrice").prop("disabled", true);
+            }
+            else {
+                $("#CourierPrice").prop("disabled", false);
+            }
+        });
+
+        $('form[id=addZone-form]').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: this.action,
+                type: this.method,
+                data: $(this).serialize(),
+                success: function (result) {
+                    if (result.name == "List") {
+                        window.location.reload();
+                    }
+                    else {
+                        $('#addZoneModal').modal('show');
+                        $('#divAddZone').html('');
+                        $('#divAddZone').html(result.html);
+                    }
+
+                }
+            });
+
+        });
+    });
+</script>

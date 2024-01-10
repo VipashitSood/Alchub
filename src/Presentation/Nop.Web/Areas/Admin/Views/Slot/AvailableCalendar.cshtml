@@ -1,0 +1,156 @@
+﻿@model Nop.Core.Domain.Slots.Zone
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Catalog.SlotManagement").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("SlotManagement");
+}
+<script src="~/lib/zone/availableCalendar/jquery-3.4.1.js"></script>
+<script src="~/lib/fullCalendar/moment.min.js"></script>
+<script src="~/lib/fullCalendar/fullcalendar.min.js"></script>
+<link href="~/lib/fullCalendar/fullcalendar.min.css" rel="stylesheet" />
+<style>
+    .fc-time-grid-event .fc-content {
+        overflow: hidden;
+        text-align: center;
+        font-weight: 700;
+        padding-top: 3px;
+        font-size: 16px;
+    }
+
+    .modal-content .k-picker-wrap.k-state-default, .modal-content .k-numeric-wrap.k-state-default {
+        max-width: 180px;
+        min-width: 170px;
+    }
+    #divRecurringType{
+		width:100%;
+    }
+    #divRecurringType label {
+        margin-left: 5px;
+        margin-right: 10px;
+    }
+    .modal-footer{
+        justify-content:center;
+    }
+        .modal-footer .btnSaveModalForm, .modal-footer .btnCloseModalForm {
+            @*padding: 10px 35px;*@
+            padding: 5px 20px;
+        }
+        .modal-footer .btnCloseModalForm {
+            margin-left:10px;
+        }
+    #divEndDate{
+        width:100%;
+    }
+   #calendar .fc-toolbar {
+        padding: 45px 10px 10px 10px;
+    }
+    .custome-checkbox .color-box .active, .inactive {
+        display: flex;
+        align-items: center;
+
+    }
+        .custome-checkbox .color-box .active:before, .inactive:before {
+            content: " ";
+            width: 18px;
+            height: 18px;
+            background-color: #62b743;
+            border: 1px solid #f1f1f1;
+            position: absolute;
+            outline: 1px solid darkgray;
+            right: 80px;
+        }
+    .custome-checkbox .color-box .inactive:before {
+        background-color: #ecf0f5;
+    }
+
+    .custome-checkbox {
+        float: right;
+        padding-left: 20px;
+    }
+    .modal-header{
+        padding:10px;
+    }
+    .modalHeader {
+        width: 100%;
+        justify-content: center;
+        display: flex;
+        font-weight: bold;
+    }
+    .fc-center{
+        padding-right:9px;
+    }
+  
+</style>
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Available.Slots.Calendar")
+        <small>
+            <i class="fas fa-arrow-circle-left"></i>
+            <a asp-action="List">@T("Admin.Zone.List.BackToList")</a>
+        </small>
+    </h1>
+    <div class="custome-checkbox">
+        <div class="color-box">
+            <span class="active">
+                @T("Alchub.Slot.Active")
+            </span>
+            <span class="inactive">
+                @T("Alchub.Slot.InActive")
+            </span>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div id='calendar'></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="reservationModal" aria-hidden="false" style="display:none">
+	<div class="modal-dialog">
+		<div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modalHeader"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+			<div class="modal-body">
+				<div class="modalBody"></div>
+
+                <div class="alert alert-danger modalAlert clear" style="display:none; display:flex;"></div>
+            </div>
+            <div class="modal-footer">
+
+				<div class="form-group">
+					<div class="col-md-3"> </div>
+					<div class="col-md-12">
+						<a href="javascript:void(0)" class="btn btn-success btn-sm btnSaveModalForm">
+							@T("Slot.Save")
+						</a>
+						<a style="display: none" href="javascript:void(0)" class="btn fl btn-danger btn-sm btnUpdateBtnForm">Update</a>
+						<a style="display: none" href="javascript:void(0)" class="btn fl btn-danger btn-sm btnRemoveBtnForm">Delete</a>
+						<a style="display: none" href="javascript:void(0)" class="btn fl btn-danger btn-sm btnRemoveAllBtnForm">Delete All</a>
+						<button class="btn btn-sm btn-default btnCloseModalForm" data-dismiss="modal" aria-hidden="true">
+							@T("Slot.Cancel")
+						</button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+
+
+<script>
+	$(document).ready(function () {
+		$('.fc-today-button').hide();
+        $('.fc-agendaWeek-button').hide();
+	});
+    indexModule().init('@Model.Id');
+</script>

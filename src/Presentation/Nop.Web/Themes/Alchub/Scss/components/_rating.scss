@@ -1,0 +1,14 @@
+@import "../helpers/helpers";
+
+.product-review-box {
+    .rating {
+        div {
+            background:none;
+        }
+
+        .rating-icon {
+            background: url('../../Content/images/new-icon/star.png')repeat-x;
+            background-size: 19px 15px;
+        }
+    }
+}

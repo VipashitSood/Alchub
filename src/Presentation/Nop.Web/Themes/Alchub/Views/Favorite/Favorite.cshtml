@@ -1,0 +1,142 @@
+@model FavoriteModel
+@using Nop.Web.Models.Favorite
+@using Nop.Core
+@using Nop.Core.Domain.Tax
+@using Nop.Core.Domain.Orders
+@inject IWebHelper webHelper
+@inject IWorkContext workContext
+@{
+    //Layout = "_ColumnsOne";
+    Layout = "_ColumnsTwo";
+
+    //title
+    NopHtml.AddTitleParts(T("Alchub.PageTitle.Favorite").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-account-page");
+    NopHtml.AppendPageCssClassParts("html-wishlist-page");
+}
+@section left
+    {
+    @await Component.InvokeAsync("CustomerNavigation", new { selectedTabId = CustomerNavigationEnum.Wishlist })
+}
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item Items-1" role="presentation">
+        <i class="fa-regular fa-store fa-xs" style="color: #f47601;"></i>
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true"></button>
+        <span>@T("Alchub.Favorite.Tab.Stores")</span>
+    </li>
+
+    <li class="nav-item items-button" role="presentation">
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false"></button>
+       <span>@T("Alchub.Favorite.Tab.Items")</span>
+    </li>
+</ul>
+<div class="page wishlist-page">
+    <div class="page-body">
+        <div class="favorite-link">
+            <div class="favorite-link-wrapper">
+
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        @await Html.PartialAsync("_FavoriteVendors", Model)
+                    </div>
+                    <div class="tab-pane fade items" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="items-sections">
+                            @await Html.PartialAsync("_WishList", Model.WishlistModel)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script asp-location="Footer">
+    AjaxCart.setLoadWaiting(false);
+
+    function AddFavoriteVendor(urladd) {
+        AjaxCart.setLoadWaiting(true);
+        var postData = {};
+        addAntiForgeryToken(postData);
+        $.ajax({
+            cache: false,
+            url: urladd,
+            type: "POST",
+            data: postData,
+            success: function (response) {
+                if (response.message) {
+                    alert(response.message);
+                    AjaxCart.setLoadWaiting(false);
+                    return false;
+                }
+                else {
+                    if (response !== null || response !== '') {
+                        $('#favorite-vendors').html(response);
+                    } else {
+                        //display errors if returned
+                        alert('Sorry, an error occured!! please try again.');
+                    }
+                }
+            },
+            complete: AjaxCart.resetLoadWaiting,
+        });
+    }
+
+    function DeleteFavoriteVendor(urladd) {
+        AjaxCart.setLoadWaiting(true);
+
+        var postData = {};
+        addAntiForgeryToken(postData);
+
+        $.ajax({
+            cache: false,
+            url: urladd,
+            type: "POST",
+            data: postData,
+            success: function (response) {
+                if (response.message) {
+                    alert(response.message);
+                    AjaxCart.setLoadWaiting(false);
+                    return false;
+                }
+                else {
+                    if (response !== null || response !== '') {
+                        $('#favorite-vendors').html(response);
+                    } else {
+                        //display errors if returned
+                        alert('Sorry, an error occured!! please try again.');
+                    }
+                }
+            },
+            complete: AjaxCart.resetLoadWaiting,
+        });
+    }
+
+    function FavoriteToggle(url) {
+        AjaxCart.setLoadWaiting(true);
+
+        var postData = {};
+        addAntiForgeryToken(postData);
+
+        $.ajax({
+            cache: false,
+            url: url,
+            type: "POST",
+            success: function (response) {
+                if (response.message) {
+                    alert(response.message);
+                    AjaxCart.setLoadWaiting(false);
+                    return false;
+                }
+                else {
+                    if (response !== null || response !== '') {
+                        $('#favorite-vendors').html(response);
+                    } else {
+                        //display errors if returned
+                        alert('Sorry, an error occured!! please try again.');
+                    }
+                }
+            },
+            complete: AjaxCart.resetLoadWaiting,
+        });
+    }
+</script>

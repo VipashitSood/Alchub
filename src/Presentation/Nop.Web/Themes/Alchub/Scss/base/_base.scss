@@ -1,0 +1,316 @@
+@charset "UTF-8";
+@import "../helpers/helpers";
+
+
+
+/*********** CSS RESET **********/
+figure.containerZoom {
+    background-position: 50% 50%;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    cursor: zoom-in;
+    margin: 0
+}
+
+.modal-open{
+
+}
+//overlay class
+/*.overlayOffCanvas {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1060;
+    background-color: rgba(0,0,0,0);
+    transition: background .3s ease;
+}*/
+.show {
+    background-color: rgba(0,0,0,.4);
+    display: block;
+}
+
+h1{
+    color:$titlecolor;
+}
+
+figure.containerZoom img {
+    transition: opacity .5s;
+    display: block;
+    width: 100%
+}
+
+figure.containerZoom.active img {
+    opacity: 0;
+}
+
+.row {
+    margin: 0px;
+}
+
+* {
+    margin: 0;
+    outline: none;
+    padding: 0;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+*:before, *:after {
+    box-sizing: border-box;
+}
+
+html {
+    margin: 0 !important;
+    -webkit-text-size-adjust: none;
+}
+
+ol, ul {
+    list-style: none;
+    padding: 0px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a img {
+    border: none;
+}
+
+a:active {
+    outline: none;
+}
+
+.container-box, .master-wrapper-content {
+    max-width: 1731px;
+    width: 100%;
+    padding: 0 15px;
+    margin: 0 auto;
+
+    @include media(tablet) {
+        padding: 0 65px;
+    }
+
+    @include media(desktop) {
+        padding: 0 65px;
+    }
+
+    @include media(extraWide) {
+        padding: 0 15px;
+        max-width: 100%;
+    }
+
+    @include media(extra_ultra) {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 65px;
+    }
+}
+
+.no-result{
+    text-align:center;
+}
+
+
+.container-fluid {
+    width: 100%;
+    padding: 0px;
+}
+
+.inputs {
+    input[type="text"], input[type="email"], select {
+        font-size: $fontSizeXS;
+    }
+}
+
+button::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-size: $fontSizeXS;
+}
+
+input::-moz-placeholder {
+    opacity: 1;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: inset 0 0 0 1000px #fff;
+}
+
+
+/*********** GLOBAL STYLES **********/
+
+// base font size change accroding to windows
+body {
+    font-family: $fontFamilyCustomRegular;
+    line-height: $lineHeight;
+    font-weight: $fontWeightNormal;
+    color: $colorBasetext;
+    font-size: $rootFontSize;
+}
+
+h2, h3, p {
+    color: $colorBasetext;
+}
+
+:root {
+    font-family: $fontFamilyCustomRegular;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+p {
+    line-height: 20px;
+}
+
+a {
+    color: inherit;
+    cursor: pointer;
+    &:focus{
+        color:$orangecolor;
+    }
+}
+
+img {
+    max-width: 100%;
+}
+
+
+*:before, *:after {
+    font-family: "$iconFontFamily";
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    outline: none;
+    padding: 0;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+
+
+.btn-first {
+    background-color: $primaryBrandClr;
+    color: $colorBaseWhite;
+
+    &:hover {
+        background-color: $primaryBrandClr-hover;
+    }
+}
+
+.overlay {
+    position: relative;
+    transition: background-color 1s;
+
+    
+}
+
+.ajax-loading-block-window {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 99999;
+    width: 100px;
+    height: 112px;
+    margin: -16px 0 0 -16px;
+    //background: url('../../Content/images/custome-loader.gif') center no-repeat;
+    //background-size: 100px 100px;
+    background:none;
+    span {
+        background: url('../../Content/images/custome-loader.gif') center no-repeat;
+        background-size: 100px 100px;
+        position: relative;
+        z-index: 999;
+        width: 100px;
+        height: 100px;
+        display: block;
+    }
+
+    &:before {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: inherit;
+        content: ' ';
+        background-color: rgba(0,0,0,.5);
+        z-index: 99;
+    }
+}
+
+.search-box {
+    .ui-autocomplete-loading {
+        background: #fff url('../../Content/images/orange_circles.gif') right center no-repeat;
+        background-size:30px 30px;
+    }
+}
+
+input, textarea, select, button {
+    font-family: $fontFamilyCustomRegular;   
+}
+
+body.modal-open .master-wrapper-content {
+    z-index: 10;
+
+    
+}
+.modal-open {
+    .header-full-width {
+        .header {
+
+            @include media(extraWide) {
+                padding-right: 0px;
+            }
+        }
+    }
+
+    .loction-input-wrapper {
+        z-index: 2;
+    }
+}
+
+
+.zoomContainer {
+    z-index: 1 !important;
+    .zoomWindowContainer{
+        div{
+            background-color:$colorBaseWhite;
+        }
+    }
+}
+
+
+
+.html-shopping-cart-page {
+    .model-open{
+        padding-right:unset;
+    }
+}

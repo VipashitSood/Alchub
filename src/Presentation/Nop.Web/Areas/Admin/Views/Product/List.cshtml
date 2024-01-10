@@ -1,0 +1,904 @@
+﻿@model ProductSearchModel
+
+@using Nop.Core.Domain.Catalog;
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Catalog.Products").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Products");
+}
+
+@{
+    const string hideSearchBlockAttributeName = "ProductListPage.HideSearchBlock";
+    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+}
+
+<form asp-controller="Product" asp-action="List" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.Catalog.Products")
+        </h1>
+        @if (Model.AllowVendorProductActions)
+        {
+            <div class="float-right">
+                <a asp-controller="AddVendorProduct" asp-action="List" class="btn btn-primary">
+                    <i class="fas fa-plus-square"></i>
+                    @T("Admin.Common.AddNew")
+                </a>
+                @if (!Model.IsLoggedInAsVendor)
+                {
+                    <button asp-action="DownloadCatalogPDF" type="submit" name="download-catalog-pdf" class="btn bg-purple">
+                        <i class="far fa-file-pdf"></i>
+                        @T("Admin.Catalog.Products.List.DownloadPDF")
+                    </button>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success">
+                            <i class="fas fa-download"></i>
+                            @T("Admin.Common.Export")
+                        </button>
+                        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">&nbsp;</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="dropdown-item">
+
+                                <button asp-action="ExportToXml" type="submit" name="exportxml-all">
+                                    <i class="far fa-file-code"></i>
+                                    @T("Admin.Common.ExportToXml.All")
+                                </button>
+                            </li>
+                            <li class="dropdown-item">
+
+                                <button type="button" id="exportxml-selected">
+                                    <i class="far fa-file-code"></i>
+                                    @T("Admin.Common.ExportToXml.Selected")
+                                </button>
+                            </li>
+                            <li class="dropdown-divider"></li>
+                            <li class="dropdown-item">
+                                <button asp-action="ExportToExcel" type="submit" name="exportexcel-all">
+                                    <i class="far fa-file-excel"></i>
+                                    @T("Admin.Common.ExportToExcel.All")
+                                </button>
+                            </li>
+                            <li class="dropdown-item">
+                                <button type="button" id="exportexcel-selected">
+                                    <i class="far fa-file-excel"></i>
+                                    @T("Admin.Common.ExportToExcel.Selected")
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    //a vendor cannot import products
+                    <button type="button" name="importexcel" class="btn bg-olive" data-toggle="modal" data-target="#importexcel-window">
+                        <i class="fas fa-upload"></i>
+                        @T("Admin.Common.Import")
+                    </button>
+                }
+                @*@if (!Model.IsLoggedInAsVendor || Model.AllowVendorsToImportProducts)
+            {
+            //a vendor cannot import products
+            <button type="button" name="importexcel" class="btn bg-olive" data-toggle="modal" data-target="#importexcel-window">
+            <i class="fas fa-upload"></i>
+            @T("Admin.Common.Import")
+            </button>
+            }*@
+
+                @if (Model.IsLoggedInAsVendor)
+                {
+                    //a vendor cannot import products
+                    <button type="button" name="importexcel-vendor" class="btn bg-olive" data-toggle="modal" data-target="#importexcel-vendor-window">
+                        <i class="fas fa-upload"></i>
+                        @T("Admin.Common.Import.Vendor")
+                    </button>
+                    <button asp-action="DownloadTopBestSellingProductExcel" type="submit" name="download-topsellingproducts-excel" class="btn bg-purple">
+                        <i class="far fa-file-pdf"></i>
+                        @T("Admin.Catalog.Products.List.DownloadTopBestSellingProductExcel")
+                    </button>
+                }
+                <button type="button" id="delete-selected" class="btn btn-danger">
+                    <i class="far fa-trash-alt"></i>
+                    @T("Admin.Common.Delete.Selected")
+                </button>
+                <nop-action-confirmation asp-button-id="delete-selected" />
+                @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.ProductListButtons, additionalData = Model })
+            </div>
+        }
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default card-search">
+                        <div class="card-body">
+                            <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                                <div class="search-text">@T("Admin.Common.Search")</div>
+                                <div class="icon-search"><i class="fas fa-search" aria-hidden="true"></i></div>
+                                <div class="icon-collapse"><i class="far fa-angle-@(!hideSearchBlock ? "up" : "down")" aria-hidden="true"></i></div>
+                            </div>
+
+                            <div class="search-body @(hideSearchBlock ? "closed" : "")">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchProductName" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchProductName" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row" @(Model.AvailableCategories.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchCategoryId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchCategoryId" asp-items="Model.AvailableCategories" />
+                                            </div>
+                                        </div>
+                                        @if (!Model.IsLoggedInAsVendor)
+                                        {
+                                            <div class="form-group row" @(Model.AvailableCategories.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="SearchIncludeSubCategories" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <nop-editor asp-for="SearchIncludeSubCategories" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row" @(Model.AvailableManufacturers.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="SearchManufacturerId" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <nop-select asp-for="SearchManufacturerId" asp-items="Model.AvailableManufacturers" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row" @(Model.AvailableVendors.SelectionIsNotPossible() || Model.IsLoggedInAsVendor ? Html.Raw("style='display: none;'") : null)>
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="SearchVendorId" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <nop-select asp-for="SearchVendorId" asp-items="Model.AvailableVendors" />
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (!Model.IsLoggedInAsVendor)
+                                    {
+                                        <div class="col-md-7">
+                                            <div class="form-group row" @(Model.HideStoresList ? Html.Raw("style=\"display:none\"") : null)>
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="SearchStoreId" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <nop-select asp-for="SearchStoreId" asp-items="Model.AvailableStores" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row" @(Model.AvailableWarehouses.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="SearchWarehouseId" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <nop-select asp-for="SearchWarehouseId" asp-items="Model.AvailableWarehouses" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="SearchProductTypeId" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <nop-select asp-for="SearchProductTypeId" asp-items="Model.AvailableProductTypes" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="SearchPublishedId" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <nop-select asp-for="SearchPublishedId" asp-items="Model.AvailablePublishedOptions" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="GoDirectlyToSku" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="input-group input-group-short">
+                                                        <nop-editor asp-for="GoDirectlyToSku" />
+                                                        <span class="input-group-append">
+                                                            <button type="submit" id="go-to-product-by-sku" name="go-to-product-by-sku" class="btn btn-info btn-flat">
+                                                                @T("Admin.Common.Go")
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="row">
+                                    <div class="text-center col-12">
+                                        <button type="button" id="search-products" class="btn btn-primary btn-search">
+                                            <i class="fas fa-search"></i>
+                                            @T("Admin.Common.Search")
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-default" id="override-tab" style="display:none">
+                        <div class="card-body">
+                            <p>@T("Alchub.Admin.Catalog.Products.VendorProducts.SyncPOS.Configuration.Reference.Note")</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="OverridePrice" />
+                                        </div>
+                                        <div class="col-md-7">
+                                            <button type="button" id="save-override-price-yes" class="btn btn-primary save-config-common">
+                                                <i class="fas fa-save"></i>
+                                                @T("Admin.Product.Override.Yes")
+                                            </button>
+                                            <button type="button" id="save-override-price-no" class="btn btn-primary save-config-common">
+                                                <i class="fas fa-save"></i>
+                                                @T("Admin.Product.Override.No")
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="OverrideStock" />
+                                        </div>
+                                        <div class="col-md-7">
+                                            <button type="button" id="save-override-stock-yes" class="btn btn-primary save-config-common">
+                                                <i class="fas fa-save"></i>
+                                                @T("Admin.Product.Override.Yes")
+                                            </button>
+                                            <button type="button" id="save-override-stock-no" class="btn btn-primary save-config-common">
+                                                <i class="fas fa-save"></i>
+                                                @T("Admin.Product.Override.No")
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="OverrideNegativeStock" />
+                                        </div>
+                                        <div class="col-md-7">
+                                            <button type="button" id="save-override-neg-stock-yes" class="btn btn-primary save-config-common">
+                                                <i class="fas fa-save"></i>
+                                                @T("Admin.Product.Override.Yes")
+                                            </button>
+                                            <button type="button" id="save-override-neg-stock-no" class="btn btn-primary save-config-common">
+                                                <i class="fas fa-save"></i>
+                                                @T("Admin.Product.Override.No")
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="SelectedPublished" />
+                                        </div>
+                                        <div class="col-md-7">
+                                            <button type="button" id="save-selected-published-yes" class="btn btn-primary save-config-common">
+                                                <i class="fas fa-save"></i>
+                                                @T("Admin.Product.Override.Yes")
+                                            </button>
+                                            <button type="button" id="save-selected-published-no" class="btn btn-primary save-config-common">
+                                                <i class="fas fa-save"></i>
+                                                @T("Admin.Product.Override.No")
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*Loader script*@
+                        <script>
+                            $(document).ready(function () {
+                                $(".save-config-common").on("click",
+                                    function (e) {
+                                        showThrobber(
+                                            '@Html.Raw(JavaScriptEncoder.Default.Encode(T("Alchub.Admin.Catalog.Product.VendorProduct.Config.Save.Progress").Text))');
+                                    });
+                            });
+                        </script>
+                    </div>
+                    <div class="card card-default">
+                        <div class="card-body">
+                            <nop-doc-reference asp-string-resource="@T("Admin.Documentation.Reference.Products", Docs.Products + Utm.OnAdmin)" />
+                            @if (!Model.IsLoggedInAsVendor)
+                            {
+                                @await Html.PartialAsync("Table", new DataTablesModel
+                            {
+                            Name = "products-grid",
+                            UrlRead = new DataUrl("ProductList", "Product", null),
+                            SearchButtonId = "search-products",
+                            Length = Model.PageSize,
+                            LengthMenu = Model.AvailablePageSizes,
+                            Filters = new List<FilterParameter>
+                            {
+                            new FilterParameter(nameof(Model.SearchProductName)),
+                            new FilterParameter(nameof(Model.SearchCategoryId)),
+                            new FilterParameter(nameof(Model.SearchIncludeSubCategories), typeof(bool)),
+                            new FilterParameter(nameof(Model.SearchManufacturerId)),
+                            new FilterParameter(nameof(Model.SearchStoreId)),
+                            new FilterParameter(nameof(Model.SearchWarehouseId)),
+                            new FilterParameter(nameof(Model.SearchVendorId)),
+                            new FilterParameter(nameof(Model.SearchProductTypeId)),
+                            new FilterParameter(nameof(Model.SearchPublishedId))
+                            },
+                            ColumnCollection = new List<ColumnProperty>
+                            {
+                            new ColumnProperty(nameof(ProductModel.Id))
+                            {
+                            IsMasterCheckBox = true,
+                            Render = new RenderCheckBox("checkbox_products"),
+                            ClassName =  NopColumnClassDefaults.CenterAll,
+                            Width = "50"
+                            },
+                            new ColumnProperty(nameof(ProductModel.PictureThumbnailUrl))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.PictureThumbnailUrl").Text,
+                            Width = "100",
+                            Render = new RenderPicture(width:75)
+                            },
+                            new ColumnProperty(nameof(ProductModel.Name))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.Name").Text
+                            },
+                            new ColumnProperty(nameof(ProductModel.Sku))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.Sku").Text,
+                            Width = "100"
+                            },
+                            new ColumnProperty(nameof(ProductModel.UPCCode))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.UPCCode").Text,
+                            Width = "100"
+                            },
+                            new ColumnProperty(nameof(ProductModel.Price))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.Price").Text,
+                            Render = new RenderCustom("renderColumnPrice")
+                            },
+                            new ColumnProperty(nameof(ProductModel.StockQuantityStr))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.StockQuantity").Text
+                            },
+                            new ColumnProperty(nameof(ProductModel.Published))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.Published").Text,
+                            Width = "80",
+                            ClassName = NopColumnClassDefaults.CenterAll,
+                            Render = new RenderBoolean()
+                            },
+                            new ColumnProperty(nameof(ProductModel.Id))
+                            {
+                            Title = T("Admin.Common.Edit").Text,
+                            Width = "80",
+                            ClassName =  NopColumnClassDefaults.Button,
+                            Render = new RenderButtonEdit(new DataUrl("Edit"))
+                            }
+                            }
+                            })
+                            }
+                            else
+                            {
+                                @await Html.PartialAsync("Table", new DataTablesModel
+                            {
+                            Name = "products-grid",
+                            UrlRead = new DataUrl("ProductList", "Product", null),
+                            UrlUpdate = new DataUrl("UpdateProduct", "Product", null),
+                            SearchButtonId = "search-products",
+                            Length = Model.PageSize,
+                            LengthMenu = Model.AvailablePageSizes,
+                            Filters = new List<FilterParameter>
+                            {
+                            new FilterParameter(nameof(Model.SearchProductName)),
+                            new FilterParameter(nameof(Model.SearchCategoryId)),
+                            new FilterParameter(nameof(Model.SearchIncludeSubCategories), typeof(bool)),
+                            new FilterParameter(nameof(Model.SearchManufacturerId)),
+                            new FilterParameter(nameof(Model.SearchStoreId)),
+                            new FilterParameter(nameof(Model.SearchWarehouseId)),
+                            new FilterParameter(nameof(Model.SearchVendorId)),
+                            new FilterParameter(nameof(Model.SearchProductTypeId)),
+                            new FilterParameter(nameof(Model.SearchPublishedId))
+                            },
+                            ColumnCollection = new List<ColumnProperty>
+                            {
+                            new ColumnProperty(nameof(ProductModel.Id))
+                            {
+                            IsMasterCheckBox = true,
+                            Render = new RenderCheckBox("checkbox_products"),
+                            ClassName =  NopColumnClassDefaults.CenterAll,
+                            Width = "50"
+                            },
+                            new ColumnProperty(nameof(ProductModel.Name))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.Name").Text,
+                            Width = "1000"
+                            },
+                            new ColumnProperty(nameof(ProductModel.Price))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.Price").Text,
+                            Width = "80",
+                            Editable = true,
+                            EditType = EditType.String
+                            },
+                            new ColumnProperty(nameof(ProductModel.UPCCode))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.UPCCode").Text,
+                            Width = "150"
+                            },
+                            new ColumnProperty(nameof(ProductModel.Size))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.Size").Text,
+                            Width = "300"
+                            },
+                            new ColumnProperty(nameof(ProductModel.StockQuantity))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.StockQuantity").Text,
+                            Width = "80",
+                            Editable = true,
+                            EditType = EditType.Number
+                            },
+                            new ColumnProperty(nameof(ProductModel.OverrideStock))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.OverrideStock").Text,
+                            Width = "80",
+                            ClassName =  NopColumnClassDefaults.CenterAll,
+                            Render = new RenderBoolean()
+                            },
+                            new ColumnProperty(nameof(ProductModel.OverrideNegativeStock))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.OverrideNegativeStock").Text,
+                            Width = "80",
+                            ClassName =  NopColumnClassDefaults.CenterAll,
+                            Render = new RenderBoolean()
+                            },
+                            new ColumnProperty(nameof(ProductModel.OverridePrice))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.OverridePrice").Text,
+                            Width = "80",
+                            ClassName =  NopColumnClassDefaults.CenterAll,
+                            Render = new RenderBoolean()
+                            },
+                            new ColumnProperty(nameof(ProductModel.Published))
+                            {
+                            Title = T("Admin.Catalog.Products.Fields.Published").Text,
+                            Width = "80",
+                            Render = new RenderBoolean(),
+                            Editable = true,
+                            EditType = EditType.Checkbox,
+                            ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+                            new ColumnProperty(nameof(ProductModel.Id))
+                            {
+                            Title = T("Admin.Common.Edit").Text,
+                            Width = "80",
+                            ClassName =  NopColumnClassDefaults.Button,
+                            Render = new RenderButtonsInlineEdit()
+                            }
+                            }
+                            })
+
+                            }
+                            <script>
+                                function renderColumnPrice(data, type, row, meta) {
+                                    return (row.ProductTypeId != @((int)ProductType.GroupedProduct) ) ? data : null;
+                                }
+
+                                $(document).ready(function () {
+                                    $('#delete-selected-action-confirmation-submit-button').bind('click', function () {
+                                        var postData = {
+                                            selectedIds: selectedIds
+                                        };
+                                        addAntiForgeryToken(postData);
+                                        $.ajax({
+                                            cache: false,
+                                            type: "POST",
+                                            url: "@(Url.Action("DeleteSelected", "Product"))",
+                                            data: postData,
+                                            error: function (jqXHR, textStatus, errorThrown) {
+                                                showAlert('deleteSelectedFailed', errorThrown);
+                                            },
+                                            complete: function (jqXHR, textStatus) {
+                                                if (jqXHR.status === 204) {
+                                                    showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                                    return;
+                                                }
+                                                updateTable('#products-grid');
+                                            }
+                                        });
+                                        $('#delete-selected-action-confirmation').modal('toggle');
+                                        return false;
+                                    });
+                                });
+
+                            </script>
+                            <nop-alert asp-alert-id="deleteSelectedFailed" />
+                            <nop-alert asp-alert-id="nothingSelectedAlert" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $(document).ready(function () {
+            $("#@Html.IdFor(model => model.GoDirectlyToSku)").keydown(function (event) {
+                if (event.keyCode === 13) {
+                    $("#go-to-product-by-sku").click();
+                    return false;
+                }
+            });
+        });
+    </script>
+</form>
+
+@*import products form*@
+<div id="importexcel-window" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="importexcel-window-title">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="importexcel-window-title">@T("Admin.Common.ImportFromExcel")</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <form asp-controller="Product" asp-action="ImportExcel" method="post" enctype="multipart/form-data">
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        <ul class="common-list">
+                            <li>
+                                <em>@T("Admin.Catalog.Products.List.ImportFromExcelTip")</em>
+                            </li>
+                            <li>
+                                <em>@T("Admin.Common.ImportFromExcel.ManyRecordsWarning")</em>
+                            </li>
+                        </ul>
+                        <div class="form-group row">
+                            <div class="col-md-2">
+                                <div class="label-wrapper">
+                                    <label class="col-form-label">
+                                        @T("Admin.Common.ExcelFile")
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <input type="file" id="importexcelfile" name="importexcelfile" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">
+                            @T("Admin.Common.ImportFromExcel")
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="importexcel-vendor-window" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="importexcel-window-title">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="importexcel-window-title">@T("Admin.Common.ImportFromExcel")</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <form id="import-vendor-form" asp-controller="Product" asp-action="ImportExcelAsVendor" method="post" enctype="multipart/form-data">
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        <ul class="common-list">
+                            <li>
+                                <em>@T("Admin.Catalog.Products.List.ImportFromExcelTip.Vendor")</em>
+                            </li>
+                            <li>
+                                <em>@T("Admin.Common.ImportFromExcel.ManyRecordsWarning")</em>
+                            </li>
+                        </ul>
+                        <div class="form-group row">
+                            <div class="col-md-2">
+                                <div class="label-wrapper">
+                                    <label class="col-form-label">
+                                        @T("Admin.Common.ExcelFile")
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <input type="file" id="importexcelfile" name="importexcelfile" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="import-vendor-product-btn" class="btn btn-primary">
+                            @T("Admin.Common.ImportFromExcel")
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@*export selected (XML). We don't use GET approach because it's limited to 2K-4K chars and won't work for large number of entities*@
+<form asp-controller="Product" asp-action="ExportXmlSelected" method="post" id="export-xml-selected-form">
+    <input type="hidden" id="selectedIds" name="selectedIds" value="" />
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#exportxml-selected').click(function (e) {
+            e.preventDefault();
+            var ids = selectedIds.join(",");
+            if (!ids) {
+                $('#exportXmlSelected-info').text("@T("Admin.Products.NoProducts")");
+                $("#exportXmlSelected").click();
+            }
+            else {
+                $('#export-xml-selected-form #selectedIds').val(ids);
+                $('#export-xml-selected-form').submit();
+                updateTable('#products-grid');
+            }
+            return false;
+        });
+    });
+</script>
+<nop-alert asp-alert-id="exportXmlSelected" />
+
+@*export selected (Excel). We don't use GET approach because it's limited to 2K-4K chars and won't work for large number of entities*@
+<form asp-controller="Product" asp-action="ExportExcelSelected" method="post" id="export-excel-selected-form">
+    <input type="hidden" id="selectedIds" name="selectedIds" value="" />
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#exportexcel-selected').click(function (e) {
+            e.preventDefault();
+            var ids = selectedIds.join(",");
+            if (!ids) {
+                $('#exportExcelSelected-info').text("@T("Admin.Products.NoProducts")");
+                $("#exportExcelSelected").click();
+            }
+            else {
+                $('#export-excel-selected-form #selectedIds').val(ids);
+                $('#export-excel-selected-form').submit();
+                updateTable('#products-grid');
+            }
+            return false;
+        });
+    });
+</script>
+
+<script>
+    //disable import button once clicked, to prevent duplication import issue.
+    $('#import-vendor-form').submit(function () {
+        $("#import-vendor-product-btn")
+            .text("Please Wait...")
+            .attr('disabled', 'disabled');
+        return true;
+    });
+</script>
+<nop-alert asp-alert-id="exportExcelSelected" />
+
+<script>
+    $(document).ready(function () {
+        //by default hide override tab
+        $('#override-tab').hide();
+    });
+</script>
+
+@if (Model.IsLoggedInAsVendor)
+{
+    <form asp-controller="Product" asp-action="SaveOverridesSelected" method="post" id="override-selected-form">
+        <input type="hidden" id="selectedIds" name="selectedIds" value="" />
+        <input type="hidden" id="isMasterSelected" name="isMasterSelected" value="" />
+        <input type="hidden" id="selectedCategoryId" name="selectedCategoryId" value="" />
+        <input type="hidden" id="searchProductName" name="searchProductName" value="" />
+        <input type="hidden" id="overridePrice" name="overridePrice" value="" />
+        <input type="hidden" id="overrideStock" name="overrideStock" value="" />
+        <input type="hidden" id="overrideNegativeStock" name="overrideNegativeStock" value="" />
+        <input type="hidden" id="selectedPublished" name="selectedPublished" value="" />
+    </form>
+    <script>
+        $(document).ready(function () {
+            //show/hide override div on checkbox check/uncheck.
+            $('#products-grid').on('change', 'input[type=checkbox][class!=mastercheckbox][class=checkboxGroups]', function (e) {
+                var ids = selectedIds.join(",");
+                if (!ids) {
+                    $('#override-tab').hide();
+                }
+                else {
+                    $('#override-tab').show();
+                }
+            });
+
+            //save changes override price true
+            $('#save-override-price-yes').click(function (e) {
+                e.preventDefault();
+
+                //call function savechanges
+                SaveChanges(true, '', '', '');
+                return false;
+            });
+
+            //save changes override price false
+            $('#save-override-price-no').click(function (e) {
+                e.preventDefault();
+
+                //call function savechanges
+                SaveChanges(false, '', '', '');
+                return false;
+            });
+
+
+            //save changes override stock true
+            $('#save-override-stock-yes').click(function (e) {
+                e.preventDefault();
+
+                //call function savechanges
+                SaveChanges('', true, '', '');
+                return false;
+            });
+
+            //save changes override stock false
+            $('#save-override-stock-no').click(function (e) {
+                e.preventDefault();
+
+                //call function savechanges
+                SaveChanges('', false, '', '');
+
+                return false;
+            });
+
+            //save changes override negative stock true
+            $('#save-override-neg-stock-yes').click(function (e) {
+                e.preventDefault();
+
+                //call function savechanges
+                SaveChanges('', '', true, '');
+                return false;
+            });
+
+            //save changes override negative stock false
+            $('#save-override-neg-stock-no').click(function (e) {
+                e.preventDefault();
+                //call function savechanges
+                SaveChanges('', '', false, '');
+
+                return false;
+            });
+
+            //save changes selected published true
+            $('#save-selected-published-yes').click(function (e) {
+                e.preventDefault();
+
+                //call function savechanges
+                SaveChanges('', '', '', true);
+
+                return false;
+            });
+
+            //save changes selected published false
+            $('#save-selected-published-no').click(function (e) {
+                e.preventDefault();
+
+                //call function savechanges
+                SaveChanges('', '', '', false);
+
+                return false;
+            });
+
+            function SaveChanges(overridePrice, overrideStock, overrideNegativeStock, selectedPublished) {
+                var ids = selectedIds.join(",");
+                var isMasterChecked = $('.mastercheckbox', $('#products-grid')).prop("checked");
+                var selectedCategoryId = $('#SearchCategoryId').val();
+                var searchProductName = $('#SearchProductName').val();
+
+                if (!ids) {
+                    $('#saveOverridesSelected-info').text("@T("Admin.Products.NoProducts")");
+                    $("#saveOverridesSelected").click();
+                }
+                else {
+                    $('#override-selected-form #selectedIds').val(ids);
+                    $('#override-selected-form #isMasterSelected').val(isMasterChecked);
+                    $('#override-selected-form #selectedCategoryId').val(selectedCategoryId);
+                    $('#override-selected-form #searchProductName').val(searchProductName);
+                    $('#override-selected-form #overridePrice').val(overridePrice);
+                    $('#override-selected-form #overrideStock').val(overrideStock);
+                    $('#override-selected-form #overrideNegativeStock').val(overrideNegativeStock);
+                    $('#override-selected-form #selectedPublished').val(selectedPublished);
+                    $('#override-selected-form').submit();
+                    updateTable('#products-grid');
+                }
+            }
+        });
+    </script>
+    <nop-alert asp-alert-id="saveOverridesSelected" />
+}
+
+
+<div id="temp-vendor-category-map-fix" style="display:none">
+    @{
+        //This is temparary fix vendor product category mapping logic. hidden
+        var btnText = Model.IsLoggedInAsVendor ? "Map This Vendor Categories" : "Map All Vendors Categories";
+    }
+    <button id="single-vendor-cat-map">@btnText</button>
+
+    <div id="vendor-cat-map-details"></div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#single-vendor-cat-map').click(function (e) {
+            e.preventDefault();
+
+            //disble btn
+            $("#single-vendor-cat-map")
+                // .text("Please Wait...")
+                .attr('disabled', 'disabled');
+
+            //show loader
+            showThrobber('Please wait...');
+
+            var postData = {}
+            addAntiForgeryToken(postData);
+            //ajax
+            $.ajax({
+                cache: false,
+                type: "POST",
+                data: postData,
+                url: "@(Url.Action("FixVendorProductsCategoriesMap", "Product"))",
+                success: function (data, textStatus, jqXHR) {
+                    if (data.success) {
+                        // var reportSummary = '<div><strong>Mapping details</strong></div>' +
+                        //     '<div><span>' + data.message + '</span></div>' +
+                        //     '<div>Data <span>' + data.mapiingData + '</span></div>'
+                        // $('#vendor-cat-map-details').html(reportSummary);
+
+                        // location.reload();
+                        //download json
+                        var blob = new Blob([data.mapiingData], {
+                            type: "application/json"
+                        });
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = "catMapDetails.json";
+                        link.click();
+                    } else {
+                        console.log(data.message);
+                    }
+                },
+                complete: function () {
+                    $(".throbber").hide();
+                    //disble btn
+                    $("#single-vendor-cat-map")
+                        .attr('disabled', false);
+                }
+            });
+        });
+    });
+</script>

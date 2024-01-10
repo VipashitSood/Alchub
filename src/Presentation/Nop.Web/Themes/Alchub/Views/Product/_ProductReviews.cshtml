@@ -1,0 +1,90 @@
+﻿@model ProductReviewsModel
+@inject Nop.Services.Html.IHtmlFormatter htmlFormatter
+
+<div class="container-box" id="reviews-list">
+    <div class="review-box-custome">
+        @if (Model.Items.Count > 0)
+        {
+            foreach (var item in Model.Items)
+            {
+                var itemRatingPercent = item.Rating * 20;
+                <div class="container-wrap">
+                    <div class="review-container">
+                        <div class="product-review-item">
+
+                            <div class="review-info">
+                                <div class="product-review-box">
+                                    <div class="rating">
+                                        <div class="product-reviews-overview">
+                                            <div class="product-review-box">
+                                                <div class="rating">
+                                                    <div style="width: @(itemRatingPercent)%" class="star-rating">
+                                                        <span class="rating-value">@itemRatingPercent</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @* <div class="avtar">
+                                    <div class="review-text">
+                                    @if (string.IsNullOrEmpty(item.CustomerAvatarUrl))
+                                    {
+                                    <div class="avatar">
+                                    @if (item.AllowViewingProfiles)
+                                    {
+                                    <a href="@Url.RouteUrl("CustomerProfile", new { id = item.CustomerId })" class="avatar-img-link">
+                                    <img src="@(item.CustomerAvatarUrl)" class="avatar-img" alt="Avatar" />
+                                    </a>
+                                    }
+                                    else
+                                    {
+                                    <img src="@(item.CustomerAvatarUrl)" class="avatar-img" alt="Avatar" />
+                                    }
+                                    </div>
+                                    }
+
+                                    </div>
+                                    </div>*@
+                                <div class="info">
+                                    <span class="name">
+                                        @item.CustomerName
+                                    </span>
+                                    <span class="titles">
+                                        @item.Title
+                                    </span>
+                                    <p class="comment toggle-text">
+                                        @Html.Raw(htmlFormatter.FormatText(item.ReviewText, false, true, false, false, false, false))
+                                    </p>
+
+                                    <span class="date">
+                                        @item.WrittenOnStr
+                                    </span>
+                                </div>
+                            </div>
+
+
+                            <div class="product-review-helpfulness">
+                                <div class="link-deslik-wrapper">
+                                    <div class="likewrapper">
+                                        @await Html.PartialAsync("_ProductReviewHelpfulness", item.Helpfulness)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            }
+            @*  <div class="see-all">
+                    <a herf="#">@T("Alchub.Details.see.all.text")</a>
+                </div>*@
+        }
+
+
+    </div>
+    <div class="see-more-wrap">
+        <button class="see-more-review">@T("Alchub.Review.see.more.review")</button>
+    </div>
+</div>

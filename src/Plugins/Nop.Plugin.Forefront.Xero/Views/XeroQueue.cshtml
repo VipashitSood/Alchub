@@ -1,0 +1,134 @@
+﻿@model ForeFrontXeroModel
+@using Nop.Plugin.Forefront.Xero.Models;
+@using Nop.Web.Framework.Models.DataTables;
+
+@{
+    Layout = "";
+}
+
+<div>
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <h4>Queue Settings</h4>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <button type="button" name="executemanagePayment" id="executemanagePayment" class="btn btn-success">
+                                    <i class="fa fa-play-circle-o"></i>
+                                    Manage Payment
+                                </button>
+                            </div>
+                        </div>
+
+                        @await Html.PartialAsync("Table", new DataTablesModel
+                   {
+                       Name = "forefrontqueue-grid",
+                       UrlRead = new DataUrl("XeroQueueList", "ForefrontXero", null),
+                       UrlDelete = new DataUrl("DeleteXeroQueue", "ForefrontXero", null),
+                       Length = Model.ForeFrontXeroSearchModel.PageSize,
+                       LengthMenu = Model.ForeFrontXeroSearchModel.AvailablePageSizes,
+                       ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(ForeFrontXeroModel.ForeFrontQueueModel.OrderId))
+                            {
+                                Title = T("Plugin.Forefront.Xero.Field.OrderId").Text,
+                                Width = "80",
+                                Render = new RenderCustom("renderColumnOrderId")
+                            },
+                            new ColumnProperty(nameof(ForeFrontXeroModel.ForeFrontQueueModel.QueuedOn))
+                            {
+                                Title = T("Plugin.Forefront.Xero.Field.QueuedOn").Text,
+                                Width = "80",
+                                Render = new RenderDate()
+                            },
+                            new ColumnProperty(nameof(ForeFrontXeroModel.ForeFrontQueueModel.ActionType))
+                            {
+                                Title = T("Plugin.Forefront.Xero.Field.ActionType").Text,
+                                Width = "80"
+                            },
+                            new ColumnProperty(nameof(ForeFrontXeroModel.ForeFrontQueueModel.SuccessMessage))
+                            {
+                                Title = T("Plugin.Forefront.Xero.Field.IsSuccess").Text,
+                                Width = "100",
+                                Render = new RenderCustom("renderColumnIsSuccess")
+                            },
+                            new ColumnProperty(nameof(ForeFrontXeroModel.ForeFrontQueueModel.SyncAttemptOn))
+                            {
+                                Title = T("Plugin.Forefront.Xero.Field.SyncAttemptOn").Text,
+                                Width = "80",
+                                Render = new RenderDate()
+                            },
+                            new ColumnProperty(nameof(ForeFrontXeroModel.ForeFrontQueueModel.Amount))
+                            {
+                                Title = T("Plugin.Forefront.Xero.Field.Amount").Text,
+                                Width = "80"
+                            },
+                            new ColumnProperty(nameof(ForeFrontXeroModel.ForeFrontQueueModel.Id))
+                            {
+                                Title = T("Admin.Common.Delete").Text,
+                                Width = "150",
+                                Render = new RenderButtonRemove(T("Admin.Common.Delete").Text),
+                                ClassName =  NopColumnClassDefaults.Button
+                            }
+                        }
+                   })
+
+                        <script>
+                            function renderColumnOrderId(data, type, row, meta) {
+                                return '<a class="btn btn-default" href="/Admin/Order/Edit/' + row.OrderId + '"><i class="fa fa-eye"></i>' + row.OrderId + '</a>';
+                            }
+
+                            function renderColumnIsSuccess(data, type, row, meta) {
+                                if (row.IsSuccess) {
+                                    return '<span class="grid-report-item green">' + row.SuccessMessage + '</span>';
+                                }
+                                else {
+                                    return '<span class="grid-report-item yellow">' + row.SuccessMessage + '</span>';
+                                }
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#executeQueue").click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "/ForefrontXero/RunScheduleTask/",
+            success: function (result) {
+                alert('Make sure that Queue is enabled. If Queue is enabled then than it will take few seconds');
+            },
+            error: function (result) {
+                alert('error');
+            }
+        });
+    });
+
+</script>
+
+
+<script type="text/javascript">
+    $("#executemanagePayment").click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "/ForefrontXero/ManagePayment/",
+            success: function (result) {
+                alert('Make sure that Queue is enabled. If Queue is enabled then than it will take few seconds to paid orders');
+            },
+            error: function (result) {
+                alert('error');
+            }
+        });
+    });
+
+</script>

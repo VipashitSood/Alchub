@@ -1,0 +1,155 @@
+﻿@model Nop.Plugin.Widgets.NivoSlider.Models.PublicInfoModel
+@using Nop.Services.Helpers;
+@inject IUserAgentHelper userAgentHelper
+
+@{
+    Layout = "";
+    var isMobileDevice = userAgentHelper.IsMobileDevice();
+}
+
+<link rel="stylesheet" href="~/Plugins/Widgets.NivoSlider/Content/nivoslider/nivo-slider.css" />
+<link rel="stylesheet" href="~/Plugins/Widgets.NivoSlider/Content/nivoslider/themes/custom/custom.css" />
+<script asp-exclude-from-bundle="true" src="~/Plugins/Widgets.NivoSlider/Scripts/jquery.nivo.slider.js" asp-location="Footer"></script>
+
+<div class="slider-wrapper theme-custom">
+    @if (isMobileDevice)
+    {
+        <div id="mobile-nivo-slider" class="nivoSlider">
+            @{
+                var dataSlide1 = new ViewDataDictionary(ViewData)
+            {
+                {"pictureUrl", Model.MobilePicture1Url},
+                { "text", Model.MobileText1},
+                { "link", Model.MobileLink1},
+                {"alttext", Model.MobileAltText1 }
+            };
+
+                @await Html.PartialAsync("~/Plugins/Widgets.NivoSlider/Views/_PublicInfo.SliderLine.cshtml", dataSlide1)
+            }
+
+            @{
+                var dataSlide2 = new ViewDataDictionary(ViewData)
+                {
+                {"pictureUrl", Model.MobilePicture2Url},
+                { "text", Model.MobileText2},
+                { "link", Model.MobileLink2},
+                {"alttext", Model.MobileAltText2 }
+            };
+
+                @await Html.PartialAsync("~/Plugins/Widgets.NivoSlider/Views/_PublicInfo.SliderLine.cshtml", dataSlide2)
+            }
+
+            @{
+                var dataSlide3 = new ViewDataDictionary(ViewData)
+                {
+                {"pictureUrl", Model.MobilePicture3Url},
+                { "text", Model.MobileText3},
+                { "link", Model.MobileLink3},
+                {"alttext", Model.MobileAltText3 },
+                { "dataTransition", "slideInLeft"}
+            };
+
+                @await Html.PartialAsync("~/Plugins/Widgets.NivoSlider/Views/_PublicInfo.SliderLine.cshtml", dataSlide3)
+            }
+
+            @{
+                var dataSlide4 = new ViewDataDictionary(ViewData)
+                {
+                {"pictureUrl", Model.MobilePicture4Url},
+                { "text", Model.MobileText4},
+                { "link", Model.MobileLink4},
+                {"alttext", Model.MobileAltText4 }
+            };
+
+                @await Html.PartialAsync("~/Plugins/Widgets.NivoSlider/Views/_PublicInfo.SliderLine.cshtml", dataSlide4)
+            }
+
+            @{
+                var dataSlide5 = new ViewDataDictionary(ViewData)
+                {
+                {"pictureUrl", Model.MobilePicture5Url},
+                { "text", Model.MobileText5},
+                { "link", Model.MobileLink5},
+                {"alttext", Model.MobileAltText5 }
+            };
+
+                @await Html.PartialAsync("~/Plugins/Widgets.NivoSlider/Views/_PublicInfo.SliderLine.cshtml", dataSlide5)
+            }
+        </div>
+        <script asp-location="Footer">
+            $(window).on('load', function () {
+                $('#mobile-nivo-slider').nivoSlider();
+            });
+        </script>
+    }
+    else
+    {
+        <div id="nivo-slider" class="nivoSlider">
+            @{
+                var dataSlide1 = new ViewDataDictionary(ViewData)
+            {
+                {"pictureUrl", Model.Picture1Url},
+                { "text", Model.Text1},
+                { "link", Model.Link1},
+                {"alttext", Model.AltText1 }
+            };
+
+                @await Html.PartialAsync("~/Plugins/Widgets.NivoSlider/Views/_PublicInfo.SliderLine.cshtml", dataSlide1)
+            }
+
+            @{
+                var dataSlide2 = new ViewDataDictionary(ViewData)
+                {
+                {"pictureUrl", Model.Picture2Url},
+                { "text", Model.Text2},
+                { "link", Model.Link2},
+                {"alttext", Model.AltText2 }
+            };
+
+                @await Html.PartialAsync("~/Plugins/Widgets.NivoSlider/Views/_PublicInfo.SliderLine.cshtml", dataSlide2)
+            }
+
+            @{
+                var dataSlide3 = new ViewDataDictionary(ViewData)
+                {
+                {"pictureUrl", Model.Picture3Url},
+                { "text", Model.Text3},
+                { "link", Model.Link3},
+                {"alttext", Model.AltText3 },
+                { "dataTransition", "slideInLeft"}
+            };
+
+                @await Html.PartialAsync("~/Plugins/Widgets.NivoSlider/Views/_PublicInfo.SliderLine.cshtml", dataSlide3)
+            }
+
+            @{
+                var dataSlide4 = new ViewDataDictionary(ViewData)
+                {
+                {"pictureUrl", Model.Picture4Url},
+                { "text", Model.Text4},
+                { "link", Model.Link4},
+                {"alttext", Model.AltText4 }
+            };
+
+                @await Html.PartialAsync("~/Plugins/Widgets.NivoSlider/Views/_PublicInfo.SliderLine.cshtml", dataSlide4)
+            }
+
+            @{
+                var dataSlide5 = new ViewDataDictionary(ViewData)
+                {
+                {"pictureUrl", Model.Picture5Url},
+                { "text", Model.Text5},
+                { "link", Model.Link5},
+                {"alttext", Model.AltText5 }
+            };
+
+                @await Html.PartialAsync("~/Plugins/Widgets.NivoSlider/Views/_PublicInfo.SliderLine.cshtml", dataSlide5)
+            }
+        </div>
+        <script asp-location="Footer">
+            $(window).on('load', function () {
+                $('#nivo-slider').nivoSlider();
+            });
+        </script>
+    }
+</div>

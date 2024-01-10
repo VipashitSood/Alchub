@@ -1,0 +1,831 @@
+@import "../helpers/_helpers";
+
+.custome-select-box {
+    display: none;
+}
+
+.center-2 {
+    margin-bottom: 0px;
+
+    .page-title {
+        text-align: center;
+        border-bottom: none;
+        padding: 0px 10px;
+        margin-bottom: 0px;
+
+        h1 {
+            font-size: $fontSizeXL;
+            font-weight: $fontWeightMediumBold;
+
+            @include media(small) {
+                font-size: $fontSizeM;
+            }
+        }
+    }
+
+    .required {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font: 25px 'Roboto',sans-serif;
+    }
+}
+
+.html-account-page {
+    .master-wrapper-content {
+        width: auto;
+        padding: 0px;
+
+        @include media(small) {
+            width: 100%;
+            margin-top:70px;
+        }
+
+        @include media(tablet) {
+            padding: 40px 2vw;
+        }
+
+        @include media(landscapeTablet) {
+            padding: 70px 2vw;
+        }
+
+        @include media(desktop) {
+            padding: 70px 6vw;
+        }
+    }
+
+    .side-2 {
+        width: 100%;
+        margin-bottom: 20px;
+
+        @include media(small) {
+            margin-top: 20px;
+        }
+
+        @include media(desktop) {
+            width: 320px;
+            padding-top: 3%;
+        }
+
+        .block-account-navigation {
+            display: none;
+
+            @include media(desktop) {
+                margin-top: 12px;
+                display: block;
+            }
+
+            @include media(extraWide) {
+                margin-top: 5px;
+            }
+
+            @include media(ultraWide) {
+                margin-top: 0px;
+            }
+
+            .title {
+                display: none;
+            }
+
+            .listbox {
+                text-align: right;
+                padding-top: 0px;
+                padding-right: 0px;
+
+                ul {
+
+
+                    li {
+                        @include media(desktop) {
+                            padding-top: 0px;
+                        }
+
+                        @include media(extraWide) {
+                            padding: 5px 0 5px 15px;
+                        }
+
+
+
+                        a {
+                            position: relative;
+                            display: block;
+                            padding: 10px 65px 10px 0;
+                            max-width: 100%;
+                            font-size: 14px;
+                            text-transform: uppercase;
+                            font-weight: bold;
+                            color: $accountlink;
+                            transition: all .2s ease;
+
+                            &:hover {
+                                text-decoration: none;
+                                color: $orangecolor;
+                            }
+
+                            &:after {
+                                position: absolute;
+                                content: " ";
+                                top: 50%;
+                                left: auto;
+                                right: 23px;
+                                -webkit-transform: translateY(-50%);
+                                -ms-transform: translateY(-50%);
+                                transform: translateY(-50%);
+                                display: inline-block;
+                                vertical-align: middle;
+                                margin-left: 23px;
+                                font-family: $iconFontFamily;
+                                font-size: 20px;
+                                font-weight: normal;
+                                text-transform: none;
+                                color: $textcolorsec;
+                                transition: all .2s ease;
+                            }
+
+                            &:before {
+                                content: "";
+                                width: 0px;
+                                height: 0px;
+                            }
+                        }
+                    }
+
+                    .active {
+                        a {
+                            &:after {
+                                color: $orangecolor;
+                            }
+                        }
+                    }
+
+                    .customer-info {
+                        a {
+                            &:after {
+                                content: "a";
+                                font-family: $iconFontFamily;
+                            }
+                        }
+                    }
+
+                    .customer-wishlist {
+                        a {
+                            &:after {
+                                content: "c";
+                                font-family: $iconFontFamily;
+                            }
+                        }
+                    }
+
+                    .customer-addresses {
+                        a {
+                            &:after {
+                                content: "N";
+                            }
+                        }
+                    }
+
+                    .customer-orders {
+                        a {
+                            &:after {
+                                content: "d";
+                            }
+                        }
+                    }
+
+                    .downloadable-products {
+                        a {
+                            &:after {
+                                content: "J";
+                            }
+                        }
+                    }
+
+                    .back-in-stock-subscriptions {
+                        a {
+                            &:after {
+                                content: "E";
+                            }
+                        }
+                    }
+
+                    .reward-points {
+                        display: none;
+                    }
+
+                    .change-password {
+                        a {
+                            &:after {
+                                content: "x";
+                            }
+                        }
+                    }
+
+                    .customer-avatar {
+                        a {
+                            &:after {
+                                content: "Q";
+                            }
+                        }
+                    }
+
+                    .customer-reviews {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        .block-account-navigation.block .list .active a {
+            border-right: 2px solid $orangecolor;
+            color: $orangecolor;
+        }
+
+        .custome-select-box {
+            text-align: center;
+            padding: 20px;
+            background-color: #f6f6f6;
+            display: block;
+
+            @include media(desktop) {
+                display: none;
+            }
+
+            .select-navigation {
+                select {
+                    height: 45px;
+                    width: 300px;
+
+                    @include media(small) {
+                        width: 245px;
+                        text-align: center;
+                    }
+                }
+            }
+        }
+    }
+
+    .center-2 {
+        width: 100%;
+
+        @include media(desktop) {
+            width: calc(100% - 320px);
+        }
+    }
+
+    .customer-info-page {
+        padding: 40px;
+        background-color: $colorgrey;
+
+
+
+        @include media(small) {
+            padding: 30px 10px;
+        }
+
+        .page-body {
+            max-width: 740px;
+            margin: 0 auto;
+            border-radius: $borderRadius;
+            border: 1px solid $colorBorder;
+            background-color: $colorBaseWhite;
+            padding: 50px 65px;
+
+            @include media(small) {
+                padding: 20px 0;
+            }
+        }
+
+        .page-title {
+            border-bottom: none;
+        }
+
+        .fieldset {
+            margin-bottom: 10px;
+
+            .title {
+                padding: 0px;
+                margin-bottom: 0px;
+                text-align: center;
+                border-bottom: none;
+
+                strong {
+                    color: $colorDarklight;
+                    font-size: $fontSizeMM;
+                    font-weight: $fontWeightLight;
+                }
+            }
+
+            .form-fields {
+                background-color: $colorBaseWhite;
+                border-top: none;
+                padding: 15px 15px;
+
+               
+
+                .date-of-birth {
+                    .date-picker-wrapper {
+                        select {
+                            width: 34%;
+                            margin: 0px;
+                            max-width: 193px;
+                            border-radius: $borderRadius;
+                            vertical-align: middle;
+                            height: 45px;
+                        }
+                    }
+                }
+
+                .newsletter {
+
+                    label {
+                        margin-bottom: 0px;
+                        display: inline-block;
+                        margin-left: 10px;
+                    }
+
+                    input[type="checkbox"] {
+                        opacity: 0;
+                    }
+                }
+            }
+        }
+
+        .buttons {
+            text-align: center;
+            margin-bottom: 0px;
+            padding: 15px 15px 0px 15px;
+
+            @include media(desktop) {
+                text-align: center;
+            }
+
+            .save-customer-info-button {
+                height: 40px;
+                line-height: 40px;
+                font-size: $fontSizeXXS;
+                font-weight: $fontWeightBold;
+                padding: 0px 0px;
+                min-width: 100px;
+            }
+        }
+    }
+}
+
+.account-page {
+    padding: 40px;
+    background-color: $colorgrey;
+
+    @include media(small) {
+        padding: 30px 10px;
+    }
+
+    .page-title {
+        border-bottom: none;
+
+        h1 {
+            color: $colorDarkGrey;
+            font-weight: $fontWeightMediumBold;
+        }
+    }
+
+    .section {
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        background-color: $colorBaseWhite;
+        border: 1px solid $colorBorder;
+        border-radius: $borderRadius;
+        vertical-align: top;
+
+        @include media(desktop) {
+            height: 305.578px;
+        }
+
+        .title {
+            text-align: center;
+
+            strong {
+                font-weight: $fontWeightBold;
+                color: $colorDarkGrey;
+                font-size: $fontSizeMM;
+            }
+        }
+
+        .info {
+            background-color: $colorBaseWhite;
+            border-top: none;
+            text-align: center;
+            margin-bottom: 0px;
+            padding: 18px;
+
+            li {
+                margin-bottom: 3px;
+                font-size: $fontSizeS;
+                color: $colorFooterLinks;
+                line-height: 1.3;
+            }
+
+            .email, .name {
+                font-weight: $fontWeightBold;
+                color: $colorDarkGrey;
+                font-size: $fontSizeS;
+
+                label {
+                    display: none;
+                }
+            }
+
+            label {
+                display: none;
+            }
+        }
+
+        .buttons {
+            .edit-address-button {
+                background-image: url('../../Content/images/edit-icon.png');
+            }
+
+            .delete-address-button {
+                background-image: url("../../Content/images/delete-icon.png");
+            }
+
+            .edit-address-button, .delete-address-button {
+                border: none;
+                border-radius: $borderRadius;
+                width: 40px;
+                height: 40px;
+                margin: 0 2px;
+                background-color: $bgcolorButtonGrey;
+                background-position: center;
+                background-repeat: no-repeat;
+                font-size: 0;
+            }
+        }
+    }
+
+    .custome-address {
+
+        @include media(small) {
+            padding: 0px;
+        }
+
+        @include media(tablet) {
+            padding: 0px;
+        }
+    }
+
+    .add-button {
+        background-color: $colorBaseWhite;
+        border: 1px solid $colorBorder;
+        border-radius: $borderRadius;
+        vertical-align: top;
+        padding: 40px 20px;
+
+        @include media(small) {
+            margin-bottom: 0px;
+        }
+
+        @include media(desktop) {
+            height: 305.578px;
+        }
+
+        .add-address-button {
+            border: none;
+            height: 45px;
+            padding: 0 25px;
+            border-radius: $borderRadius;
+            color: $colorBaseWhite;
+            font-weight: $fontWeightBold;
+            text-transform: uppercase;
+            font-size: $fontSizeXS;
+            transition: all .2s ease;
+        }
+
+        &:before {
+            display: block;
+            margin-bottom: 40px;
+            content: "U";
+            font-size: 100px;
+            color: $colorFooterSocial;
+            font-family: "emporium-icons";
+        }
+    }
+}
+
+.order-list-page {
+    padding: 40px 10px 40px 10px;
+
+    @include media(tablet) {
+        padding: 40px 10px 40px 10px;
+    }
+
+    @include media(desktop) {
+        padding: 40px;
+    }
+
+    .page-body {
+        .order-item {
+            height: 252.391px;
+
+
+            .title {
+                margin: 0px 0px;
+            }
+
+            .info {
+                margin-bottom: 0px;
+            }
+
+            .buttons {
+                .return-items-button {
+                    display: none;
+                }
+            }
+        }
+
+        .order-item {
+            padding: 40px 0px;
+
+            @include media(tablet) {
+                padding: 40px 0px;
+            }
+
+            .buttons {
+                position: relative;
+                top: 0;
+                right: 0px;
+                margin: 0px 25px 0px;
+
+                .order-details-button {
+                    background-color: $primaryBrandClr;
+                    color: white;
+                    padding: 0px 20px;
+                    border-radius: $borderRadius;
+                    font-weight: $fontWeightMediumBold;
+                    font-size: $fontSizeXS;
+                    text-transform: uppercase;
+                    transition: all .1s ease;
+
+                    &:hover {
+                        background-color: $orangecolor;
+                        color: $colorBaseWhite;
+                    }
+                }
+            }
+        }
+    }
+
+    .order-list {
+        .section {
+            width: 100%;
+        }
+    }
+}
+
+.change-password-page {
+    .page-body {
+        max-width: 740px;
+        margin: 0 auto;
+        border-radius: $borderRadius;
+        border: 1px solid $colorBorder;
+        background-color: $colorBaseWhite;
+        padding: 50px 65px;
+
+        @include media(small) {
+            padding: 0px;
+        }
+
+        .fieldset {
+            @include media(small) {
+                margin-bottom: 0px;
+                padding: 25px;
+            }
+        }
+
+        .form-fields {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+        .buttons {
+            margin-bottom: 0px;
+            text-align: center;
+
+            .change-password-button {
+                padding: 12.5px 30px;
+                border-radius: 4px;
+
+                @include media(small) {
+                    padding: 12.5px 0px;
+                    font-size: $fontSizeXXXS;
+                }
+            }
+        }
+    }
+}
+
+.address-edit-page {
+    @include media(small) {
+        padding: 45px 10px;
+    }
+
+    .page-title {
+        border-bottom: none;
+    }
+
+    .page-body {
+        max-width: 740px;
+        margin: 0 auto;
+        padding: 50px 65px;
+        background: $colorBaseWhite;
+
+        @include media(small) {
+            padding: 20px 20px;
+        }
+
+        .edit-address {
+            background-color: $colorBaseWhite;
+            border-top: none;
+            padding: 0px;
+            margin-bottom: 0px;
+
+            .inputs {
+                select {
+                    width: 100%;
+                    height: 45px;
+                    color: $colorDarklight;
+                    border-radius: $borderRadius;
+                    width: 100%;
+                    vertical-align: middle;
+                }
+            }
+
+            .card-body {
+                padding: 1rem 0rem;
+                font-weight: $fontWeightBold;
+                font-size: $fontSizeS;
+                color: $titlecolor;
+
+                .geo-wrap {
+                    .text-box {
+                        background-color: $colorBaseWhite;
+                    }
+                }
+            }
+        }
+
+        .buttons {
+            text-align: center;
+            margin-bottom: 0px;
+
+            @include media(small) {
+                margin-bottom: 0px;
+            }
+
+            @include media(desktop) {
+                text-align: left;
+            }
+
+            .save-address-button {
+                padding: 9.5px 45px;
+                border-radius: $borderRadius;
+            }
+        }
+    }
+}
+
+.address-list-page {
+    .address-list {
+        .address-item {
+            @include media(landscapeTablet) {
+                min-height: 288px;
+            }
+
+            width: 100%;
+        }
+    }
+}
+
+.inputs {
+    text-align: left;
+    margin: 20px 0 0;
+
+    label {
+        display: block;
+        width: 100%;
+        text-align: left;
+        width: auto;
+        font-size: $fontSizeS;
+        margin: 0 0 8px;
+        font-weight: $fontWeightMediumBold;
+        color: $titlecolor;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+        height: 45px;
+        color: $colorDarklight;
+        border-radius: $borderRadius;
+        width: 100%;
+        vertical-align: middle;
+    }
+
+    .gender {
+        .male, .female {
+            position: relative;
+            display: inline-block;
+            padding: 0 30px 0 0;
+
+
+
+            label {
+                color: $colorDarklight;
+                font-weight: normal;
+                display: inline-block !important;
+                position: relative;
+                height: 45px;
+                margin: 0;
+                padding: 0 0 0 55px;
+                font-size: 14px;
+                line-height: 45px;
+                font-weight: $fontWeightNormal;
+                color: #888;
+                cursor: pointer;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                width:120px;
+                @include media(small){
+                    width:90px;
+                }
+
+
+                &:before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 45px;
+                    height: 45px;
+                    border: 2px solid #eee;
+                    border-radius: 50%;
+                    background: #eee no-repeat center bottom;
+                }
+            }
+
+
+
+            input[type="radio"] {
+                position: absolute;
+                left: -9999px;
+            }
+
+
+
+            input[type="radio"]:checked {
+                & + label {
+                   
+
+                    &:before {
+                        box-shadow: 0 0 0 1px $primaryBrandClr;
+                        border: 3px solid $colorBaseWhite;
+                        background-color: #eeeeee;
+                        width: 45px;
+                        height: 45px;
+                    }
+                }
+            }
+        }
+
+
+
+        .male {
+            label {
+
+                &:before {
+                    background-image: url(../../Content/images/latest-img/male-icon.svg);
+                }
+            }
+        }
+
+        .female {
+
+            label {
+
+                &:before {
+                    background-image: url(../../Content/images/latest-img/female-icon.svg);
+                }
+            }
+        }
+    }
+
+
+
+    .neswletter {
+        display: flex;
+        align-items: center;
+
+        &:before {
+            margin-left: 2px;
+            margin-top: 0px;
+        }
+    }
+}

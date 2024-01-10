@@ -1,0 +1,28 @@
+﻿@model ProductDetailsModel
+
+<div class="size-title">
+    <span>@T("Alchub.Product.Detail.GroupedProduct.BaseVariant")</span>
+</div>
+@if (Model.GroupedProductVariants.Count != 0)
+{
+    <text>
+        <div id="grouped-product-base-variants" class="group-variant-section">
+            <div class="qty">
+                @foreach (var baseVariant in Model.GroupedProductVariants)
+                {
+                    <div id="base-variant-div_@(baseVariant.GroupedProductId)" class="buttons @(baseVariant.IsActive ? Html.Raw("active"):null)">
+                        <a href="@Url.RouteUrl("Product", new { SeName = baseVariant.SeName })">
+                            <div id="base-variant-@(baseVariant.GroupedProductId)" class="qty-button" type="button" role="tab" aria-controls="home" aria-selected="true">
+                                <span class="item-qty">@baseVariant.VariantName</span>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </text>
+}
+else
+{
+    <span style="color:red">@T("Alchub.Product.Detail.GroupedProduct.Base.Variant.NotAvailable").Text</span>
+}

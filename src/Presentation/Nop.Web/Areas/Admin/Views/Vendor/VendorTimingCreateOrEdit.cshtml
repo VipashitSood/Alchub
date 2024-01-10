@@ -1,0 +1,84 @@
+@model VendorTimingModel
+@{
+    Layout = "_AdminPopupLayout";
+
+    //page title
+    ViewBag.PageTitle = T("Admin.Vendors.VendorTiming.CreateOrEditTiming").Text;
+}
+
+
+@if (ViewBag.RefreshPage == true)
+{
+    <script>
+        try {window.opener.document.forms['@(Context.Request.Query["formId"])'].@(Context.Request.Query["btnId"]).click();}
+        catch (e){}
+    </script>
+    if (ViewBag.ClosePage == true)
+    {
+        <script>
+            window.close();
+        </script>
+    }
+}
+
+<form asp-controller="Vendor" asp-action="VendorTimingCreateOrEdit"
+      asp-route-vendorId="@Context.Request.Query["vendorId"]"
+      asp-route-btnId="@Context.Request.Query["btnId"]"
+      asp-route-formId="@Context.Request.Query["formId"]">
+    <div class="content-header clearfix">
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.Save")
+            </button>
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default">
+                        <div class="card-body">
+                            <input type="hidden" asp-for="DayId"/>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="Day" />
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" asp-for="Day" class="form-control text-box single-line" readonly />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="OpenTimeStr" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="OpenTimeStr" asp-required="true" />
+                                    <span asp-validation-for="OpenTimeStr"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="CloseTimeStr" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="CloseTimeStr" asp-required="true" />
+                                    <span asp-validation-for="CloseTimeStr"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="DayOff" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="DayOff" />
+                                    <span asp-validation-for="DayOff"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

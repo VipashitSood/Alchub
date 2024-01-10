@@ -1,0 +1,44 @@
+﻿@using Nop.Web.Framework.UI
+@using Nop.Plugin.Widgets.JCarousel.Models.Configuration
+@model JCarouselModel
+@{
+    Layout = "_AdminLayout";
+    ViewBag.PageTitle = T("Plugins.Widgets.JCarousel.Hint").Text;
+    NopHtml.SetActiveMenuItemSystemName("Manage JCarousel");
+}
+<link rel="stylesheet" href="~/Plugins/Widgets.JCarousel/Content/css/custom.css" />
+
+<form asp-controller="JCarousel" asp-action="Edit" method="post" id="jcarousel-form">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Plugins.Widgets.JCarousel.EditJcarouselDetails")
+            <small>
+                <i class="fas fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("Plugins.Widgets.JCarousel.BackToList")</a>
+            </small>
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Plugins.Widgets.JCarousel.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Plugins.Widgets.JCarousel.SaveContinue")
+            </button>
+        </div>
+    </div>
+    <section class="content">
+        @(await Html.PartialAsync("~/Plugins/Widgets.JCarousel/Views/Admin/_EditInfo.cshtml", Model))
+        @if(!Model.IsBestSeller)
+        {
+            @(await Html.PartialAsync("~/Plugins/Widgets.JCarousel/Views/Admin/_EditProducts.cshtml", Model))
+        }
+    </section>
+
+
+</form>
+<nop-delete-confirmation asp-model-id="@Model.Id" asp-button-id="jcarousel-delete" />
+
+
+

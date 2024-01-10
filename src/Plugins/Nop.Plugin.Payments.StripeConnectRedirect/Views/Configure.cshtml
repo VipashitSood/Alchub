@@ -1,0 +1,18 @@
+﻿@model Nop.Plugin.Payments.StripeConnectRedirect.Models.ConfigurationModel
+
+@{
+    Layout = "_ConfigurePlugin";
+}
+
+@await Component.InvokeAsync("StoreScopeConfiguration")
+
+<div class="panel-body">
+    <nop-tabs id="stripeconnectredirect-configuration">
+        <nop-tab asp-name="tab-configure" asp-title="@T("Plugin.Payments.StripeConnectRedirect.Configure.ConfigurePage")" asp-default="true">
+            @await Html.PartialAsync("~/Plugins/Payments.StripeConnectRedirect/Views/ConfigurePage.cshtml", Model)
+        </nop-tab>
+        <nop-tab asp-name="tab-vendorlist" asp-title="@T("Plugin.Payments.StripeConnectRedirect.Configure.VendorPage")">
+            @await Html.PartialAsync("~/Plugins/Payments.StripeConnectRedirect/Views/VendorList.cshtml", Model)
+        </nop-tab>
+    </nop-tabs>
+</div>

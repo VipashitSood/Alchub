@@ -1,0 +1,235 @@
+@model VendorModel
+@using Nop.Core.Alchub.Domain
+@inject AlchubSettings alchubSettings
+
+@{
+    //check logged in user
+    var isLoggedInAsVendor = await workContext.GetCurrentVendorAsync() != null;
+}
+
+<div class="card-body">
+    @T("Alchub.Admin.Vendors.GeoLocation.Instruction").Text
+    <br>
+    <br>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GeoLocationCoordinates" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GeoLocationCoordinates" />
+            <span asp-validation-for="GeoLocationCoordinates"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <div class="label-wrapper">
+                <label class="col-form-label" for="location-search-input">@T("Alchub.Admin.Vendors.GeoLocation.SearchArea.Label").Text</label>
+                <div title="" data-toggle="tooltip" class="ico-help" data-original-title="@T("Alchub.Admin.Vendors.GeoLocation.SearchArea.Label.Hint").Text">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="input-group input-group-required">
+                <input class="form-control text-box single-line" id="location-search-input" name="location-search-input" placeholder="@T("Alchub.Admin.Vendors.GeoLocation.SearchArea.Placeholder.text")" type="text">
+            </div>
+        </div>
+    </div>
+    <div class="form-group row" style="display:none">
+        <div class="col-md-3">
+            Location Address:
+        </div>
+        <div class="col-md-9">
+            <input type="text" id="location-address" style="width:100%" />
+        </div>
+    </div>
+
+    @*Location Map here*@
+    <div class="form-group row">
+        <div id="location-map" style="width:100%;height:500px;"></div>
+    </div>
+</div>
+
+<script>
+    //+++++++++ map script ++++++++++
+    let map;
+    let locationMarkers = [];
+
+    function initLocationMap() {
+        var initLatlng = { lat: 39.74958843687717, lng: -101.38981743886231 };
+        //set init latlong if already saved for vendor.
+        var initCoordinates = '@Model.GeoLocationCoordinates';
+        var lat = initLatlng.lat;
+        var longg = initLatlng.lng;
+        if (initCoordinates) {
+            var latlngSplit = "@(Model.GeoLocationCoordinates)".split("@(NopAlchubDefaults.LATLNG_SEPARATOR)");
+            //split values (by space)
+            if (latlngSplit != '') {
+                lat = parseFloat(latlngSplit[0]);
+                longg = parseFloat(latlngSplit[1]);
+            }
+        }
+
+        console.log(initLatlng);
+
+        //assign if valid
+        if (lat && longg) {
+            initLatlng.lat = lat;
+            initLatlng.lng = longg;
+        }
+
+        //map
+        map = new google.maps.Map(document.getElementById("location-map"), {
+            zoom: 5,
+            center: initLatlng,
+        });
+
+        //CR:3.1 Non-Editable fields: vendor can not set marker or change it. (17-05-23)
+        var isVendor = @(isLoggedInAsVendor.ToString().ToLower())
+                if (!isVendor) {
+            //configure the click listener.
+            map.addListener("click", (mapsMouseEvent) => {
+
+                //get latlng
+                var latlongJson = mapsMouseEvent.latLng.toJSON();
+                lat = latlongJson['lat'];
+                longg = latlongJson['lng'];
+                
+                //set marker and location coordinates
+                setMarkerAndLocationCoordinates(lat, longg);
+            });
+        }
+
+        //if latlng already set then, Adds marker at init to the map & also zoom the location
+        if (initCoordinates) {
+            addMarker(initLatlng);
+            map.setZoom(12);
+        }
+
+        //autocomplete searchbar
+        googleSearchAutocomplete();
+
+    }
+
+    window.initLocationMap = initLocationMap;
+
+    // Adds a marker to the map and push to the array.
+    function addMarker(position) {
+        const marker = new google.maps.Marker({
+            position,
+            map,
+        });
+
+        locationMarkers.push(marker);
+    }
+
+    // Sets the map on all markers in the array.
+    function setMapOnAll(gmap) {
+        for (let i = 0; i < locationMarkers.length; i++) {
+            locationMarkers[i].setMap(gmap);
+        }
+    }
+
+    // Removes the markers from the map, but keeps them in the array.
+    function hideMarkers() {
+        setMapOnAll(null);
+    }
+
+    // Shows any markers currently in the array.
+    function showMarkers() {
+        setMapOnAll(map);
+    }
+
+    // Deletes all markers in the array by removing references to them.
+    function deleteMarkers() {
+        hideMarkers();
+        locationMarkers = [];
+    }
+
+    //search autocomplete
+    function googleSearchAutocomplete() {
+
+        // Create the search box and link it to the UI element.
+        const input = document.getElementById("location-search-input");
+        const searchBox = new google.maps.places.SearchBox(input);
+
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener("places_changed", () => {
+            const places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            // For each place, get the icon, name and location.
+            const bounds = new google.maps.LatLngBounds();
+
+            places.forEach((place) => {
+                if (!place.geometry || !place.geometry.location) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+            });
+            map.fitBounds(bounds);
+
+            //set marker and location coordinates
+            setMarkerAndLocationCoordinates(places[0].geometry.location.lat(), places[0].geometry.location.lng());
+        });
+    }
+
+    function getReverseGeocodingData(lat, lng) {
+        var latlng = new google.maps.LatLng(lat, lng);
+        // This is making the Geocode request
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 'latLng': latlng }, (results, status) => {
+            if (status !== google.maps.GeocoderStatus.OK) {
+                alert(status);
+                $('#location-address').val("");
+            }
+            // This is checking to see if the Geoeode Status is OK before proceeding
+            if (status == google.maps.GeocoderStatus.OK) {
+                console.log(results);
+                var address = (results[0].formatted_address);
+                $('#location-address').val(address);
+            }
+        });
+    }
+
+    function setMarkerAndLocationCoordinates(lat, lng) {
+        console.log(lat + ' --- ' + lng);
+        //split values (by space) & assign to filed
+        $("#@Html.IdFor(model => model.GeoLocationCoordinates)").val(lat + '@(NopAlchubDefaults.LATLNG_SEPARATOR)' + lng);
+
+        //clear other markers.
+        deleteMarkers();
+
+        var latlng = new google.maps.LatLng(lat, lng);
+
+        //Adds a marker on click.
+        addMarker(latlng);
+
+        //fill addres1 from latlng
+        getReverseGeocodingData(lat, lng);
+    }
+
+    //init map on ready
+    $(document).ready(function () {
+        initLocationMap();
+    })
+    //--------- map script ---------
+
+    $(document).ready(function () {
+        //set readoly GeoLocationCoordinates
+        $("#@Html.IdFor(model => model.GeoLocationCoordinates)").prop("readonly", true);
+    })
+
+</script>

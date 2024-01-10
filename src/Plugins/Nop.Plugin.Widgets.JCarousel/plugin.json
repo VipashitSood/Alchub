@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Widgets",
+  "FriendlyName": "JCarousel Plugin",
+  "SystemName": "Widgets.JCarousel",
+  "Version": "1.0",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "Tmotions",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Widgets.JCarousel.dll",
+  "Description": "This plugin allows you to add the multiple product sliders."
+}

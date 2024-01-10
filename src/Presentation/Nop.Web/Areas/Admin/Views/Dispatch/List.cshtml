@@ -1,0 +1,251 @@
+@model IList<Nop.Core.Domain.Orders.Dispatch>
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Sales.Dispatch").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Dispatch");
+}
+
+@{
+    const string hideSearchBlockAttributeName = "DispatchPage.HideSearchBlock";
+    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+}
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.Sales.Dispatch")
+    </h1>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card card-default">
+                    <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="dispatchTable" class="table table-hover table-bordered">
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;width: 15%;">
+                                        @T("Alchub.Admin.Dispatch.OrderId")
+                                    </th>
+                                    <th style="text-align: center;width: 15%;">
+                                        @T("Alchub.Admin.Dispatch.VendorName")
+                                    </th>
+                                    <th style="text-align: center;width: 15%;">
+                                        @T("Alchub.Admin.Dispatch.SlotTime")
+                                    </th>
+                                    <th style="text-align: center;width: 15%;">
+                                        @T("Alchub.Admin.Dispatch.Action")
+                                    </th>
+                                    <th style="text-align: center;width: 45%;">
+                                        @T("Alchub.Admin.Dispatch.DasherDetails")
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td style="width: 10%;" class="text-center">
+                                             <a target="_blank" asp-controller="Order" asp-action="Edit" asp-route-id="@item.OrderNumber">@item.OrderNumber</a>
+                                        </td>
+                                        <td style="width: 15%;" class="text-center">
+                                            @item.VendorName
+                                        </td>
+                                        <td style="width: 15%;" class="text-center">
+                                            @item.TimeSlot
+                                        </td>
+                                        @if (string.IsNullOrEmpty(item.TrackingUrl))
+                                        {
+                                            <td style="width: 15%;" class="text-center">
+                                                <button type="submit" class="btn btn-info text-nowrap" id="btnFindDriverOrderItem" data-orderItemId="@(item.OrderItemId)"><i class="fa fa-check-circle"></i>@T("Alchub.Admin.Dispatch.FindDriver")</button>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td style="width: 15%;" class="text-center">
+                                             @T("Alchub.Admin.Dispatch.QuotesAccepted")
+                                            </td> 
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.TrackingUrl))
+                                        {
+                                            <td style="width: 45%;" class="text-left">
+                                                <div class="row">
+                                                     <div class="col-md-5"><label>@T("Alchub.Admin.Dispatch.TrackingUrl")</label></div><div class="col-md-7"><a target="_blank" href="@item.TrackingUrl">@item.TrackingUrl</a></div>
+                                                <div class="col-md-5"><label>@T("Alchub.Admin.Dispatch.DispatchStatus")</label></div><div class="col-md-7">@item.DeliveryStatus</div>
+                                                </div>
+                                                  <div class="row">
+                                                    <div class="col-md-5"><label>@T("Alchub.Admin.Dispatch.DasherName")</label></div><div class="col-md-7">@item.DasherName</div>
+                                                <div class="col-md-5"><label>@T("Alchub.Admin.Dispatch.DashPhoneNumber")</label></div><div class="col-md-7">@item.DashPhoneNumber</div>
+                                                </div>
+                                                  <div class="row">
+                                                     <div class="col-md-5"><label>@T("Alchub.Admin.Dispatch.CustomerSignature")</label></div><div class="col-md-7">@item.CustomerSignature</div>
+                                                <div class="col-md-5"><label>@T("Alchub.Admin.Dispatch.DashVehicleNumber")</label></div><div class="col-md-7">@item.DashVehicleNumber</div>
+                                                </div>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td style="width: 15%;" class="text-center">
+                                               @T("Alchub.Admin.Dispatch.WaterText")
+                                            </td> 
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- The modal -->
+<div id="dispatchModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="importexcel-window-title">@T("Alchub.Admin.Dispatch.QuotesDetails")</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <form asp-controller="Dispatch" asp-action="AcceptDispatchOrderItem" method="post" enctype="multipart/form-data">
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <input type="hidden" id="externalDeliveryId" name="externalDeliveryId" />
+                                <input type="hidden" id="orderItemId" name="orderItemId" />
+                            </div>
+                            <div class="container">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 mt-2">
+                                    <label for="etapickup">ETA Pickup:</label><br/>
+                                     <input type="text" id="etapickup" name="etapickup" style="width:100%;padding:7px;" disabled />
+                                </div>
+                                <div class="col-sm-12 col-md-6 mt-2">
+                                      <label for="etadropoff">ETA Drop Off:</label><br/>
+                                      <input type="text" id="etadropoff" name="etadropoff" style="width:100%;padding:7px;" disabled />
+                                </div>
+                            </div>
+
+                               <div class="row">
+                                <div class="col-sm-12 col-md-6 mt-2">
+                                    <label for="fees">Fees:</label><br/>                                 
+                                    <span style=" position: absolute; top: 38px;left: 11px; z-index: 1;">@T("Alchub.Dollor.sign") </span>
+                                    <input type="text" id="fees" name="fees" style="width:100%;padding:7px;position: relative;padding-left: 12px;" disabled="">
+                                </div>
+                                <div class="col-sm-12 col-md-6 mt-2">
+                                       <label for="dropOffInstruction">Drop Off Instruction:</label><br/>
+                                        <input type="text" id="dropoff" name="dropOffInstruction" style="width:100%;padding:7px;" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 mt-2">
+                                      <label for="tipAmount">Tip Amount:</label><br/>                                    
+                                     <span style=" position: absolute; top: 38px;left: 11px; z-index: 1;">@T("Alchub.Dollor.sign") </span>  
+                                    <input type="number" id="tipAmount" name="tipAmount" step="0.01" style="width:100%;padding:7px;padding-left: 12px;">
+                                </div>
+                            </div>
+                             <div class="row">
+                                <div class="col-sm-12 col-md-4"></div>
+                                <div class="col-sm-12 col-md-4 mt-4">
+                                    <button type="submit" id="dispatchButton" style="padding: 5px 40px;background-color: #3c8dbc;border-color: #367fa9;border: 1px solid #367fa9;color: white;border-radius: 5px;font-size: 17px;font-weight: 500;">Dispatch</button>
+                                </div>
+                                 <div class="col-sm-12 col-md-4"></div>
+                            </div>
+                            </div>                         
+                        </div>
+                    </div>
+                   
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+        function openModal(orderItemId) {
+
+          var postData = {orderItemId: orderItemId};
+          addAntiForgeryToken(postData);
+
+          $.ajax({
+            cache: false,
+            type: "POST",
+            url: "@(Url.Action("FindDriverOrderItem", "Dispatch"))",
+            data: postData,
+               success: function(data) {
+                   console.log(data.Data);
+          // Check if the server response indicates success
+          if (data.Success)
+          {
+          // Set values in the modal form fields using the response data
+          $('#orderItemId').val(data.Data.orderItemId);
+          $('#externalDeliveryId').val(data.Data.external_delivery_id);
+          $('#etapickup').val(data.Data.pickupdatetime);
+          $('#etadropoff').val(data.Data.dropoffdatetime);
+          $('#fees').val(data.Data.feeStr);
+          $('#tipAmount').val(data.Data.tip);
+            // Show the modal
+            $('#dispatchModal').modal('show');
+          }
+          else
+          {
+            // Handle the case when the server returns an error response
+            if (data.FieldErrors) {
+               for (var i = 0; i < data.FieldErrors.length; i++) { // Corrected property name to FieldErrors
+            var fieldError = data.FieldErrors[i]; // Corrected property name to FieldErrors
+            var fieldName = fieldError.Field;
+            var errorMessage = fieldError.Error;
+            // Display the error messages as alerts
+            alert(errorMessage);
+          }
+            } else {
+              // If there are no specific field_errors, display a general error message
+              alert(data.message);
+            }
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // Handle the AJAX request failure (e.g., server not reachable, internal server error, etc.)
+          console.log("AJAX request failed: " + textStatus + ", " + errorThrown);
+        }
+      });
+    }
+
+        $(document).on('click', '#btnFindDriverOrderItem', function(event) {
+          event.preventDefault();
+          var orderItemId = $(this).data('orderitemid');
+          openModal(orderItemId);
+        });
+</script>
+<script>
+    $(document).ready(function() {
+        // Initialize the DataTable
+        $('#dispatchTable').DataTable({
+            // Set the number of rows per page
+            "pageLength": 10, // Adjust this number as needed
+
+            // Enable ordering and set default order by descending
+            "ordering": true,
+            "order": [[0, "desc"]], // Order the first column (change the index as needed)
+
+            // You can customize other DataTable options as needed
+            // For example, if you want to hide the search box:
+            "searching": false,
+            // Or to hide the "Show x entries" dropdown:
+            "lengthChange": false,
+            // Or to change the pagination style:
+            "pagingType": "full_numbers" // other options: "simple", "simple_numbers", "full", "numbers"
+        });
+    });
+</script>
+

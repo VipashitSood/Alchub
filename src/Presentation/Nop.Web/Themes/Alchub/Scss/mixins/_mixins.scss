@@ -1,0 +1,166 @@
+@import "../helpers/_variables.scss";
+
+@mixin media($res) {
+    @if smallS == $res {
+        @media only screen and (max-width: $small_widthS) {
+            @content;
+        }
+    }
+
+    @if smallL == $res {
+        @media only screen and (max-width: $small_widthL) {
+            @content;
+        }
+    }
+
+    @if small == $res {
+        @media only screen and (max-width: $small_width) {
+            @content;
+        }
+    }
+
+
+    @if mobile == $res {
+        @media only screen and (min-width: $mobile_width) {
+            @content;
+        }
+    }
+
+    @if tablet == $res {
+        @media only screen and (min-width: $tablet_width) {
+            @content;
+        }
+    }
+
+    @if landscapeTablet == $res {
+        @media only screen and (min-width: $landscapeTablet_width) {
+            @content;
+        }
+    }
+
+    @if desktop == $res {
+        @media only screen and (min-width: $desktop_width) {
+            @content;
+        }
+    }
+
+    @if wide == $res {
+        @media only screen and (min-width: $wide_width) {
+            @content;
+        }
+    }
+
+    @if extraWide == $res {
+        @media only screen and (min-width: $extraWide_width) {
+            @content;
+        }
+    }
+
+    @if ultraWide == $res {
+        @media only screen and (min-width: $ultra_Wide_width) {
+            @content;
+        }
+    }
+
+    @if extra_ultra == $res {
+        @media only screen and (min-width: $extra_ultra) {
+            @content;
+        }
+    }
+}
+
+/********other mixins **********/
+
+@mixin owlDots {
+  .owl-nav.disabled + .owl-dots {
+    margin-top: 15px;
+  }
+
+  .owl-dots {
+    .owl-dot span {
+      width: 6px;
+      height: 6px;
+      background-color: rgba(0, 0, 0, 0.2);
+      margin: 0 5px;
+    }
+
+    .owl-dot {
+      vertical-align: middle;
+
+      &:hover span {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .owl-dot.active span {
+      background-color: #eebe00;
+      width: 12px;
+      height: 12px;
+    }
+  }
+}
+
+@mixin owlNav {
+  .owl-nav {
+    button.owl-next,
+    button.owl-prev {
+      position: absolute;
+      top: 50%;
+      z-index: 99;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      font-size: 0;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.4);
+      border: none;
+      border-radius: 50%;
+      -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+      transition: all 0.2s ease;
+      margin: 0;
+      padding: 0;
+
+      &:hover {
+        background-color: $primaryBrandClr;
+      }
+
+      &:before {
+        display: block;
+        font-family: $iconFontFamily;
+        color: $colorBaseWhite;
+        font-size: $fontSizeXXXS;
+      }
+    }
+
+    button.owl-next {
+      right: 15px;
+
+      &:before {
+        content: "\6a";
+      }
+    }
+
+    button.owl-prev {
+      left: 15px;
+
+      &:before {
+        content: "\6b";
+      }
+    }
+  }
+}
+
+@mixin title {
+  h2 {
+    text-align: center;
+    color: $colorDarkGrey;
+    font-weight: $fontWeightBold;
+    font-size: $fontSizeXXM;
+
+    @include media(desktop) {
+      font-size: $fontSizeXL;
+    }
+  }
+}

@@ -1,0 +1,33 @@
+﻿@inject Nop.Core.IWorkContext workcontext
+@using Microsoft.AspNetCore.Mvc.Controllers
+@{
+    var customer = await workcontext.GetCurrentCustomerAsync();
+    bool showSearchedLocation = true;
+    //hide searchbox on checkout process
+    var controllerName = (this.ViewContext.ActionDescriptor as ControllerActionDescriptor).ControllerName;
+    if (controllerName.Equals("Checkout", StringComparison.InvariantCultureIgnoreCase))
+    {
+        showSearchedLocation = false;
+    }
+}
+@if (showSearchedLocation)
+{
+    <div class="last-searched-location-text search-icon">
+        @if (!string.IsNullOrEmpty(customer.LastSearchedText))
+
+        {   <div class="loction-name">
+                <span class="icons-wrap"></span>
+                <span class="last-search">@customer.LastSearchedText</span>  <a id="clearlocation-cross" onclick="set_customer_searched_coordinates('','','',true)" style="color:red"> X </a>
+                <span id="clearlocation-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait")</span>
+            </div>
+           
+            <text>
+                <script asp-location="Footer">
+                    //hide location search box if location already searched.
+                    $("#enter-delivery-address-search-box").hide();
+
+                </script>
+            </text>
+        }
+    </div>
+}

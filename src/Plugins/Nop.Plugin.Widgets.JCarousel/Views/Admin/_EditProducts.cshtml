@@ -1,0 +1,69 @@
+﻿@using Nop.Plugin.Widgets.JCarousel.Models.Configuration;
+@model JCarouselModel
+
+<div class="jcarouselcard">
+    <div class="card-header with-border clearfix">
+        <div class="card-title">
+            <i class="fas fa-th-list"></i>
+            Products
+        </div>
+    </div>
+    <div class="card-body">
+        @await Html.PartialAsync("Table", new DataTablesModel
+        {
+        Name = "products-grid-new",
+        UrlRead = new DataUrl("ProductList", "JCarousel", new RouteValueDictionary { [nameof(Model.JCarouselProductSearchModel.JCarouselId)] = Model.JCarouselProductSearchModel.JCarouselId }),
+        UrlDelete = new DataUrl("ProductDelete", "JCarousel", null),
+        UrlUpdate = new DataUrl("ProductUpdate", "JCarousel", null),
+        Length = Model.JCarouselProductSearchModel.PageSize,
+        LengthMenu = Model.JCarouselProductSearchModel.AvailablePageSizes,
+        ColumnCollection = new List<ColumnProperty>
+            {
+            new ColumnProperty(nameof(ProductJCarouselMappingModel.ProductName))
+            {
+            Title = T("Plugins.Widgets.JCarousel.Products.Fields.Product").Text
+            },
+            new ColumnProperty(nameof(ProductJCarouselMappingModel.DisplayOrder))
+            {
+            Title = T("Plugins.Widgets.JCarousel.Products.Fields.Displayorder").Text,
+            Width = "150",
+            ClassName = NopColumnClassDefaults.CenterAll,
+            Editable = true,
+            EditType = EditType.Number
+            },
+            new ColumnProperty(nameof(ProductJCarouselMappingModel.Id))
+            {
+            Title = T("Plugins.Widgets.JCarousel.Edit").Text,
+            Width = "200",
+            ClassName =  NopColumnClassDefaults.Button,
+            Render = new RenderButtonsInlineEdit()
+            },
+            new ColumnProperty(nameof(ProductJCarouselMappingModel.Id))
+            {
+            Title = T("Plugins.Widgets.JCarousel.Delete").Text,
+            Width = "100",
+            Render = new RenderButtonRemove(T("Plugins.Widgets.JCarousel.Delete").Text),
+            ClassName = NopColumnClassDefaults.Button
+            }
+            }
+            })
+
+        <div class="card-footer">
+            <button type="submit" id="btnAddNewProduct" onclick="javascript:OpenWindow('@(Url.Action("ProductAddPopup", "JCarousel" , new { jcarouselId=Model.Id, btnId="btnRefreshProducts" , formId="jcarousel-form" }))', 800, 800, true); return false;" class="btn btn-primary">
+                @T("Plugins.Widgets.JCarousel.Products.AddNew")
+            </button>
+            <button type="submit" id="btnRefreshProducts" style="display: none"></button>
+            <script>
+                $(document).ready(function () {
+                    $('#btnRefreshProducts').click(function () {
+                        //refresh grid
+                        updateTable('#products-grid-new');
+
+                        //return false to don't reload a page
+                        return false;
+                    });
+                });
+            </script>
+        </div>
+    </div>
+</div>

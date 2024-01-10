@@ -1,0 +1,703 @@
+﻿@model ProductDetailsModel
+@using Nop.Core.Domain.Seo
+@inject Nop.Services.Html.IHtmlFormatter htmlFormatter
+@inject Nop.Core.IWebHelper webHelper
+@using Nop.Services.Helpers;
+@inject IUserAgentHelper userAgentHelper
+@inject SeoSettings seoSettings
+
+@using Nop.Core.Domain.Catalog;
+@using Nop.Services;
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(!string.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+    //meta
+    NopHtml.AddMetaDescriptionParts(Model.MetaDescription);
+    NopHtml.AddMetaKeywordParts(Model.MetaKeywords);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-product-details-page");
+
+    //canonical URL
+    if (seoSettings.CanonicalUrlsEnabled)
+    {
+        var productUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }, webHelper.GetCurrentRequestProtocol()).ToLowerInvariant();
+        NopHtml.AddCanonicalUrlParts(productUrl, seoSettings.QueryStringInCanonicalUrlsEnabled);
+    }
+
+    //open graph META tags
+    if (seoSettings.OpenGraphMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"og:type\" content=\"product\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image:url\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:site_name\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+    }
+
+    //Twitter META tags
+    if (seoSettings.TwitterMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:card\" content=\"summary\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:site\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+    }
+    var ratingPercent = 0;
+    decimal ratingAverage = 0;
+    if (Model.ProductReviewOverview.TotalReviews != 0)
+    {
+        ratingPercent = ((Model.ProductReviewOverview.RatingSum * 100) / Model.ProductReviewOverview.TotalReviews) / 5;
+        ratingAverage = Model.ProductReviewOverview.RatingSum / (decimal)Model.ProductReviewOverview.TotalReviews;
+        ratingAverage = Math.Round(ratingAverage, 1);
+    }
+    var isMobileDevice = userAgentHelper.IsMobileDevice();
+}
+
+
+@*hiddent field, will be used in add to cart script*@
+<input type="hidden" id="grouped_product_id" value="@Model.Id" />
+<input type="hidden" id="master_product_id" value="0" /> @*will be updated on vendor selection*@
+<input type="hidden" id="base_product_published" value="@Convert.ToInt32(Model.Published)" />
+
+<div class="row">
+    <div class="col-12  col-xl-9 px-0">
+        <div class="product-detail">
+            <div class="page product-details-page">
+                <div class="page-body">
+                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsTop, additionalData = Model })
+                    <form asp-route="Product" asp-route-sename="@Model.SeName" method="post" id="product-details-form">
+                        @if (seoSettings.MicrodataEnabled)
+                        {
+                            @await Html.PartialAsync("_Microdata", Model)
+                        }
+                        <div data-productid="@Model.Id">
+                            <div class="product-essential row">
+                                @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsEssentialTop, additionalData = Model })
+                                <div class="col-12 col-xl-6 px-0">
+                                    <div class="picture-wrapper">
+                                        @await Html.PartialAsync("_ProductBreadcrumb", Model.Breadcrumb)
+                                        <!--product pictures-->
+                                        <div class="whislist-wrap">
+                                            <div id="product_details_picture_section">
+                                                @*will load on ajax call
+                                                @*- show default grouped product image if not variant available (07-10-22)*@
+                                                @if (Model.AssociatedProducts.Count == 0)
+                                                {
+                                                    @await Html.PartialAsync("_ProductDetailsPictures", Model)
+                                                }
+                                            </div>
+
+                                            @{
+                                                var dataDictAddToWishlist = new ViewDataDictionary(ViewData);
+                                                dataDictAddToWishlist.TemplateInfo.HtmlFieldPrefix = $"addtocart_{Model.Id}";
+                                                @await Html.PartialAsync("_AddToWishlist", Model.AddToCart, dataDictAddToWishlist)
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-xl-6">
+                                    <div class="image-wrap">
+
+                                        <!--product breadcrumb-->
+                                        @await Html.PartialAsync("_ProductBreadcrumb", Model.Breadcrumb)
+                                        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsAfterBreadcrumb, additionalData = Model })
+
+                                        <div class="overview">
+                                            @await Html.PartialAsync("_Discontinued", Model)
+                                            <div class="product-name">
+                                                <h1>
+                                                    @Model.Name
+                                                </h1>
+                                            </div>
+                                            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsOverviewTop, additionalData = Model })
+                                            <!--product reviews-->
+                                            @await Html.PartialAsync("_ProductReviewOverview", Model.ProductReviewOverview)
+                                            <!--product manufacturers-->
+                                            @await Html.PartialAsync("_ProductManufacturers", Model.ProductManufacturers)
+                                            <!--availability-->
+                                            @await Html.PartialAsync("_Availability", Model)
+                                            <!--SKU, MAN, GTIN, vendor-->
+                                            @await Html.PartialAsync("_SKU_Man_GTIN_Ven", Model)
+
+                                            <!--price & add to cart & estimate shipping-->
+                                            <!--vednor selection-->
+                                            @{
+                                                var dataDictPrice = new ViewDataDictionary(ViewData);
+                                                dataDictPrice.TemplateInfo.HtmlFieldPrefix = $"price_{Model.Id}";
+                                                @await Html.PartialAsync("_ProductPrice", Model.ProductPrice, dataDictPrice)
+
+                                                <!--grouped product base variants -->
+                                                @await Html.PartialAsync("_GroupedProductBaseVariants", Model)
+
+                                                <!--variant products-->
+                                                @await Html.PartialAsync("_GroupedProductVariants", Model)
+
+                                                if (Model.AssociatedProducts.Count > 0)
+                                                {
+                                                    var dataDictAddToCart = new ViewDataDictionary(ViewData);
+                                                    dataDictAddToCart.TemplateInfo.HtmlFieldPrefix = $"addtocart_{Model.Id}";
+                                                    @await Html.PartialAsync("_AddToCart", Model.AddToCart, dataDictAddToCart)
+                                                }
+
+                                                <!--wishlist, compare, email a friend-->
+                                                <div class="overview-buttons">
+                                                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsBefore, additionalData = Model })
+
+                                                    @await Html.PartialAsync("_CompareProductsButton", Model)
+                                                    @await Html.PartialAsync("_ProductEmailAFriendButton", Model)
+                                                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsAfter, additionalData = Model })
+                                                </div>
+                                                <div class="share-btn">
+                                                    @*@await Component.InvokeAsync("SocialButtons")*@
+                                                    @await Html.PartialAsync("_ShareButton", Model)
+                                                </div>
+                                            }
+
+                                            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsOverviewBottom, additionalData = Model })
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsEssentialBottom, additionalData = Model })
+                            </div>
+                            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsBeforeCollateral, additionalData = Model })
+                            @*we do not display "also purchased" for grouped products
+                            @await Component.InvokeAsync("ProductsAlsoPurchased", new { productId = Model.Id })*@
+                            @await Component.InvokeAsync("RelatedProducts", new { productId = Model.Id })
+                        </div>
+                    </form>
+                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsBottom, additionalData = Model })
+                </div>
+            </div>
+        </div>
+
+        <div id="slot_header_section">
+            <div class="col-sm-12 text-center">
+                <div class="hedaing-wrap">
+                    <div class="date-wrapper">
+                        <button id="btnDelivery">@T("Alchub.Slot.Button.Delivery")</button>
+                        <button id="btnStorePickup">@T("Alchub.Slot.Button.Store.Pickup")</button>
+                    </div>
+                    <div Id="deliveryHeading">
+                        <h1>  @T("Alchub.Choose.Date.Time")</h1>
+                    </div>
+                    <div Id="pickupHeading">
+                        <h1>  @T("Alchub.Choose.Pickup.Date.Time")</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="SlotManagement">
+            @await Html.PartialAsync("_BookSlots", Model.SlotsManagement)
+        </div>
+
+        @if (isMobileDevice)
+        {
+            <div class="col-12 col-lg-12 col-xl-3 p-0 d-block d-xl-none">
+                <div class="filter-wrapper">
+                    <div class="sort-filter">
+                        <div class="sort-box">
+                            <nop-select id="vendorSortBy" onchange="SortVendor()"
+                                        asp-for="VendorSort" asp-items="@Model.VendorSortingOptions" />
+                        </div>
+                    </div>
+
+                    <div class="product-address">
+                        @*product vendors*@
+                        <div id="product_detail_vendors" class="availability-with-prices">
+                            @await Html.PartialAsync("_ProductVendors", Model)
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        }
+
+
+        <div class="product-review">
+            <div class="product-review-wrapper">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Product Details</button>
+                    </li>
+
+                    <li class="nav-item review-button" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Reviews</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="product-specifiction">
+                            <div class="row">
+                                <div id="product_detail_specification_att" class="col-12 col-xl-6 px-0 ">
+                                    @await Html.PartialAsync("_ProductSpecifications", Model.ProductSpecificationModel)
+                                </div>
+
+                                <div id="product_detail_descriptions" class="col-12 col-xl-6 px-0 ">
+                                    @await Html.PartialAsync("_ProductDescriptions", Model)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade reviwe" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="review-sections">
+                            <h1 class="title" id="total-reviews"> @Model.ProductReviewOverview.TotalReviews review(s)</h1>
+                            <div class="rating" id="rating">
+                                <div class="product-review-box">
+                                    <span class="">@ratingAverage</span>
+                                    <div class="rating">
+                                        <div id="rating-percent" style="width: @(ratingPercent)%" class="star-rating">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="write-review" id="review-form">
+                                <div class="title">
+                                    <span id="write-review"><strong>@T("Reviews.Write")</strong></span>
+                                    <span class="close" id="close"><strong>close</strong></span>
+                                </div>
+                                <div class="write-review" id="write-review-form">
+                                    <div asp-validation-summary="ModelOnly" class="message-error"></div>
+                                    <div class="fieldset">
+                                        <div class="form-fields">
+                                            @if (!Model.ProductReviews.AddProductReview.CanCurrentCustomerLeaveReview)
+                                            {
+                                                <span class="message-error"><strong>@T("GuestUserNotAllowed.WriteReview")</strong></span>
+                                            }
+
+                                            <div class="inputs">
+                                                <label asp-for="ProductReviews.AddProductReview.Title" asp-postfix=":"></label>
+                                                <input asp-for="ProductReviews.AddProductReview.Title" class="review-title" asp-disabled="@(!Model.ProductReviews.AddProductReview.CanCurrentCustomerLeaveReview)" />
+                                                <nop-required />
+                                                <span id="spanTitle" class="message-error"></span>
+                                            </div>
+                                            <div class="inputs">
+                                                <label asp-for="ProductReviews.AddProductReview.ReviewText" asp-postfix=":"></label>
+                                                <textarea asp-for="ProductReviews.AddProductReview.ReviewText" class="review-text" asp-disabled="@(!Model.ProductReviews.AddProductReview.CanCurrentCustomerLeaveReview)"></textarea>
+                                                <nop-required />
+                                                <span id="spanReviewText" class="message-error"></span>
+                                            </div>
+                                            <div class="review-rating">
+                                                <div class="name-description">
+                                                    <label asp-for="ProductReviews.AddProductReview.Rating" asp-postfix=":"></label>
+                                                </div>
+                                                <div class="star-cb-group">
+                                                    <input asp-for="ProductReviews.AddProductReview.Rating" name="ratings" value="5" checked type="radio" id="addproductrating_5" aria-label="@T("Reviews.Fields.Rating.Excellent")" /><label for="addproductrating_5"></label>
+                                                    <input asp-for="ProductReviews.AddProductReview.Rating" name="ratings" value="4" type="radio" id="addproductrating_4" aria-label="@T("Reviews.Fields.Rating.Good")" /><label for="addproductrating_4"></label>
+                                                    <input asp-for="ProductReviews.AddProductReview.Rating" name="ratings" value="3" type="radio" id="addproductrating_3" aria-label="@T("Reviews.Fields.Rating.NotBadNotExcellent")" /><label for="addproductrating_3"></label>
+                                                    <input asp-for="ProductReviews.AddProductReview.Rating" name="ratings" value="2" type="radio" id="addproductrating_2" aria-label="@T("Reviews.Fields.Rating.NotGood")" /><label for="addproductrating_2"></label>
+                                                    <input asp-for="ProductReviews.AddProductReview.Rating" name="ratings" value="1" type="radio" id="addproductrating_1" aria-label="@T("Reviews.Fields.Rating.Bad")" /><label for="addproductrating_1"></label>
+                                                </div>
+                                            </div>
+                                            @if (Model.ProductReviews.AddProductReview.DisplayCaptcha)
+                                            {
+                                                <nop-captcha />
+                                            }
+                                            <div class="buttons">
+                                                <button type="submit" name="add-review" id="add-review-btn" class="button-1 write-product-review-button" disabled="@(!Model.ProductReviews.AddProductReview.CanCurrentCustomerLeaveReview)">@T("Reviews.SubmitButton")</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <span class="text-success text-center" id="successfully-added" style="display:none"><strong>@T("ReviewAdded.Successfully")</strong></span>
+                            @await Html.PartialAsync("_ProductReviews", Model.ProductReviews)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-12 col-4 col-lg-3 p-0 px-0 d-none d-xl-block">
+        <div class="filter-wrapper">
+            <div class="sort-filter">
+                <div class="sort-box">
+                    <nop-select id="vendorSortBy" onchange="SortVendor()" asp-for="VendorSort" asp-items="@Model.VendorSortingOptions" />
+                </div>
+            </div>
+
+            <div class="product-address">
+                @*product vendors*@
+                <div id="product_detail_vendors" class="availability-with-prices">
+                    @*will load on ajax call
+                    @await Html.PartialAsync("_ProductVendors", Model)*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="subscribe-box-wrapper">
+    <div class="row align-items-center">
+        <div class="col-12 col-lg-6 col-xl-5">
+            <div class="news-wrapper">
+                <div class="info">
+                    <p>@T("Alchub.newsletterbox.text")</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6 col-xl-7">
+            <div class="input-box">
+                @await Component.InvokeAsync("NewsletterBox")
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).on('click', '#btnDelivery', function () {
+        $('#btnStorePickup').removeClass('active');
+        $(this).addClass('active');
+        $("#deliveryHeading").show();
+        $("#pickupHeading").hide();
+        var productvendor = $("input[name='vendor_products']:checked").val();
+        var productId = productvendor.split("__")[0];
+        var vendorId = productvendor.substring(productvendor.lastIndexOf('__') + 2);
+        if (vendorId == '0') {
+            return false;
+        }
+
+        var deliveryAvailable = false;
+        var managedelivery = document.getElementById("btnDelivery").className;
+        if (managedelivery == 'active') {
+            deliveryAvailable = true;
+        }
+
+        var start = $("#firstStartDate").val();
+        var end = $("#firstEndDate").val();
+        $.ajax({
+            cache: false,
+            type: "GET",
+            dataType: "html",
+            url: "@(Url.Action("Slots", "Product"))",
+            data: { startDate: start, endDate: end, productId: productId, vendorId: vendorId, manageDelivery: true, pickAvailable: false, deliveryAvailable: deliveryAvailable },
+            beforeSend: function () {
+                displayAjaxLoading(true);
+            },
+            success: function (data, textStatus, jqXHR) {
+                //update slot management
+                $('#SlotManagement').html(data);
+                var $container = $(".head-slot-box");
+                var $scrollTo = $('.fastest-wrapper');
+
+
+                //alert($container.Length);
+                if ($container.length > 0 && $scrollTo.length > 0) {
+                    if ($scrollTo.offset() !== undefined || $scrollTo.offset() !== ''
+                        && $container.offset() !== undefined || $container.offset() !== ''
+                        && $container.scrollTop() !== undefined || $container.scrollTop() !== '') {
+                        $container.animate({ scrollTop: $scrollTo.offset().top - $container.offset().top + $container.scrollTop() - 150, scrollLeft: 0 }, 0);
+                    }
+                }
+                else {
+                    $("#deliveryHeading").hide();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('something went wrong..');
+            },
+            complete: function () {
+                displayAjaxLoading(false);
+            }
+        });
+    });
+
+    $(document).on('click', '#btnStorePickup', function () {
+        $('#btnDelivery').removeClass('active');
+        $(this).addClass('active');
+        $("#deliveryHeading").hide();
+        $("#pickupHeading").show();
+        var productvendor = $("input[name='vendor_products']:checked").val();
+        var productId = productvendor.split("__")[0];
+        var vendorId = productvendor.substring(productvendor.lastIndexOf('__') + 2);
+        if (vendorId == '0') {
+            return false;
+        }
+        var start = $("#firstStartDate").val();
+        var end = $("#firstEndDate").val();
+        $.ajax({
+            cache: false,
+            type: "GET",
+            dataType: "html",
+            url: "@(Url.Action("PickupSlots", "Product"))",
+            data: { startDate: start, endDate: end, productId: productId, vendorId: vendorId, manageDelivery: false, pickAvailable: true },
+            beforeSend: function () {
+                displayAjaxLoading(true);
+            },
+            success: function (data, textStatus, jqXHR) {
+                //update slot management
+                $('#SlotManagement').html(data);
+                var $container = $(".head-slot-box");
+                var $scrollTo = $('.fastest-wrapper');
+
+
+                //alert($container.Length);
+                if ($container.length > 0 && $scrollTo.length > 0) {
+                    if ($scrollTo.offset() !== undefined || $scrollTo.offset() !== ''
+                        && $container.offset() !== undefined || $container.offset() !== ''
+                        && $container.scrollTop() !== undefined || $container.scrollTop() !== '') {
+                        $container.animate({ scrollTop: $scrollTo.offset().top - $container.offset().top + $container.scrollTop() - 150, scrollLeft: 0 }, 0);
+                    }
+                }
+                else {
+                    $("#pickupHeading").hide();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('something went wrong..');
+            },
+            complete: function () {
+                displayAjaxLoading(false);
+            }
+        });
+    });
+
+
+    function selectVendorProduct(productId, vendorId, manageDelivery, pickAvailable, deliveryAvailable) {
+        if (manageDelivery == "True" && pickAvailable == "True" || deliveryAvailable == "True") {
+            $("#btnDelivery").show();
+            $("#btnDelivery").addClass('active');
+            $("#deliveryHeading").show();
+            $("#deliveryHeading").addClass("showtext");
+            $("#pickupHeading").hide();
+            $("#deliveryHeading").addClass("hidetext");
+            $("#btnStorePickup").removeClass('active');
+            $("#btnStorePickup").show();
+        }
+        else {
+            if (manageDelivery == "True" || deliveryAvailable == "True") {
+                $("#btnDelivery").show();
+                $("#btnDelivery").addClass('active');
+                $("#deliveryHeading").show();
+                $("#deliveryHeading").addClass('active');
+                $("#pickupHeading").addClass("hidetext");
+                $("#deliveryHeading").addClass("hidetext");
+            }
+            else {
+                $("#btnDelivery").hide();
+                $("#deliveryHeading").hide();
+                $("#btnStorePickup").addClass('active');
+                $("#pickupHeading").addClass('active');
+                $("#pickupHeading").addClass("hidetext");
+                $("#deliveryHeading").addClass("hidetext");
+
+            }
+        }
+        if (pickAvailable == "True") {
+            $("#btnStorePickup").show();
+        }
+        else {
+            $("#btnStorePickup").hide();
+            $("#pickupHeading").addClass("hidetext");
+            $("#pickupHeading").hide();
+            $("#btnStorePickup").removeClass('active');
+        }
+
+        //update pricing
+        $("#price-value-@(Model.Id)").html($("#vendor" + vendorId + "_product" + productId + "_price").html())
+
+        var start = $("#firstStartDate").val();
+        var end = $("#firstEndDate").val();
+        $.ajax({
+            cache: false,
+            type: "GET",
+            dataType: "html",
+            url: "@(Url.Action("Slots", "Product"))",
+            data: { startDate: start, endDate: end, productId: productId, vendorId: vendorId, manageDelivery: manageDelivery, pickAvailable: pickAvailable, deliveryAvailable: deliveryAvailable },
+            beforeSend: function () {
+                displayAjaxLoading(true);
+            },
+            success: function (data, textStatus, jqXHR) {
+                //update slot management
+                $('#SlotManagement').html(data);
+                var $container = $(".head-slot-box");
+                var $scrollTo = $('.fastest-wrapper');
+
+
+                //alert($container.Length);
+                if ($container.length > 0 && $scrollTo.length > 0) {
+                    if ($scrollTo.offset() !== undefined || $scrollTo.offset() !== ''
+                        && $container.offset() !== undefined || $container.offset() !== ''
+                        && $container.scrollTop() !== undefined || $container.scrollTop() !== '') {
+                        $container.animate({ scrollTop: $scrollTo.offset().top - $container.offset().top + $container.scrollTop() - 150, scrollLeft: 0 }, 0);
+                    }
+                }
+            },
+
+
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('something went wrong..');
+            },
+            complete: function () {
+                displayAjaxLoading(false);
+            }
+        });
+    };
+</script>
+<script>
+
+    $(document).ready(function () {
+        //add product review
+        $('#add-review-btn').on('click', function () {
+            var productId = @Model.Id;
+            var title = $('#@Html.IdFor(x=>x.ProductReviews.AddProductReview.Title)').val();
+            var reviewText = $('#@Html.IdFor(x=>x.ProductReviews.AddProductReview.ReviewText)').val();
+            var rating = $("input[name='ratings']:checked").val();
+            var IsValid = isFormValid(title, reviewText);
+            if (!IsValid)
+                return;
+
+            var postData = {
+                productId: productId,
+                title: title,
+                reviewRating: rating,
+                reviewText: reviewText,
+            };
+
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "@(Url.Action("AddProductReviews", "Product"))",
+                data: postData,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("RequestVerificationToken",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                success: function (data, textStatus, jqXHR) {
+                    if (data != null) {
+                        //reload reviews
+                        $('#reviews-list').html(data);
+                        //hide form
+                        $('#review-form').hide();
+                        $('#rating').hide();
+                        $('#total-reviews').hide();
+                        //show message
+                        $('#successfully-added').css("display", "block");
+                    } else {
+                        //display errors if returned
+                        alert('Sorry, an error occured!! please try again.');
+                    }
+                },
+                complete: function (jqXHR, textStatus) {
+                }
+            });
+        });
+
+        function isFormValid(title, reviewText) {
+            var IsTitleValid = false; var IsReviewTextValid = false;
+
+            //title validation
+            if (title == '' || title == null) {
+                IsTitleValid = false;
+                $("#spanTitle").text("Title is required.");
+                $("#spanTitle").css("display", "block");
+            }
+            else {
+                IsTitleValid = true;
+            }
+
+            //review text validation
+            if (reviewText == '' || reviewText == null) {
+                IsReviewTextValid = false;
+                $("#spanReviewText").text("Review text is required.");
+                $("#spanReviewText").css("display", "block");
+            }
+            else {
+                IsReviewTextValid = true;
+            }
+            ////if all field is valid, then return true else false
+            if (IsTitleValid && IsReviewTextValid) {
+
+                return true;
+            }
+            else {
+
+                return false;
+            }
+
+        }
+
+        //add class on details page
+        if ($(".loction-name .last-search").length > 0) {
+            $(".html-product-details-page").addClass("loction-search");
+        }
+
+        //bug fixed - press back from cart, showing balnk in option.
+        if ($('#vendorSortBy :selected').length == 0) {
+            if ($('#vendorSortBy option').length > 0) {
+                $("#vendorSortBy").prop("selectedIndex", 0);
+                $("#vendorSortBy").trigger('change');
+            }
+        }
+    });
+</script>
+<script asp-location="Footer">
+    function SortVendor() {
+        var productId = $('#master_product_id').val();
+        var sortBy = $('#vendorSortBy').val();
+
+        AjaxCart.setLoadWaiting(true);
+
+        var postData = {
+            productId: productId,
+            vendorSortBy: sortBy,
+        };
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "@(Url.Action("VendorSorting", "Product"))",
+            data: postData,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            success: function (data, textStatus, jqXHR) {
+                if (data.message) {
+                    alert(data.message);
+                    AjaxCart.setLoadWaiting(false);
+                    return false;
+                }
+                else {
+                    if (data !== null || data !== '') {
+                        $('#productVendors').html(data);
+                    } else {
+                        //display errors if returned
+                        alert('Sorry, an error occured!! please try again.');
+                    }
+                }
+            },
+            complete: function (jqXHR, textStatus) {
+                AjaxCart.resetLoadWaiting
+            }
+        });
+    }
+
+    function HideSlotSection(hide) {
+        if (hide === true) {
+            $("#slot_header_section").hide();
+            $("#SlotManagement").hide();
+        } else {
+            $("#slot_header_section").show();
+            $("#SlotManagement").show();
+        }
+    }
+</script>

@@ -1,0 +1,19 @@
+﻿@model IList<ManufacturerModel>
+@if (Model.Count > 0)
+{
+    <div class="page-body__brandSliderWrapper">
+        <div class="page-body__brandSlider owl-carousel owl-theme" id="brand-slider">
+            @foreach (var item in Model)
+            {
+                <div class="page-body__brandItem">
+                    @{
+                        var url = "search?mid=" + @item.Id;
+                    }
+                    <a href="@url">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="@item.PictureModel.ImageUrl" alt="@item.PictureModel.AlternateText" class="lazy">
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+}

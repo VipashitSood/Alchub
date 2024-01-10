@@ -1,0 +1,140 @@
+@charset "UTF-8";
+@import "helpers/_helpers";
+@import "mixins/mixins";
+@import "layout/layout";
+@import "layout/header";
+@import "layout/navigation";
+@import "templates/detail";
+@import "layout/footer";
+@import "templates/index";
+@import "templates/wishlist";
+@import "templates/category";
+@import "templates/login";
+@import "templates/search";
+@import "templates/registration";
+@import "templates/checkout";
+@import "templates/cart";
+@import "templates/cart-popup";
+@import "templates/password-recovery";
+@import "templates/myacccount";
+@import "templates/contact-page";
+@import "templates/blog";
+@import "fonts";
+@import "base/_base";
+@import"./components/components";
+
+
+body {
+    /*overflow-x: hidden;*/
+    font-family: $fontFamilyCustomRegular;   
+}
+
+.page-wrapper {
+    padding: 40px 10px 80px;
+    position: relative;
+    z-index: 10;
+
+    @include media(landscapeTablet) {
+        padding: 70px 6vw;
+    }
+}
+
+img {
+    max-width: 100%;
+}
+
+.owl-theme .owl-dots .owl-dot.active span, .owl-theme .owl-dots .owl-dot:hover span {
+    background: #eebe00 !important;
+}
+
+
+/*mobile-responsive*/
+@include media(small) {
+    .html-product-details-page .html-product-details-page {
+        .product-essential .picture-wrapper {
+            .add-to-wishlist {
+                right: -66px;
+                position: absolute;
+                top: -5px;
+            }
+        }
+    }
+
+    .picture-wrapper {
+        #product_details_picture_section {
+            margin-top: 20px;
+        }
+    }
+
+    .breadcrumb{
+        ul{
+            display:initial;
+        }
+    }
+}
+@include media(small) {
+    .product-details-page {
+        .overview {
+            .product-name {
+                h1 {
+                    text-align: center;
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}
+
+@include media(small) {
+    .html-product-details-page #SlotManagement .chooseDateTable .slotGrid .head-content thead tr {
+        th, td {
+            padding: 10px 18px;
+            font-weight: 700;
+            font-size: $fontSizeXS$fontSizeXS;
+
+            span {
+            }
+        }
+
+        .slot-grid--times {
+            padding: 10px 7.8px;
+            
+        }
+    }
+}
+
+
+.please-wait-fastest-slot {
+    background: url('../images/ajax-loader-smalls.gif') no-repeat;
+    padding-left: 20px;
+    font-size: 14px;
+}
+  
+.registration-result-page {
+    .page-title{
+        margin-top:10px;
+    }
+    .result{
+    display:inherit;
+
+    }
+}
+
+
+.bar-notification-container {
+    .error {
+        background-color: $primaryBrandClr-hover;
+
+        .content {
+            color: $colorBaseWhite;
+        }
+    }
+
+    .success {
+        background-color: $primaryBrandClr;
+
+        .content {
+            color: $colorBaseWhite;
+        }
+    }
+}

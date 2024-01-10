@@ -1,0 +1,182 @@
+﻿@using Nop.Web.Areas.Admin.Models.Slots
+@model PickupSlotSearchModel
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Catalog.PickupSlotManagement").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("PickupSlotManagement");
+}
+
+@{
+    const string hideSearchBlockAttributeName = "Zones.HideSearchBlock";
+    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+}
+<form asp-controller="PickupSlot" asp-action="ZoneList" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Pickup.Slot.Management")
+        </h1>
+        @if (!Model.IsLoggedInAsVendor)
+        {
+            <div class="float-right">
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus-square"></i>
+                    @T("Admin.Common.AddNew")
+                </a>
+                @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.StoreListButtons, additionalData = Model })
+            </div>
+        }
+        @if (Model.IsLoggedInAsVendor)
+        {
+            @if (!Model.IsCount)
+            {
+                <div class="float-right">
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus-square"></i>
+                        @T("Admin.Common.AddNew")
+                    </a>
+                    @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.StoreListButtons, additionalData = Model })
+                </div>
+            }
+        }
+    </div>
+    @if (!Model.IsLoggedInAsVendor)
+    {
+        <section class="content">
+            <div class="container-fluid">
+                <div class="form-horizontal">
+                    <div class="cards-group">
+                        <div class="card card-default card-search">
+                            <div class="card-body">
+                                <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                                    <div class="search-text">@T("Admin.Common.Search")</div>
+                                    <div class="icon-search"><i class="fas fa-search" aria-hidden="true"></i></div>
+                                    <div class="icon-collapse"><i class="far fa-angle-@(!hideSearchBlock ? "up" : "down")" aria-hidden="true"></i></div>
+                                </div>
+                                <div class="search-body @(hideSearchBlock ? "closed" : "")">
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <div class="form-group row">
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="SelectedActiveId" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <nop-select asp-for="SelectedActiveId" asp-items="Model.ActiveList" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <div class="form-group row">
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="SelectedVendorId" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <nop-select asp-for="SelectedVendorId" asp-items="Model.VendorList" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 offset-md-4">
+                                            <button type="button" id="search-slots" class="btn btn-primary btn-search">
+                                                <i class="fas fa-search"></i>
+                                                @T("Admin.Common.Search")
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+        <section class="content">
+            <div class="container-fluid">
+                <div class="form-horizontal">
+                    <div class="cards-group">
+                        <div class="card card-default">
+                            <div class="card-body">
+                                <nop-doc-reference asp-string-resource="@T("Admin.Documentation.Reference.Plugins", Docs.Plugins + Utm.OnAdmin)" />
+
+                                @await Html.PartialAsync("Table", new DataTablesModel
+                                {
+                                Name = "widgets-grid",
+                                UrlRead = new DataUrl("ZoneList", "PickupSlot", null),
+                                UrlDelete = new DataUrl("ZoneDelete", "PickupSlot", null),
+                                UrlUpdate = new DataUrl("ZoneUpdate", "PickupSlot", null),
+                                SearchButtonId = "search-slots",
+                                Length = Model.PageSize,
+                                LengthMenu = Model.AvailablePageSizes,
+                                Filters = new List<FilterParameter>
+                                {
+                                new FilterParameter(nameof(Model.ZoneName)),
+                                new FilterParameter(nameof(Model.SelectedVendorId)),
+                                new FilterParameter(nameof(Model.SelectedActiveId))
+                                },
+                                ColumnCollection = new List<ColumnProperty>
+                                {
+                                new ColumnProperty(nameof(ZoneModel.Name))
+                                {
+                                Title = T("Admin.Slots.Fields.Name").Text,
+                                Width = "250",
+                                ClassName = NopColumnClassDefaults.CenterAll,
+                                Editable = true,
+                                EditType = EditType.String
+                                },
+                                new ColumnProperty(nameof(ZoneModel.IsActive))
+                                {
+                                Title = T("Admin.Slots.Fields.IsActive").Text,
+                                Width = "100",
+                                ClassName = NopColumnClassDefaults.CenterAll,
+                                Render = new RenderBoolean(),
+                                Editable = true,
+                                EditType = EditType.Checkbox
+                                },
+                            new ColumnProperty(nameof(ZoneModel.VendorName))
+                            {
+                             Title = T("Admin.Catalog.Products.Fields.Vendor").Text,
+                            Width = "250",
+                            ClassName = NopColumnClassDefaults.CenterAll,
+                            Editable = false,
+                            EditType = EditType.String
+                            },
+                                new ColumnProperty(nameof(ZoneModel.Id))
+                                {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "200",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonsInlineEdit()
+                                },
+                                new ColumnProperty(nameof(ZoneModel.Id))
+                                {
+                                Title = T("Admin.Common.Remove").Text,
+                                Width = "100",
+                                ClassName = NopColumnClassDefaults.Button ,
+                                Render = new RenderButtonRemove("Delete")
+                                },
+                                new ColumnProperty(nameof(ZoneModel.Id))
+                                {
+                                Title = T("Admin.Common.Add.Slots").Text,
+                                Width = "100",
+                                ClassName = NopColumnClassDefaults.Button + " column-edit",
+                                Render = new RenderCustom("renderColumnEdit")
+                                }
+                                }
+                                })
+                                <script>
+                                                     function renderColumnEdit(data, type, row, meta) {
+                                    return '<a href="@Url.Content("~/Admin/PickupSlot/AvailableCalendar/")' + data + '" class="btn btn-default"><i class="fas fa-pencil-alt"></i>@T("Admin.Common.Add.Slots")</a>';
+                                }
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+

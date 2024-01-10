@@ -1,0 +1,273 @@
+@import "../helpers/_helpers";
+
+.html-login-page {
+
+    .center-1 {
+        margin: 0px;
+    }
+
+    .master-wrapper-page {
+
+        .master-wrapper-content {
+            width: auto;
+
+            .topic-block {
+                position: relative;
+
+                .topic-block-title {
+                    display: none;
+                }
+
+                .topic-block-body {
+                    p {
+                        img {
+                            width: 100%;
+                            height: 456px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .login-page {
+        .login-header {
+            .header-image {
+                text-align: center;
+                min-height: 64px;
+                border-bottom: 1px solid $borderColor;
+            }
+        }
+
+        .signInBlock {
+            background: $colorBaseWhite;
+        }
+
+        .infoBlock {
+            background-color: $primaryBrandClr;
+        }
+
+        .returning-wrapper {
+            float: none;
+            width: auto;
+
+            .form-fields {
+                background-color: $colorBaseWhite;
+                padding: 5px;
+                width: 294px;
+                margin: 0px auto;
+
+                @include media(small) {
+                    width: 100%;
+                }
+
+                @include media(landscapeTablet) {
+                    width: 370px;
+                }
+
+                #signInHead {
+                    width: 100%;
+                    text-align: left;
+                    color: $textcolor;
+                    font-weight: $fontWeightMediumBold;
+                    font-size: $fontsizeMedium;
+                    margin-bottom: 20px;
+                }
+
+                .inputs {
+                    text-align: center;
+                    margin-bottom: 25px;
+
+                    @include media(small) {
+                        margin-bottom: 10px;
+                    }
+                }
+
+                .buttons {
+                    margin: 0px;
+                    padding: 0;
+
+                    .login-button {
+                        height: 48px;
+                        letter-spacing: .05em;
+                        text-transform: capitalize;
+                        font-weight: $fontWeightBold;
+                        color: $colorBaseWhite;
+                        width: 100%;
+                        margin-left: 3px;
+                        font-size: $fontSizeM;
+                        border-radius: $borderRadiusLarge;
+                        border-radius: 50px;
+
+                        @include media(small) {
+                            font-size: $fontSizeXS;
+                        }
+                    }
+                }
+
+                .reversed {
+                    margin-top: 10px;
+
+                    .left-side-wrap {
+                        float: left;
+
+                        input {
+                            position: absolute;
+                            left: -999px;
+                        }
+
+                        label {
+                            display: flex;
+                            align-items: center;
+                            font-size: $fontSizeXXXS;
+
+                            @include media(landscapeTablet) {
+                                font-size: $fontSizeXS;
+                            }
+
+                            &:before {
+                                content: "";
+                                margin-left: 0px;
+                            }
+                        }
+                    }
+
+                    .right-side-wrap {
+                        float: right;
+
+                        .forgot-password {
+                            a {
+                                font-size: $fontSizeXXXS;
+                                margin: 0px;
+
+                                @include media(landscapeTablet) {
+                                    font-size: $fontSizeXS;
+                                }
+
+                                &:hover {
+                                    color: $primaryBrandClr-hover;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            input[type="email"], input[type="password"] {
+                border: 2px solid $borderColor;
+                width: 100%;
+                height: 48px;
+                background-color: $secbgcolor;
+                color: $titlecolor;
+                border-radius: 50px;
+                -webkit-box-shadow: none;
+                border: 1px solid transparent;
+                padding-left: 20px;
+                padding-right: 20px;
+
+                @include media(small) {
+                    font-size: $fontSizeXXXS;
+                }
+            }
+
+
+            .show-text {
+                position: relative;
+
+                .text {
+                    right: 5px;
+                    color: $primaryBrandClr;
+                    position: absolute;
+                }
+            }
+        }
+
+        .customer-blocks {
+            margin: 50px 0px;
+            @include media(small){
+                margin-top:100px;
+            }
+            .block1 {
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+
+            .login-image {
+                height: 100%;
+            }
+        }
+
+        .wrap {
+            webkit-box-shadow: 0px 10px 34px -15px rgb(0 0 0 / 24%);
+            -moz-box-shadow: 0px 10px 34px -15px rgba(0, 0, 0, 0.24);
+            box-shadow: 0px 10px 34px -15px rgb(0 0 0 / 2);
+            height: 420px;
+
+            @include media(small) {
+                height: auto;
+            }
+
+            @include media(tablet) {
+                height: 375px;
+            }
+
+            @include media(landscapeTablet) {
+                height: 415px;
+            }
+
+            .text-wrap {
+                /*background: rgba(160,33,33);
+                background: -moz-linear-gradient(-45deg, rgba(218,51,51) 0%, rgba(218,51,51) 100%);
+                background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(198,55,55)), color-stop(100%, rgba(198,55,55)));
+                background: -webkit-linear-gradient(-45deg, rgba(172,25,25) 0%, rgba(172,25,25) 100%);
+                background: -o-linear-gradient(-45deg, rgba(148,14,14) 0%, rgba(148,14,14) 100%);
+                background: -ms-linear-gradient(-45deg, rgba(245,54,54) 0%, rgba(245,54,54) 100%);
+                background: linear-gradient(135deg, rgba(218,10,10) 0%, rgba(218,10,10) 100%);*/
+                background: $primaryBrandClr;
+                width: 50%;
+
+                @include media(small) {
+                    width: 100%;
+                }
+
+                .info-block {
+                    width: 100%;
+
+                    .text * {
+                        color: $colorBaseWhite;
+                    }
+
+                    .text {
+                        a {
+                            border: 1px solid $colorBaseWhite;
+                            background: transparent;
+                            padding: 10px 20px;
+                            border-radius: 50px;
+
+                            @include media(small) {
+                                padding: 5px 10px;
+                                font-size: $fontSizeXXXS;
+                            }
+
+                            &:hover {
+                                border: 1px solid transparent;
+                                background: $colorBaseWhite;
+                                color: $titlecolor;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .login-wrap {
+                width: 50%;
+                padding: 30px 10px;
+
+                @include media(small) {
+                    width: 100%;
+                    padding: 20px 4px;
+                }
+            }
+        }
+    }
+}

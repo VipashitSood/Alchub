@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Tax providers",
+  "FriendlyName": "Vendor Wise Tax Rates",
+  "SystemName": "Tax.VendorWise",
+  "Version": "1.0",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "Tmotions team",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Tax.VendorWise.dll",
+  "Description": "This plugin allow to configure fix vendor wise tax rates"
+}

@@ -1,0 +1,39 @@
+﻿@model CatalogProductsModel
+
+@if (!string.IsNullOrEmpty(Model.WarningMessage))
+{
+    <div class="warning">
+        @Model.WarningMessage
+    </div>
+}
+
+@if (Model.Products.Count > 0)
+{
+    <div class="@(Model.ViewMode == "list" ? "product-list" : "product-grid")">
+        <div class="item-grid">
+            @*call custom product box in catalog and jcarsouel, to handle fastest slot lazy loading.*@
+            @await Html.PartialAsync("_ProductBoxAlchub", Model.Products)
+        </div>
+    </div>
+
+    var pager = Html.Pager(Model.CatalogProductsCommand)
+        .QueryParam("pagenumber");
+    // for search page
+    //.BooleanParameterName("advs")
+    //.BooleanParameterName("isc")
+    //.BooleanParameterName("sid")
+    //.RenderEmptyParameters(true);
+
+    @if (!await pager.IsEmpty())
+    {
+        <div class="pager">
+            @pager
+        </div>
+    }
+}
+else if (!string.IsNullOrEmpty(Model.NoResultMessage))
+{
+    <div class="no-result">
+        @Model.NoResultMessage
+    </div>
+}

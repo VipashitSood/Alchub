@@ -1,0 +1,18 @@
+﻿@using Nop.Web.Models.ShoppingCart
+@model IList<SlotFeeModel>
+
+<div id="slot-wise-delivery-fee-popup" class="slot-wise-delivery-fee-popup" style="display:none">
+    <div>
+        <div>
+            @T("Alchub.Slot.Fee.Popup.Instruction").Text
+        </div>
+        <div>
+            @foreach (var slotWiseFee in Model)
+            {
+                <div>
+                    @slotWiseFee.VendorName - @slotWiseFee.SlotFee
+                </div>
+            }
+        </div>
+    </div>
+</div>

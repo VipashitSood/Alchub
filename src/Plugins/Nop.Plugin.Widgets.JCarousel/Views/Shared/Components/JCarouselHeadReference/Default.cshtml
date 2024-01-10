@@ -1,0 +1,10 @@
+﻿@{
+    //add main CSS file
+    NopHtml.AppendCssFileParts($"~/Plugins/Widgets.JCarousel/Content/css/custom.css");
+    NopHtml.AppendCssFileParts($"~/Plugins/Widgets.JCarousel/Content/css/owl.carousel.min.css");
+    NopHtml.AppendCssFileParts($"~/Plugins/Widgets.JCarousel/Content/css/owl.theme.default.min.css");
+
+    //add js file
+    NopHtml.AddScriptParts(ResourceLocation.Footer, $"~/Plugins/Widgets.JCarousel/Content/js/owl.carousel.min.js");
+    NopHtml.AddScriptParts(ResourceLocation.Footer, $"~/Plugins/Widgets.JCarousel/Content/js/custom.js");
+}

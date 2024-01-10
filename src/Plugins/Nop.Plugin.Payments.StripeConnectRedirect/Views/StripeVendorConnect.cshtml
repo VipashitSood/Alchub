@@ -1,0 +1,74 @@
+﻿@model StripeVendorConnectModel
+
+@{
+    Layout = "";
+
+    var customer = await workContext.GetCurrentCustomerAsync();
+
+    const string stripeConnectBlockAttributeName = "StripeConnectRedirect.StripeConnectBlock";
+    var stripeConnectBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, stripeConnectBlockAttributeName);
+}
+
+<nop-card asp-name="stripe-info" asp-icon="fas fa-user" asp-title="@T("Plugin.Payments.StripeConnectRedirect.StripeConnect.CardTitle")" asp-hide-block-attribute-name="@stripeConnectBlockAttributeName" asp-hide="@stripeConnectBlock" asp-advanced="false">
+    <div class="card-body">
+        <div class="content">
+            <div class="form-horizontal">
+                <div class="panel-group">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            @if (string.IsNullOrEmpty(Model.Error))
+                            {
+                                @if (Model.IsConnected)
+                                {
+                                    <div>
+                                        <p class="intro text-center">@Html.Raw(Model.Information)</p>
+                                    </div>
+
+                                    <div>
+                                        @if (Model.IsVerified)
+                                        {
+                                            <div class="text-center">
+                                                <button type="submit" formmethod="post" formaction="@Url.RouteUrl("Plugin.Payments.StripeConnectRedirect.StripeConnectDashboard", new { vendorId = Model.VendorId })" formtarget="_blank" class="btn btn-info btn-flat">
+                                                    @T("Plugin.Payments.StripeConnectRedirect.StripeConnectDashboard.Button")
+                                                </button>
+                                            </div>
+                                        }
+
+                                        @if (Model.IsRefreshRequired)
+                                        {
+                                            <div class="text-center">
+                                                <button type="submit" formaction="@Url.RouteUrl("Plugin.Payments.StripeConnectRedirect.StripeConnectRefresh", new { vendorId = Model.VendorId })" formtarget="_blank" class="btn btn-info btn-flat">
+                                                    @T("Plugin.Payments.StripeConnectRedirect.StripeConnectRefresh.Button")
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    {
+                                        <div>
+                                            <p class="intro text-center">@Html.Raw(Model.Information)</p>
+                                        </div>
+
+                                        <div class="text-center">
+                                            <button type="submit" formmethod="post" formaction="@Url.RouteUrl("Plugin.Payments.StripeConnectRedirect.StripeConnect", new { vendorId = Model.VendorId })" formtarget="_blank" class="btn btn-info btn-flat">
+                                                @T("Plugin.Payments.StripeConnectRedirect.StripeConnect.Button")
+                                            </button>
+                                        </div>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <div>
+                                    <p class="intro text-center" style="color:red">@Html.Raw(Model.Error)</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nop-card>

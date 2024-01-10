@@ -1,0 +1,17 @@
+INSERT INTO [LocaleStringResource] ([ResourceName], [ResourceValue],[LanguageId])
+VALUES ('account.user.register', 'User registered successfully',1);
+
+INSERT INTO [LocaleStringResource] ([ResourceName], [ResourceValue],[LanguageId])
+VALUES ('account.login.wrongcredentials.customernotexist', 'No customer account found',1);
+
+INSERT INTO [LocaleStringResource] ([ResourceName], [ResourceValue],[LanguageId])
+VALUES ('account.verified', 'OTP verified successfully',1);
+
+INSERT INTO [LocaleStringResource] ([ResourceName], [ResourceValue],[LanguageId])
+VALUES ('account.incorrect.otp', 'The OTP entered is incorrect.',1);
+
+INSERT INTO [LocaleStringResource] ([ResourceName], [ResourceValue],[LanguageId])
+VALUES ('account.customer.alreadyexist', 'Customer already exist',1);
+
+INSERT INTO [LocaleStringResource] ([ResourceName], [ResourceValue],[LanguageId])
+VALUES ('account.customer.exists', 'Customer already exist',1);

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="80" height="80" viewBox="0 0 80 80">
+  <defs>
+    <filter id="Ellipse_186" x="0" y="0" width="80" height="80" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.161" result="color"/>
+      <feComposite operator="out" in="SourceGraphic" in2="blur"/>
+      <feComposite operator="in" in="color"/>
+      <feComposite operator="in" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_8824" data-name="Group 8824" transform="translate(-451 -249)">
+    <g data-type="innerShadowGroup">
+      <circle id="Ellipse_186-2" data-name="Ellipse 186" cx="40" cy="40" r="40" transform="translate(451 249)" fill="#fff"/>
+      <g transform="matrix(1, 0, 0, 1, 451, 249)" filter="url(#Ellipse_186)">
+        <circle id="Ellipse_186-3" data-name="Ellipse 186" cx="40" cy="40" r="40" fill="#fff"/>
+      </g>
+      <g id="Ellipse_186-4" data-name="Ellipse 186" transform="translate(451 249)" fill="none" stroke="#f0862e" stroke-width="3">
+        <circle cx="40" cy="40" r="40" stroke="none"/>
+        <circle cx="40" cy="40" r="38.5" fill="none"/>
+      </g>
+    </g>
+    <g id="shopping-cart-svgrepo-com_4_" data-name="shopping-cart-svgrepo-com (4)" transform="translate(470.996 269)">
+      <g id="Group_8672" data-name="Group 8672" transform="translate(10.812 33.408)">
+        <g id="Group_8671" data-name="Group 8671">
+          <circle id="Ellipse_191" data-name="Ellipse 191" cx="0.983" cy="0.983" r="0.983" fill="#888"/>
+        </g>
+      </g>
+      <g id="Group_8674" data-name="Group 8674" transform="translate(30.464 33.408)">
+        <g id="Group_8673" data-name="Group 8673">
+          <circle id="Ellipse_192" data-name="Ellipse 192" cx="0.983" cy="0.983" r="0.983" fill="#888"/>
+        </g>
+      </g>
+      <g id="Group_8676" data-name="Group 8676" transform="translate(0.004 0)">
+        <g id="Group_8675" data-name="Group 8675" transform="translate(0 0)">
+          <path id="Path_10324" data-name="Path 10324" d="M38.324,33.408H36.26a4.913,4.913,0,0,0-9.628,0H16.606a4.908,4.908,0,0,0-4.543-3.9L8.836,7.717a.987.987,0,0,0-.277-.551L1.681.288A.982.982,0,1,0,.292,1.677L6.941,8.325,10.12,29.79a4.905,4.905,0,1,0,6.488,5.584H26.632a4.913,4.913,0,0,0,9.628,0h2.064a.983.983,0,1,0,0-1.965Zm-26.53,3.93a2.948,2.948,0,1,1,2.948-2.948A2.951,2.951,0,0,1,11.795,37.338Zm19.652,0a2.948,2.948,0,1,1,2.948-2.948A2.951,2.951,0,0,1,31.446,37.338Z" transform="translate(-0.004 0)" fill="#888"/>
+        </g>
+      </g>
+      <g id="Group_8678" data-name="Group 8678" transform="translate(11.205 9.826)">
+        <g id="Group_8677" data-name="Group 8677">
+          <path id="Path_10325" data-name="Path 10325" d="M173.629,128.786a1.966,1.966,0,0,0-1.569-.781H147.888a1.964,1.964,0,0,0-1.945,2.243L147.908,144a1.964,1.964,0,0,0,1.945,1.687h18.276a1.966,1.966,0,0,0,1.89-1.425l3.93-13.756A1.967,1.967,0,0,0,173.629,128.786Zm-5.5,14.94H149.853l-1.965-13.756H172.06Z" transform="translate(-145.923 -128.005)" fill="#888"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

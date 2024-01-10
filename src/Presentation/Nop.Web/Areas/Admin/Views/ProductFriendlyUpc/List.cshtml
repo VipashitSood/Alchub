@@ -1,0 +1,155 @@
+﻿@model ProductFriendlyUpcSearchModel
+@using Nop.Web.Areas.Admin.Alchub.Models.Catalog;
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Catalog.ProductFriendlyUpc").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("ProductFriendlyUpc");
+}
+
+@{
+    const string hideSearchBlockAttributeName = "ProductFriendlyUpc.HideSearchBlock";
+    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+
+    const string hideProductBlockAttributeName = "ProductFriendlyUpc.HideProductsBlock";
+    var hideProductBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideProductBlockAttributeName);
+}
+
+<form asp-controller="ProductFriendlyUpc" asp-action="List" id="vendor-product-search-form" method="post">
+    <div class="content-header clearfix">
+        <div class="col-12 admin-product">
+            <div class="col-9">
+                @T("Alchub.Admin.Catalog.ProductFriendlyUpc.AddEdit")
+            </div>
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default card-search">
+                        <div class="card-body">
+                            <div class="search-body @(hideSearchBlock ? "opened" : "")">
+                                <div class="row pb-3">
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <div class="col-2">
+                                                <nop-label asp-for="SearchProductName" />
+                                            </div>
+                                            <div class="col-2">
+                                                <nop-editor asp-for="SearchProductName" />
+                                            </div>
+                                            <div class="col-2">
+                                                <nop-label asp-for="SearchFriendlyUpcCode" />
+                                            </div>
+                                            <div class="col-2">
+                                                <nop-editor asp-for="SearchFriendlyUpcCode" />
+                                            </div>
+                                            <div class="col-2">
+                                                <nop-label asp-for="SearchCategoryId" />
+                                            </div>
+                                            <div class="col-2">
+                                                <nop-select asp-for="SearchCategoryId" asp-items="Model.AvailableCategories" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="text-center col-12">
+                                        <button type="button" id="search-products" class="btn btn-primary btn-search">
+                                            <i class="fas fa-search"></i>
+                                            @T("Admin.Common.Search")
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-default">
+                        <div class="card-body">
+                            @await Html.PartialAsync("Table", new DataTablesModel
+                            {
+                                Name = "friendlyupc-products-grid",
+                                UrlRead = new DataUrl("ProductList", "ProductFriendlyUpc", null),
+                                UrlUpdate = new DataUrl("CreateOrUpdateProductFrindlyUpc", "ProductFriendlyUpc", null),
+                                SearchButtonId = "search-products",
+                                Length = Model.PageSize,
+                                LengthMenu = Model.AvailablePageSizes,
+                                Filters = new List<FilterParameter>
+                                {
+                                    new FilterParameter(nameof(Model.SearchProductName)),
+                                    new FilterParameter(nameof(Model.SearchFriendlyUpcCode)),
+                                    new FilterParameter(nameof(Model.SearchCategoryId))
+                                },
+                                ColumnCollection = new List<ColumnProperty>
+                                {
+                                    new ColumnProperty(nameof(ProductFriendlyUpcModel.PictureThumbnailUrl))
+                                    {
+                                        Title = T("Alchub.Admin.Catalog.ProductFriendlyUpc.Fields.PictureThumbnailUrl").Text,
+                                        Width = "100",
+                                        Render = new RenderPicture("", 75)
+                                    },
+                                    new ColumnProperty(nameof(ProductFriendlyUpcModel.ProductName))
+                                    {
+                                        Title = T("Alchub.Admin.Catalog.ProductFriendlyUpc.Fields.ProductName").Text,
+                                        Width = "100",
+                                    },
+                                    new ColumnProperty(nameof(ProductFriendlyUpcModel.Size))
+                                    {
+                                        Title = T("Alchub.Admin.Catalog.ProductFriendlyUpc.Fields.Size").Text,
+                                        Width = "100"
+                                    },
+                                    new ColumnProperty(nameof(ProductFriendlyUpcModel.Category))
+                                    {
+                                        Title = T("Alchub.Admin.Catalog.ProductFriendlyUpc.Fields.Category").Text,
+                                        Width = "100"
+                                    },
+                                    new ColumnProperty(nameof(ProductFriendlyUpcModel.OriginalUPCCode))
+                                    {
+                                        Title = T("Alchub.Admin.Catalog.ProductFriendlyUpc.Fields.Sku").Text,
+                                        Width = "100"
+                                    },
+                                    new ColumnProperty(nameof(ProductFriendlyUpcModel.Sku))
+                                    {
+                                        Title = T("Alchub.Admin.Catalog.ProductFriendlyUpc.Fields.OriginalUPCCode").Text,
+                                        Width = "100"
+                                    },
+                                    new ColumnProperty(nameof(ProductFriendlyUpcModel.FriendlyUPCCode))
+                                    {
+                                        Title = T("Alchub.Admin.Catalog.ProductFriendlyUpc.Fields.FriendlyUPCCode").Text,
+                                        Width = "100",
+                                        Editable = true,
+                                        EditType = EditType.String,
+                                        ClassName =  NopColumnClassDefaults.CenterAll,
+                                    },
+                                    //new ColumnProperty(nameof(ProductFriendlyUpcModel.MasterProductId))
+                                    //{
+                                    //    Title = T("Alchub.Admin.Catalog.ProductFriendlyUpc.Fields.MasterProductId").Text,
+                                    //    Width = "80",
+                                    //    Editable = true,
+                                    //    EditType = EditType.Number,
+                                    //    ClassName =  NopColumnClassDefaults.CenterAll,
+                                    //},
+                                    new ColumnProperty(nameof(ProductFriendlyUpcModel.MasterProductId))
+                                    {
+                                        Title = T("Admin.Common.Edit").Text,
+                                        Width = "80",
+                                        ClassName =  NopColumnClassDefaults.Button,
+                                        Render = new RenderButtonsInlineEdit()
+                                    }
+                                }
+                            })
+                            <script>
+                                function renderColumnView(data, type, row, meta) {
+                                    return celContent = '<a class="btn btn-default" href="/Product/ProductDetails/?productId=' + row.Id + '"><i class="fa fa-eye"></i>View</a>';
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

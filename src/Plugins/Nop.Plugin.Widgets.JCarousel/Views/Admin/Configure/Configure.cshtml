@@ -1,0 +1,23 @@
+﻿@model Nop.Plugin.Widgets.JCarousel.Models.Configuration.ConfigurationModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewBag.PageTitle = T("JCarousel.Settings").Text;
+    NopHtml.SetActiveMenuItemSystemName("JCarousel.Settings");
+}
+<link rel="stylesheet" href="~/Plugins/Widgets.JCarousel/Content/css/custom.css" />
+<form asp-controller="JCarousel" asp-action="Configure" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Plugins.Widgets.Jcarousel.Admin.Configuration.Settings")
+        </h1>
+    </div>
+    <div class="content">@await Component.InvokeAsync("StoreScopeConfiguration")</div>
+    <section class="content">
+        <div class="cards-group">
+            <div class="card card-default">
+                @(await Html.PartialAsync("~/Plugins/Widgets.JCarousel/Views/Admin/Configure/_Configuration.cshtml", Model))
+            </div>
+        </div>
+    </section>
+</form>

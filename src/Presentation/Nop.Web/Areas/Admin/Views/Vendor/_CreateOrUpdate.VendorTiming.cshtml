@@ -1,0 +1,61 @@
+@model VendorModel
+
+<div class="card-body">
+    @await Html.PartialAsync("Table", new DataTablesModel
+{
+    Name = "vendortiming-grid",
+    UrlRead = new DataUrl("VendorTimingList", "Vendor", new RouteValueDictionary { [nameof(Model.VendorTimingSearchModel.VendorId)] = Model.VendorTimingSearchModel.VendorId }),
+    UrlDelete = new DataUrl("VendorNoteDelete", "Vendor", null),
+    Length = Model.VendorTimingSearchModel.PageSize,
+    LengthMenu = Model.VendorTimingSearchModel.AvailablePageSizes,
+    ColumnCollection = new List<ColumnProperty>
+            {
+                new ColumnProperty(nameof(VendorTimingModel.Day))
+                {
+                    Title = T("Admin.Vendors.VendorTimingModel.Fields.Day").Text,
+                    Width = "200",
+                },
+                new ColumnProperty(nameof(VendorTimingModel.OpenTimeStr))
+                {
+                    Title = T("Admin.Vendors.VendorTimingModel.Fields.OpenTimeUtc").Text,
+                    Width = "100",
+                },
+                new ColumnProperty(nameof(VendorTimingModel.CloseTimeStr))
+                {
+                    Title = T("Admin.Vendors.VendorTimingModel.Fields.CloseTimeUtc").Text,
+                    Width = "100",
+                },
+                new ColumnProperty(nameof(VendorTimingModel.DayOff))
+                {
+                    Title = T("Admin.Vendors.VendorTimingModel.Fields.DayOff").Text,
+                    Width = "100",
+                    Render = new RenderBoolean()
+                },
+                new ColumnProperty(nameof(VendorTimingModel.DayId))
+                {
+                    Title = T("Admin.Common.Edit").Text,
+                    Width = "100",
+                    ClassName =  NopColumnClassDefaults.Button,
+                    Render = new RenderCustom("renderVendorTimingColumnEdit")
+                }
+            }
+})
+    <script>
+        function renderVendorTimingColumnEdit(data, type, row, meta) {
+           return '<button onclick=\"javascript:OpenWindow(\'@Url.Action("VendorTimingCreateOrEdit", "Vendor")' + "?vendorId=" + @Model.VendorTimingSearchModel.VendorId + "&dayId=" + data + '&btnId=btnRefreshVendorTiming&formId=vendor-form\', 800, 600, true); return false;\" class="btn btn-default"><i class="fas fa-pencil-alt"></i>@T("Admin.Common.Edit").Text</button>';
+        }
+    </script>
+</div>
+
+<div class="card-footer">
+    <button type="submit" id="btnRefreshVendorTiming" style="display: none"></button>
+    <script>
+        $(document).ready(function () {
+            $('#btnRefreshVendorTiming').click(function () {
+                updateTable('#vendortiming-grid');
+                //return false to don't reload a page
+                return false;
+            });
+        });
+    </script>
+</div>

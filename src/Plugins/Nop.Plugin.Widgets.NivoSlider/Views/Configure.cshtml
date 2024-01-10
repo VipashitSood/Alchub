@@ -1,0 +1,518 @@
+﻿@model Nop.Plugin.Widgets.NivoSlider.Models.ConfigurationModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Nop.Web.Framework
+@using Nop.Core
+@using Nop.Services.Common
+
+@inject IWorkContext workContext
+@inject IGenericAttributeService genericAttributeService
+@{
+    Layout = "_ConfigurePlugin";
+
+    const string hideNivoSliderBlockAttributeName = "MobileNivoslider.HideInfoBlock";
+    var customer = await workContext.GetCurrentCustomerAsync();
+    var hideBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideNivoSliderBlockAttributeName);
+
+    const string hideMobileBlockAttributeName = "MobileNivoslider.HideInfoBlock";
+    var hideMobileBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideMobileBlockAttributeName);
+}
+
+@await Component.InvokeAsync("StoreScopeConfiguration")
+<form asp-controller="WidgetsNivoSlider" asp-action="Configure" method="post">
+    <div class="content-header clearfix">
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.Save")
+            </button>
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <nop-card asp-name="nivoslider" asp-icon="far fa-images" asp-hide-block-attribute-name="@hideNivoSliderBlockAttributeName" asp-hide="@hideBlock" asp-title="@T("NivoSlider.Web")" asp-advanced="false">
+                    <div class="card-body">
+                        <div class="cards-group">
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    @T("Plugins.Widgets.NivoSlider.Picture1")
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Picture1Id_OverrideForStore" asp-input="Picture1Id" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Picture1Id" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Picture1Id" />
+                                            <span asp-validation-for="Picture1Id"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Text1_OverrideForStore" asp-input="Text1" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Text1" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Text1" />
+                                            <span asp-validation-for="Text1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="AltText1_OverrideForStore" asp-input="AltText1" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="AltText1" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="AltText1" />
+                                            <span asp-validation-for="AltText1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Link1_OverrideForStore" asp-input="Link1" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Link1" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Link1" />
+                                            <span asp-validation-for="Link1"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    @T("Plugins.Widgets.NivoSlider.Picture2")
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Picture2Id_OverrideForStore" asp-input="Picture2Id" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Picture2Id" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Picture2Id" />
+                                            <span asp-validation-for="Picture2Id"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Text2_OverrideForStore" asp-input="Text2" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Text2" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Text2" />
+                                            <span asp-validation-for="Text2"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="AltText2_OverrideForStore" asp-input="AltText2" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="AltText2" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="AltText2" />
+                                            <span asp-validation-for="AltText2"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Link2_OverrideForStore" asp-input="Link2" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Link2" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Link2" />
+                                            <span asp-validation-for="Link2"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    @T("Plugins.Widgets.NivoSlider.Picture3")
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Picture3Id_OverrideForStore" asp-input="Picture3Id" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Picture3Id" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Picture3Id" />
+                                            <span asp-validation-for="Picture3Id"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Text3_OverrideForStore" asp-input="Text3" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Text3" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Text3" />
+                                            <span asp-validation-for="Text3"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="AltText3_OverrideForStore" asp-input="AltText3" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="AltText3" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="AltText3" />
+                                            <span asp-validation-for="AltText3"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Link3_OverrideForStore" asp-input="Link3" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Link3" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Link3" />
+                                            <span asp-validation-for="Link3"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    @T("Plugins.Widgets.NivoSlider.Picture4")
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Picture4Id_OverrideForStore" asp-input="Picture4Id" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Picture4Id" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Picture4Id" />
+                                            <span asp-validation-for="Picture4Id"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Text4_OverrideForStore" asp-input="Text4" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Text4" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Text4" />
+                                            <span asp-validation-for="Text4"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="AltText4_OverrideForStore" asp-input="AltText4" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="AltText4" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="AltText4" />
+                                            <span asp-validation-for="AltText4"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Link4_OverrideForStore" asp-input="Link4" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Link4" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Link4" />
+                                            <span asp-validation-for="Link4"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    @T("Plugins.Widgets.NivoSlider.Picture5")
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Picture5Id_OverrideForStore" asp-input="Picture5Id" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Picture5Id" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Picture5Id" />
+                                            <span asp-validation-for="Picture5Id"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Text5_OverrideForStore" asp-input="Text5" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Text5" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Text5" />
+                                            <span asp-validation-for="Text5"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="AltText5_OverrideForStore" asp-input="AltText5" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="AltText5" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="AltText5" />
+                                            <span asp-validation-for="AltText5"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="Link5_OverrideForStore" asp-input="Link5" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="Link5" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="Link5" />
+                                            <span asp-validation-for="Link5"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nop-card>
+                <nop-card asp-name="mobile-nivoslider" asp-icon="far fa-images" asp-hide-block-attribute-name="@hideMobileBlockAttributeName" asp-hide="@hideMobileBlock" asp-title="@T("NivoSlider.Mobile")" asp-advanced="false">
+                    <div class="card-body">
+                        <div class="cards-group">
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    @T("Plugins.Widgets.NivoSlider.Picture1")
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobilePicture1Id_OverrideForStore" asp-input="MobilePicture1Id" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobilePicture1Id" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobilePicture1Id" />
+                                            <span asp-validation-for="MobilePicture1Id"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileText1_OverrideForStore" asp-input="MobileText1" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileText1" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileText1" />
+                                            <span asp-validation-for="MobileText1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileAltText1_OverrideForStore" asp-input="MobileAltText1" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileAltText1" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileAltText1" />
+                                            <span asp-validation-for="MobileAltText1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileLink1_OverrideForStore" asp-input="Link1" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileLink1" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileLink1" />
+                                            <span asp-validation-for="MobileLink1"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    @T("Plugins.Widgets.NivoSlider.Picture2")
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobilePicture2Id_OverrideForStore" asp-input="MobilePicture2Id" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobilePicture2Id" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobilePicture2Id" />
+                                            <span asp-validation-for="MobilePicture2Id"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileText2_OverrideForStore" asp-input="MobileText2" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileText2" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileText2" />
+                                            <span asp-validation-for="MobileText2"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileAltText2_OverrideForStore" asp-input="MobileAltText2" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileAltText2" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileAltText2" />
+                                            <span asp-validation-for="MobileAltText2"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileLink2_OverrideForStore" asp-input="MobileLink2" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileLink2" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileLink2" />
+                                            <span asp-validation-for="MobileLink2"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    @T("Plugins.Widgets.NivoSlider.Picture3")
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobilePicture3Id_OverrideForStore" asp-input="MobilePicture3Id" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobilePicture3Id" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobilePicture3Id" />
+                                            <span asp-validation-for="MobilePicture3Id"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileText3_OverrideForStore" asp-input="MobileText3" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileText3" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileText3" />
+                                            <span asp-validation-for="MobileText3"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileAltText3_OverrideForStore" asp-input="MobileAltText3" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileAltText3" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileAltText3" />
+                                            <span asp-validation-for="MobileAltText3"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileLink3_OverrideForStore" asp-input="MobileLink3" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileLink3" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileLink3" />
+                                            <span asp-validation-for="MobileLink3"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    @T("Plugins.Widgets.NivoSlider.Picture4")
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobilePicture4Id_OverrideForStore" asp-input="MobilePicture4Id" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobilePicture4Id" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobilePicture4Id" />
+                                            <span asp-validation-for="MobilePicture4Id"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileText4_OverrideForStore" asp-input="MobileText4" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileText4" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileText4" />
+                                            <span asp-validation-for="MobileText4"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileAltText4_OverrideForStore" asp-input="MobileAltText4" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileAltText4" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileAltText4" />
+                                            <span asp-validation-for="MobileAltText4"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileLink4_OverrideForStore" asp-input="MobileLink4" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileLink4" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileLink4" />
+                                            <span asp-validation-for="MobileLink4"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    @T("Plugins.Widgets.NivoSlider.Picture5")
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobilePicture5Id_OverrideForStore" asp-input="MobilePicture5Id" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobilePicture5Id" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobilePicture5Id" />
+                                            <span asp-validation-for="MobilePicture5Id"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileText5_OverrideForStore" asp-input="MobileText5" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileText5" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileText5" />
+                                            <span asp-validation-for="MobileText5"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileAltText5_OverrideForStore" asp-input="MobileAltText5" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileAltText5" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileAltText5" />
+                                            <span asp-validation-for="MobileAltText5"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-override-store-checkbox asp-for="MobileLink5_OverrideForStore" asp-input="Link5" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                            <nop-label asp-for="MobileLink5" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="MobileLink5" />
+                                            <span asp-validation-for="MobileLink5"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nop-card>
+            </div>
+        </div>
+    </section>
+</form>

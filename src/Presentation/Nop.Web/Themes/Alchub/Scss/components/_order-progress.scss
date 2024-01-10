@@ -1,0 +1,218 @@
+@import "../helpers/helpers";
+
+//order progress sections
+
+.order-progress {
+    background-color: $colorBaseWhite;
+    overflow: hidden;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-top: 5px;
+    margin-bottom: 0px;
+
+    @include media(small) {
+        margin-bottom: 0px;
+    }
+
+    ul {
+        margin-bottom: 0px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        @include media(small) {
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 0px;
+
+            a {
+                margin-bottom: 10px;
+
+                &:first-child {
+                    &:after {
+                        content: " ";
+                        left: 50%;
+                    }
+                }
+            }
+
+            &:last-child {
+                a {
+                    &:after {
+                        width: 0;
+
+                        @include media(tablet) {
+                        }
+                    }
+                }
+            }
+        }
+
+        .inactive-step {
+            a {
+                opacity: 1;
+
+                span {
+                    color: $colorBasetext;
+                }
+            }
+        }
+    }
+
+
+    a {
+        padding: 0 5px;
+        margin-bottom: 40px;
+        height: 40px;
+        position: relative;
+        max-width: 40px;
+
+        @include media(small) {
+            min-width: 50px;
+            width: 50px;
+        }
+
+        @include media(tablet) {
+            min-width: 80px;
+        }
+
+        @include media(desktop) {
+            min-width: 100px;
+        }
+
+
+        &:before {
+            content: "";
+            position: absolute;
+            display: block;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%,-50%);
+            -ms-transform: translate(-50%,-50%);
+            transform: translate(-50%,-50%);
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 0;
+            color: $colorBaseWhite;
+            box-shadow: none;
+            z-index: 1;
+            transition: all .5s ease 0s,color .4s ease;
+            background: $colorBorder;
+        }
+
+        span {
+            position: absolute;
+            display: block;
+            bottom: -28px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: $fontSizeXXS;
+            font-weight: $fontWeightBold;
+            text-transform: uppercase;
+            display: none;
+            color: $colorBasetext;
+
+            &:after {
+                position: absolute;
+                content: '';
+                right: 22px;
+                top: -48px;
+                background: #fff;
+                width: 30px;
+                height: 10px;
+
+                @include media(tablet) {
+                    right: 8px;
+                }
+
+                @include media(desktop) {
+                    right: 17px;
+                }
+            }
+
+            @include media(tablet) {
+                display: block;
+            }
+        }
+
+        &:after {
+            content: "";
+            position: absolute;
+            display: block;
+            width: 100%;
+            top: 50%;
+            left: 0;
+            -webkit-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+            width: 100%;
+            height: 3px;
+            background-color: $line;
+            z-index: 0;
+            right: 0;
+            left: auto;
+        }
+    }
+
+
+    .last {
+        a {
+            &:before {
+                content: "";
+                text-indent: -2px;
+                background-color: $colorBaseWhite;
+                color: $colorFooterSocial;
+                text-align: center;
+                font-weight: normal;
+                text-transform: none;
+                border: 3px solid $primaryBrandClr;
+                box-shadow: 0 0 15px rgb(0 0 0 / 20%);
+                font-family: "emporium-icons";
+                font-size: 22px;
+                width: 40px;
+                height: 35px;
+                line-height: 57px;
+                background: #fff url('../images/new-icon/cart1.svg')no-repeat;
+                background-position: center;
+                background-size: 18px 25px;
+
+                @include media(small) {
+                    width: 50px;
+                    height: 50px;
+                    line-height: 43px;
+                }
+            }
+
+            &:first-child {
+                &:after {
+                    left: 57px;
+
+                    @include media(small) {
+                        left: 50%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.order-progress .active-step:not(.last) a:hover:before {
+    background-color: $primaryBrandClr-hover;
+    width: 20px;
+    height: 20px;
+    transition: all .3s ease;
+}
+
+.order-progress .active-step.last a span {
+    color: $primaryBrandClr;
+}
+
+
+
+
+

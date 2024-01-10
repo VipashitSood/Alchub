@@ -1,0 +1,30 @@
+﻿@model ProductDetailsModel.AddToCartModel
+@using Nop.Core.Domain.Orders
+@if (!Model.DisableWishlistButton)
+{
+    var addToWishlistText = "";
+    if (Model.UpdatedShoppingCartItemId > 0 && Model.UpdateShoppingCartItemType.HasValue && Model.UpdateShoppingCartItemType.Value == ShoppingCartType.Wishlist)
+    {
+        addToWishlistText = T("Products.Wishlist.AddToWishlist.Update").Text;
+    }
+    else
+    {
+        addToWishlistText = T("Products.Wishlist.AddToWishlist").Text;
+    }
+    var addtowishlistlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.Wishlist, quantity = 1 });
+    var deletetowishlistlink = Url.RouteUrl("DeleteProductFromCart-Details", new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.Wishlist });
+<div class="add-to-wishlist">
+    @if (Model.IsWishlist)
+    {
+        <button id="@Model.ProductId" ct="1" type="button" @*value="@(addToCartText)"*@ class="add-to-wishlist-button wishlistlink_@Model.ProductId  @(Model.IsWishlist ? "active" : "")"
+                onclick="AjaxCart.deleteproductfromcart_shoppingcart('@deletetowishlistlink');return false;">
+        </button>
+    }
+    else
+    {
+        <button id="@Model.ProductId" ct="1" type="button" @*value="@(addToCartText)"*@ class="add-to-wishlist-button wishlistlink_@Model.ProductId @(Model.IsWishlist ? "active" : "")"
+                onclick="AjaxCart.addproducttocart_catalog('@addtowishlistlink');return false;">
+        </button>
+    }
+</div>
+}
