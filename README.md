@@ -1,4 +1,6 @@
-﻿nopCommerce: free and open-source eCommerce solution[![Build Status](https://travis-ci.com/nopSolutions/nopCommerce.svg?branch=develop)](https://travis-ci.com/nopSolutions/nopCommerce)
+In this project I have created the Jcarousel slider and implemented Elastic search.
+ 
+ nopCommerce: free and open-source eCommerce solution[![Build Status](https://travis-ci.com/nopSolutions/nopCommerce.svg?branch=develop)](https://travis-ci.com/nopSolutions/nopCommerce)
 ===========
 
 [nopCommerce](https://www.nopcommerce.com/?utm_source=github&utm_medium=content&utm_campaign=homepage) is the best open-source eCommerce shopping cart solution. nopCommerce is free, and it is the most popular ASP.NET eCommerce platform.
